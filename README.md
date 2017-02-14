@@ -16,7 +16,7 @@ An optional placeholder can be specified in the `src` attribute. This will be re
 You can also use yall.js on `srcset` attributes, too:
 
 ```
-<img class="lazy" srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="img/placeholder.jpg">
+<img class="lazy" data-srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="img/placeholder.jpg">
 ```
 
 You can use it on `<picture>` elements, too!
