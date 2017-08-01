@@ -1,0 +1,19 @@
+# editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = tab
+end_of_line = lf
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+charset = utf-8
+
+# Two spaces at EOL inserts <br>
+[*.md]
+trim_trailing_whitespace = false
+
+[*.py]
+indent_size = 4

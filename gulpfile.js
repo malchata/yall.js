@@ -1,29 +1,36 @@
-const gulp = require("gulp"),
-	  util = require("gulp-util"),
-	  babel = require("gulp-babel"),
-	  uglify = require("gulp-uglify"),
-	  optimize = require("gulp-optimize-js"),
-	  del = require("del");
+const gulp = require("gulp");
+const util = require("gulp-util");
+const babel = require("gulp-babel");
+const uglify = require("gulp-uglify");
+const optimize = require("gulp-optimize-js");
+const del = require("del");
 
-gulp.task("default", () => {
+const moduleOpts = {
+	prepackOpts: {
+		compatibility: "browser"
+	},
+	babelOpts: {
+		presets: ["es2015"]
+	}
+};
+
+gulp.task("default", ()=>{
 	let src = "src/*.js",
 		dest = "dist";
 
 	return gulp.src(src)
-		.pipe(babel({
-			presets: ["es2015"]
-		}))
+		.pipe(babel(moduleOpts.babelOpts))
 		.on("error", console.error.bind(console))
 		.pipe(uglify())
 		.pipe(optimize())
 		.pipe(gulp.dest(dest));
 });
 
-gulp.task("clean", () => {
+gulp.task("clean", ()=>{
 	return del("dist");
 });
 
-gulp.task("watch", () => {
+gulp.task("watch", ()=>{
 	let src = "src/*.js";
 	gulp.watch(src, ["default"]);
 });
