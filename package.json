@@ -35,7 +35,5 @@
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8"
   },
-  "dependencies": {
-    "gulp-prepack": "0.0.2"
-  }
+  "dependencies": {}
 }

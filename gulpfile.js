@@ -5,21 +5,12 @@ const uglify = require("gulp-uglify");
 const optimize = require("gulp-optimize-js");
 const del = require("del");
 
-const moduleOpts = {
-	prepackOpts: {
-		compatibility: "browser"
-	},
-	babelOpts: {
-		presets: ["es2015"]
-	}
-};
-
 gulp.task("default", ()=>{
 	let src = "src/*.js",
 		dest = "dist";
 
 	return gulp.src(src)
-		.pipe(babel(moduleOpts.babelOpts))
+		.pipe(babel())
 		.on("error", console.error.bind(console))
 		.pipe(uglify())
 		.pipe(optimize())

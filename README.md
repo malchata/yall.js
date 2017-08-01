@@ -1,7 +1,7 @@
 # yall.js (Yet Another Lazy Loader)
 ### (Y'all need to lazy load images)
 
-yall.js is a teeny lazy loader that weighs in at 1.52 KB uglified (and less when compressed). It depends on `classList` and supports the `<picture>` element and the `srcset` attribute. To use it, grab the copy in the `dist` folder. To fork and develop, use the copy in the `src` folder and compile using gulp (or babel-cli).
+yall.js is a teeny lazy loader that weighs in at 1.51 KB uglified (and less when compressed). It depends on `classList` and supports the `<picture>` element and the `srcset` attribute. To use it, grab the copy in the `dist` folder. To fork and develop, use the copy in the `src` folder and compile using gulp (or babel-cli).
 
 ## Usage Pattern
 

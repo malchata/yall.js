@@ -45,10 +45,10 @@
 		},
 		loadImage: (img)=>{
 			if(img.parentNode.tagName === "PICTURE"){
-				var sources = [].slice.call(img.parentNode.getElementsByTagName("source"));
+				let sources = [].slice.call(img.parentNode.getElementsByTagName("source"));
 
 				sources.forEach((source)=>{
-					var sourceSrcset = source.getAttribute("data-srcset");
+					let sourceSrcset = source.getAttribute("data-srcset");
 
 					if(sourceSrcset !== null){
 						source.setAttribute("srcset", sourceSrcset);
@@ -57,8 +57,8 @@
 				});
 			}
 
-			var imgSrc = img.getAttribute("data-src"),
-				imgSrcset = img.getAttribute("data-srcset");
+			let imgSrc = img.getAttribute("data-src");
+			let imgSrcset = img.getAttribute("data-srcset");
 
 			if(imgSrc !== null){
 				img.setAttribute("src", imgSrc);
