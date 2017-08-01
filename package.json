@@ -1,10 +1,10 @@
 {
   "name": "yall",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Yet Another Lazy Loader",
   "main": "gulpfile.js",
   "scripts": {
-    "install": "gulp"
+    "build": "gulp"
   },
   "repository": {
     "type": "git",

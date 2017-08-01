@@ -1,48 +1,45 @@
 ((window, document)=>{
-	const lazyLoader = {
+	const yall = {
 		lazyClass: "lazy",
 		images: null,
-		processing: false,
+		working: false,
 		throttle: 200,
 		buffer: 50,
 		init: ()=>{
-			lazyLoader.images = [].slice.call(document.getElementsByClassName(lazyLoader.lazyClass));
-			lazyLoader.scanImages();
-			document.addEventListener("scroll", lazyLoader.scanImages);
-			document.addEventListener("touchmove", lazyLoader.scanImages);
-			window.addEventListener("orientationchange", lazyLoader.scanImages);
-			window.addEventListener("resize", lazyLoader.scanImages);
+			yall.images = [].slice.call(document.querySelectorAll(`.${yall.lazyClass}`));
+			yall.scan();
+			document.addEventListener("scroll", yall.scan);
+			document.addEventListener("touchmove", yall.scan);
+			window.addEventListener("orientationchange", yall.scan);
+			window.addEventListener("resize", yall.scan);
 		},
-		destroy: ()=>{
-			document.removeEventListener("scroll", lazyLoader.scanImages);
-			document.removeEventListener("touchmove", lazyLoader.scanImages);
-			window.removeEventListener("orientationchange", lazyLoader.scanImages);
-			window.removeEventListener("resize", lazyLoader.scanImages);
-		},
-		scanImages: ()=>{
-			if(document.getElementsByClassName(lazyLoader.lazyClass).length === 0){
-				lazyLoader.destroy();
+		scan: ()=>{
+			if(document.querySelectorAll(`.${yall.lazyClass}`).length === 0){
+				document.removeEventListener("scroll", yall.scan);
+				document.removeEventListener("touchmove", yall.scan);
+				window.removeEventListener("orientationchange", yall.scan);
+				window.removeEventListener("resize", yall.scan);
 				return;
 			}
 
-			if(lazyLoader.processing === false){
-				lazyLoader.processing = true;
+			if(yall.working === false){
+				yall.working = true;
 
 				setTimeout(()=>{
-					lazyLoader.images.forEach((image)=>{
+					yall.images.forEach((image)=>{
 						if(image.className.indexOf("lazy") !== -1){
-							if(lazyLoader.inViewport(image)){
-								lazyLoader.loadImage(image);
+							if(yall.inViewport(image)){
+								yall.loadImage(image);
 							}
 						}
 					});
 
-					lazyLoader.processing = false;
-				}, lazyLoader.throttle);
+					yall.working = false;
+				}, yall.throttle);
 			}
 		},
 		inViewport: (img)=>{
-			let top = ((document.body.scrollTop || document.documentElement.scrollTop) + window.innerHeight) + lazyLoader.buffer;
+			let top = ((document.body.scrollTop || document.documentElement.scrollTop) + window.innerHeight) + yall.buffer;
 			let isVisible = img.currentStyle ? img.currentStyle.display : getComputedStyle(img, null).display;
 			return img.offsetTop <= top && isVisible !== "none";
 		},
@@ -73,10 +70,10 @@
 				img.removeAttribute("data-srcset");
 			}
 
-			img.classList.remove(lazyLoader.lazyClass);
+			img.classList.remove(yall.lazyClass);
 			img.removeAttribute("style");
 		}
 	};
 
-	document.addEventListener("DOMContentLoaded", lazyLoader.init);
+	document.addEventListener("DOMContentLoaded", yall.init);
 })(window, document);
