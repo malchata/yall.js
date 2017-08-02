@@ -1,0 +1,75 @@
+<!doctype html>
+<html class="no-js">
+	<head>
+		<title>
+			Lazy Loader Test
+		</title>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body{
+				font-size: 16px;
+				padding: 1rem;
+				text-align: center;
+				font-family: sans-serif;
+			}
+
+			img{
+				width: 100%;
+				display: block;
+			}
+
+			h1{
+				margin: 0 0 128rem;
+			}
+
+			h2{
+				margin: 0 0 1rem;
+			}
+
+			img+h2,
+			picture+h2,
+			noscript+h2{
+				margin-top: 128rem;
+			}
+
+			.no-js .lazy{
+				display: none;
+			}
+		</style>
+		<script>
+			document.documentElement.classList.remove("no-js");
+		</script>
+	</head>
+	<body>
+		<h1>Scroll down...</h1>
+		<h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
+		<img class="lazy" data-src="test-768w.jpg" src="placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" title="Lazy loading &lt;img&gt; with src">
+		<noscript>
+			<img src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" title="&lt;noscript&gt; fallback for &lt;img&gt; with src">
+		</noscript>
+		<h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
+		<img class="lazy" data-srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" data-src="test-768w.jpg" src="placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" title="Lazy loading &lt;img&gt; with srcset">
+		<noscript>
+			<img srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" title="&lt;noscript&gt; fallback for &lt;img&gt; with srcset">
+		</noscript>
+		<h2>Lazy loading <code>&lt;picture&gt;</code></h2>
+		<picture>
+			<source data-srcset="test-768w.webp 768w, test-1024w.webp 1024w, test-1280w.webp 1280w, test-1536w.webp 1536w" srcset="placeholder.webp" type="image/webp">
+			<source data-srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" srcset="placeholder.jpg" type="image/jpeg">
+			<img class="lazy" data-src="test-768w.jpg" src="placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" title="Lazy loading &lt;img&gt; with src">
+		</picture>
+		<noscript>
+			<picture>
+				<source srcset="test-768w.webp 768w, test-1024w.webp 1024w, test-1280w.webp 1280w, test-1536w.webp 1536w" type="image/webp">
+				<source srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" type="image/jpeg">
+				<img src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" title="&lt;noscript&gt; fallback for &lt;img&gt; with src">
+			</picture>
+		</noscript>
+	</body>
+	<script src="../dist/yall.js"></script>
+</html>

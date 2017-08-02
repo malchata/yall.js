@@ -5,7 +5,7 @@ yall.js is a teeny lazy loader that weighs in at 1.33 KB uglified (and even less
 
 ## Usage Pattern
 
-Using yall.js is super duper easy. Here's the most basic `<img>` tag case. All you need to do is add a class of `lazy` to the `<img>` element you want to place lazy loading behavior on, and point the `data-src` attribute to an image source to lazy load:
+Using yall.js is super easy. Here's the simplest `<img>` element use case. All you need to do is add a class of `lazy` to the `<img>` element you want to place lazy loading behavior on, and point the `data-src` attribute to an image source to lazy load:
 
 ```html
 <img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg">
@@ -24,8 +24,8 @@ You can use it on `<picture>` elements, too!
 ```html
 <picture>
   <source data-srcset="/img/image-to-lazy-load.webp" type="image/webp">
-  <source data-srcset="/img/image-to-lazy-load.jpeg" type="image/jpeg">
-  <img data-src="/img/image-to-lazy-load.jpeg" src="/img/placeholder.jpg" class="lazy">
+  <source data-srcset="/img/image-to-lazy-load.jpg" type="image/jpeg">
+  <img data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" class="lazy">
 </picture>
 ```
 
@@ -40,19 +40,21 @@ Easy solution. Slap on some `<noscript>` goodness:
 <noscript>
 ```
 
-Then slap a `no-js` tag onto the `<html>` element. Then in the `<head>` of the document, add this little snippet of code:
+Then slap a `no-js` class onto the `<html>` element, and add this JavaScript one-liner in the `<head>` of the document:
 
 ```html
 <script>document.documentElement.classList.remove("no-js");</script>
 ```
 
-From here, you can write some CSS that hides elements with a class of `lazy` when the `no-js` class is present on the `<html>` element:
+From here, you can add some CSS that hides elements with a class of `lazy` when the `no-js` class is present on the `<html>` element:
 
 ```css
 .no-js .lazy{
   display: none;
 }
 ```
+
+If you want to see everything in action, check out the demo in the `test` folder.
 
 ## Why another dumb lazy loader?
 

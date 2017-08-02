@@ -29,7 +29,7 @@
 		},
 		load: (img)=>{
 			if(img.parentNode.tagName === "PICTURE"){
-				let sources = [].slice.call(img.parentNode.getElementsByTagName("source"));
+				let sources = [].slice.call(img.parentNode.querySelectorAll("source"));
 
 				sources.forEach((source)=>{
 					let sourceSrcset = source.getAttribute("data-srcset");
