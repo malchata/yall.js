@@ -1,7 +1,7 @@
 # yall.js (Yet Another Lazy Loader)
 ### (Y'all need to lazy load images)
 
-yall.js is a teeny lazy loader that weighs in at 1.51 KB uglified (and less when compressed). It depends on `classList` and supports the `<picture>` element and the `srcset` attribute. To use it, grab the copy in the `dist` folder. To fork and develop, use the copy in the `src` folder and compile using gulp (or babel-cli).
+yall.js is a teeny lazy loader that weighs in at 1.33 KB uglified (and even less when compressed). It depends on `classList`, `querySelectorAll`, supports the `<picture>` element and `srcset`. To use it, grab the copy in the `dist` folder. To fork and develop, use the copy in the `src` folder and compile using gulp (or babel-cli).
 
 ## Usage Pattern
 
@@ -46,7 +46,7 @@ Then slap a `no-js` tag onto the `<html>` element. Then in the `<head>` of the d
 <script>document.documentElement.classList.remove("no-js");</script>
 ```
 
-From here, you can write some CSS that hides elements with a class of `lazy` when the `no-js` class is present on the document:
+From here, you can write some CSS that hides elements with a class of `lazy` when the `no-js` class is present on the `<html>` element:
 
 ```css
 .no-js .lazy{

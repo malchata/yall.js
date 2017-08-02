@@ -1,20 +1,9 @@
 ((window, document)=>{
-	const yall = {
-		lazyClass: "lazy",
+	let yall = {
 		images: null,
-		working: false,
-		throttle: 200,
-		buffer: 50,
-		init: ()=>{
-			yall.images = [].slice.call(document.querySelectorAll(`.${yall.lazyClass}`));
-			yall.scan();
-			document.addEventListener("scroll", yall.scan);
-			document.addEventListener("touchmove", yall.scan);
-			window.addEventListener("orientationchange", yall.scan);
-			window.addEventListener("resize", yall.scan);
-		},
+		active: false,
 		scan: ()=>{
-			if(document.querySelectorAll(`.${yall.lazyClass}`).length === 0){
+			if(document.querySelectorAll(".lazy").length === 0){
 				document.removeEventListener("scroll", yall.scan);
 				document.removeEventListener("touchmove", yall.scan);
 				window.removeEventListener("orientationchange", yall.scan);
@@ -22,28 +11,23 @@
 				return;
 			}
 
-			if(yall.working === false){
-				yall.working = true;
+			if(yall.active === false){
+				yall.active = true;
 
 				setTimeout(()=>{
 					yall.images.forEach((image)=>{
 						if(image.className.indexOf("lazy") !== -1){
-							if(yall.inViewport(image)){
-								yall.loadImage(image);
+							if(image.offsetTop <= ((document.body.scrollTop || document.documentElement.scrollTop) + window.innerHeight + 100) && (image.currentStyle ? image.currentStyle.display : getComputedStyle(image, null).display) !== "none"){
+								yall.load(image);
 							}
 						}
 					});
 
-					yall.working = false;
-				}, yall.throttle);
+					yall.active = false;
+				}, 200);
 			}
 		},
-		inViewport: (img)=>{
-			let top = ((document.body.scrollTop || document.documentElement.scrollTop) + window.innerHeight) + yall.buffer;
-			let isVisible = img.currentStyle ? img.currentStyle.display : getComputedStyle(img, null).display;
-			return img.offsetTop <= top && isVisible !== "none";
-		},
-		loadImage: (img)=>{
+		load: (img)=>{
 			if(img.parentNode.tagName === "PICTURE"){
 				let sources = [].slice.call(img.parentNode.getElementsByTagName("source"));
 
@@ -70,10 +54,16 @@
 				img.removeAttribute("data-srcset");
 			}
 
-			img.classList.remove(yall.lazyClass);
-			img.removeAttribute("style");
+			img.classList.remove("lazy");
 		}
 	};
 
-	document.addEventListener("DOMContentLoaded", yall.init);
+	document.addEventListener("DOMContentLoaded", ()=>{
+		yall.images = [].slice.call(document.querySelectorAll(".lazy"));
+		yall.scan();
+		document.addEventListener("scroll", yall.scan);
+		document.addEventListener("touchmove", yall.scan);
+		window.addEventListener("orientationchange", yall.scan);
+		window.addEventListener("resize", yall.scan);
+	});
 })(window, document);
