@@ -20,7 +20,6 @@
 		ga = "getAttribute",
 		ra = "removeAttribute",
 		ael = "addEventListener",
-		rel = "removeEventListener",
 		cl = "classList",
 		fe = "forEach",
 		// Placeholder used for the lazy loading class**
@@ -36,9 +35,9 @@
 	let a = 0;
 
 	// A multiple event binding handler.**
-	let b = (obj, handlers, func, add)=>{
+	let b = (obj, handlers, func)=>{
 		handlers[fe]((handler)=>{
-			add ? obj[ael](handler, func) : obj[rel](handler, func);
+			obj[ael](handler, func);
 		});
 	};
 
@@ -50,42 +49,44 @@
 			node[ra](sattr);
 		}
 	};
+
+	// lazy loaded elements
 	let els;
 
 	// The guts of the lazy loader
 	let yall = ()=>{
-		if(!a){
-			a = 1;
+		if(a) return;
+		
+		a = 1;
 
-			setTimeout(()=>{
-				els[fe]((img)=>{
-					if(img[cl].contains(l) && img.getBoundingClientRect().top <= ((document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight + 50) && getComputedStyle(img, null).display != "none"){
-						if(img.parentNode.tagName == "PICTURE"){
-							let sources = [].slice.call(img.parentNode[qsa]("source"));
+		setTimeout(()=>{
+			els[fe]((img)=>{
+				if(img[cl].contains(l) && img.getBoundingClientRect().top <= ((document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight + 50) && getComputedStyle(img, null).display != "none"){
+					if(img.parentNode.tagName == "PICTURE"){
+						let sources = [].slice.call(img.parentNode[qsa]("source"));
 
-							sources[fe]((source)=>{
-								replaceAttr(source, ss, "srcset");
-							});
-						}
-						replaceAttr(img, s, "src");
-						replaceAttr(img, ss, "srcset");
-						img[cl].remove(l);
+						sources[fe]((source)=>{
+							replaceAttr(source, ss, "srcset");
+						});
 					}
-				});
+					replaceAttr(img, s, "src");
+					replaceAttr(img, ss, "srcset");
+					img[cl].remove(l);
+				}
+			});
 
-				a = 0;
-			}, 200);
-		}
+			a = 0;
+		}, 200);
 	};
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, ["DOMContentLoaded"], ()=>{
 		els = [].slice.call(document[qsa]("."+l));
-		if (els) {
+		if (els.length) {
 			yall();
 			// listen to DOM events
-			b(document, y, yall, true);
-			b(window, z, yall, true);
+			b(document, y, yall);
+			b(window, z, yall);
 		}
-	}, true);
+	});
 })(window, document);
