@@ -32,7 +32,7 @@
 		z = ["orientationchange", "resize"];
 
 	// Tracks if yall is working. Used for throttling.
-	let a = false;
+	let a = 0;
 
 	// A multiple event binding handler.**
 	let b = (obj, handlers, func, add)=>{
@@ -59,7 +59,7 @@
 		}
 
 		if(!a){
-			a = true;
+			a = 1;
 
 			setTimeout(()=>{
 				yall.i.forEach((img)=>{
@@ -77,7 +77,7 @@
 					}
 				});
 
-				a = false;
+				a = 0;
 			}, 200);
 		}
 	};
