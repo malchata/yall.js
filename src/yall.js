@@ -53,7 +53,7 @@
 
 	// The guts of the lazy loader
 	let yall = (els)=>{
-		if(!document[qsa]("."+l).length){
+		if(!els.length){
 			b(document, y, yall);
 			b(window, z, yall);
 			return;
