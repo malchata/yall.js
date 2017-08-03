@@ -28,15 +28,15 @@
 		s = "data-src",
 		ss = "data-srcset",
 		// Placeholders used for event handler strings.**
-		y = "scroll touchmove",
-		z = "orientationchange resize";
+		y = ["scroll", "touchmove"],
+		z = ["orientationchange", "resize"];
 
 	// Tracks if yall is working. Used for throttling.
 	let a = false;
 
 	// A multiple event binding handler.**
 	let b = (obj, handlers, func, add)=>{
-		handlers.split(" ").forEach((handler)=>{
+		handlers.forEach((handler)=>{
 			add ? obj[ael](handler, func) : obj[rel](handler, func);
 		});
 	};
