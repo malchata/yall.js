@@ -22,6 +22,7 @@
 		ael = "addEventListener",
 		rel = "removeEventListener",
 		cl = "classList",
+		fe = "forEach",
 		// Placeholder used for the lazy loading class**
 		l = "lazy",
 		// Placeholders used for "data-src" and "data-srcset" attribute references.**
@@ -32,11 +33,11 @@
 		z = ["orientationchange", "resize"];
 
 	// Tracks if yall is working. Used for throttling.
-	let a = false;
+	let a = 0;
 
 	// A multiple event binding handler.**
 	let b = (obj, handlers, func, add)=>{
-		handlers.forEach((handler)=>{
+		handlers[fe]((handler)=>{
 			add ? obj[ael](handler, func) : obj[rel](handler, func);
 		});
 	};
@@ -51,7 +52,7 @@
 	};
 
 	// The guts of the lazy loader
-	let yall = ()=>{
+	let yall = (els)=>{
 		if(!document[qsa]("."+l).length){
 			b(document, y, yall);
 			b(window, z, yall);
@@ -59,15 +60,15 @@
 		}
 
 		if(!a){
-			a = true;
+			a = 1;
 
 			setTimeout(()=>{
-				yall.i.forEach((img)=>{
+				els[fe]((img)=>{
 					if(img[cl].contains(l) && img.getBoundingClientRect().top <= ((document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight + 50) && getComputedStyle(img, null).display != "none"){
 						if(img.parentNode.tagName == "PICTURE"){
 							let sources = [].slice.call(img.parentNode[qsa]("source"));
 
-							sources.forEach((source)=>{
+							sources[fe]((source)=>{
 								replaceAttr(source, ss, "srcset");
 							});
 						}
@@ -77,15 +78,14 @@
 					}
 				});
 
-				a = false;
+				a = 0;
 			}, 200);
 		}
 	};
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, ["DOMContentLoaded"], ()=>{
-		yall.i = [].slice.call(document[qsa]("."+l));
-		yall();
+		yall([].slice.call(document[qsa]("."+l)));
 		b(document, y, yall, true);
 		b(window, z, yall, true);
 	}, true);
