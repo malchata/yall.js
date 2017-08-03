@@ -16,19 +16,11 @@
 	let
 		// Placeholders used for common method names.**
 		qsa = "querySelectorAll",
-		sa = "setAttribute",
-		ga = "getAttribute",
-		ra = "removeAttribute",
-		ael = "addEventListener",
-		rel = "removeEventListener",
-		cl = "classList",
 		fe = "forEach",
-		st = "scrollTop",
 		// Placeholder used for the lazy loading class**
 		l = "lazy",
 		// Placeholders used for "data-src" and "data-srcset" attribute references.**
 		ss = "srcset",
-		ds = "data-src",
 		dss = "data-srcset",
 		pn = "parentNode",
 		// Placeholders used for event handler strings.**
@@ -39,40 +31,41 @@
 		// A multiple event binding handler.**
 		b = (obj, handlers, func, add)=>{
 			handlers[fe]((handler)=>{
-				add ? obj[ael](handler, func) : obj[rel](handler, func);
+				add ? obj.addEventListener(handler, func) : obj.removeEventListener(handler, func);
 			});
 		},
 		// Replaces target attribute value with source attribute, if applicable
 		replaceAttr = (node, sattr, tattr)=>{
-			let v = node[ga](sattr);
-			v ? (node[tattr] = v, node[ra](sattr)) : 0;
+			let v = node.getAttribute(sattr);
+			if(v) (node[tattr] = v, node.removeAttribute(sattr));
 		},
 		// Lazy-loaded elements
 		els,
 		// The guts of the lazy loader
 		yall = ()=>{
-			!els.length ? (b(document, y, yall), b(window, z, yall)) : 0;
+			if(!els.length) (b(document, y, yall), b(window, z, yall));
 
 			if(!a){
-				a++;
+				a = 1;
 				setTimeout(()=>{
 					els[fe]((img)=>{
-						if(img[cl].contains(l) && img.getBoundingClientRect().top <= window.innerHeight + 100 && getComputedStyle(img).display != "none"){
-							img[pn].tagName == "PICTURE" ? [].slice.call(img[pn][qsa]("source"))[fe]((source)=>replaceAttr(source, dss, ss)) : 0;
-							replaceAttr(img, ds, "src");
+						if(img.getBoundingClientRect().top <= window.innerHeight + 100 && getComputedStyle(img).display != "none"){
+							if(img[pn].tagName == "PICTURE") [].slice.call(img[pn][qsa]("source"))[fe]((source)=>replaceAttr(source, dss, ss));
+							replaceAttr(img, "data-src", "src");
 							replaceAttr(img, dss, ss);
-							img[cl].remove(l);
+							img.classList.remove(l);
+							els.splice(els.indexOf(img), 1);
 						}
 					});
 
-					a--;
+					a = 0;
 				}, 200);
 			}
 		};
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, ["DOMContentLoaded"], ()=>{
-		els = [].slice.call(document[qsa]("."+l));
+		els = [].slice.call(document[qsa](`.${l}`));
 		yall();
 		b(document, y, yall, 1);
 		b(window, z, yall, 1);
