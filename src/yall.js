@@ -28,17 +28,26 @@
 		s = "data-src",
 		ss = "data-srcset",
 		// Placeholders used for event handler strings.**
-		y = "scroll touchmove",
-		z = "orientationchange resize";
+		y = ["scroll", "touchmove"],
+		z = ["orientationchange", "resize"];
 
 	// Tracks if yall is working. Used for throttling.
 	let a = false;
 
 	// A multiple event binding handler.**
 	let b = (obj, handlers, func, add)=>{
-		handlers.split(" ").forEach((handler)=>{
+		handlers.forEach((handler)=>{
 			add ? obj[ael](handler, func) : obj[rel](handler, func);
 		});
+	};
+
+	// Replaces target attribute value with source attribute, if applicable
+	let replaceAttr = (node, sattr, tattr)=>{
+		let v = node[ga](sattr);
+		if (v !== null) {
+			node[tattr] = v;
+			node[ra](sattr);
+		}
 	};
 
 	// The guts of the lazy loader
@@ -59,28 +68,11 @@
 							let sources = [].slice.call(img.parentNode[qsa]("source"));
 
 							sources.forEach((source)=>{
-								let sourceSrcset = source[ga](ss);
-
-								if(sourceSrcset != null){
-									source[sa]("srcset", sourceSrcset);
-									source[ra](ss);
-								}
+								replaceAttr(source, ss, "srcset");
 							});
 						}
-
-						let imgSrc = img[ga](s);
-						let imgSrcset = img[ga](ss);
-
-						if(imgSrc != null){
-							img.src = imgSrc;
-							img[ra](s);
-						}
-
-						if(imgSrcset != null){
-							img.srcset = imgSrcset;
-							img[ra](ss);
-						}
-
+						replaceAttr(img, s, "src");
+						replaceAttr(img, ss, "srcset");
 						img[cl].remove(l);
 					}
 				});
@@ -91,7 +83,7 @@
 	};
 
 	// Everything's kicked off on DOMContentLoaded
-	b(document, "DOMContentLoaded", ()=>{
+	b(document, ["DOMContentLoaded"], ()=>{
 		yall.i = [].slice.call(document[qsa]("."+l));
 		yall();
 		b(document, y, yall, true);
