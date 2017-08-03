@@ -50,15 +50,10 @@
 			node[ra](sattr);
 		}
 	};
+	let els;
 
 	// The guts of the lazy loader
-	let yall = (els)=>{
-		if(!els.length){
-			b(document, y, yall);
-			b(window, z, yall);
-			return;
-		}
-
+	let yall = ()=>{
 		if(!a){
 			a = 1;
 
@@ -85,8 +80,12 @@
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, ["DOMContentLoaded"], ()=>{
-		yall([].slice.call(document[qsa]("."+l)));
-		b(document, y, yall, true);
-		b(window, z, yall, true);
+		els = [].slice.call(document[qsa]("."+l));
+		if (els) {
+			yall();
+			// listen to DOM events
+			b(document, y, yall, true);
+			b(window, z, yall, true);
+		}
 	}, true);
 })(window, document);
