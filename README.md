@@ -1,11 +1,11 @@
 # yall.js (Yet Another Lazy Loader)
 ### (Y'all need to lazy load images)
 
-yall.js is a teeny lazy loader that weighs in at 1.33 KB uglified (and even less when compressed). It depends on `classList`, `querySelectorAll`, supports the `<picture>` element and `srcset`. To use it, grab the copy in the `dist` folder. To fork and develop, use the copy in the `src` folder and compile using gulp (or babel-cli).
+yall.js is a very small image lazy loader for reasonably modern browsers (IE10+ and everything else) that weighs in at 1.03 KB uglified (and even smaller when compressed). It depends on `classList`, `querySelectorAll`, supports the `<picture>` element and the `srcset` attribute. To use, grab the copy in the `dist` folder. If you want to tinker, work with the copy in the `src` folder and transpile with gulp (or babel-cli).
 
 ## Usage Pattern
 
-Using yall.js is super easy. Here's the simplest `<img>` element use case. All you need to do is add a class of `lazy` to the `<img>` element you want to place lazy loading behavior on, and point the `data-src` attribute to an image source to lazy load:
+yall.js assumes a lot, but because it does, it's very straightforward. Here's the simplest `<img>` element use case. All you need to do is add a class of `lazy` to the `<img>` element you want to place lazy loading behavior on, and point the `data-src` attribute to an image source to lazy load:
 
 ```html
 <img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg">
@@ -37,7 +37,7 @@ Easy solution. Slap on some `<noscript>` goodness:
 <img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg">
 <noscript>
   <img src="/img/image-to-lazy-load.jpg">
-<noscript>
+</noscript>
 ```
 
 Then slap a `no-js` class onto the `<html>` element, and add this JavaScript one-liner in the `<head>` of the document:
@@ -55,6 +55,10 @@ From here, you can add some CSS that hides elements with a class of `lazy` when 
 ```
 
 If you want to see everything in action, check out the demo in the `test` folder.
+
+## Contributing
+
+I'm not interested in expanding the functionality of this package or refactoring it for readability. The goal of yall.js is to be as *small as humanly possible* while maintaining functionality. This means the source may not be the most readable. If you look at the source and can find ways to make this library more terse than it already is without breaking it, I welcome your contributions.
 
 ## Why another dumb lazy loader?
 
