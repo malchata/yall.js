@@ -38,6 +38,14 @@
 		});
 	};
 
+	let replaceAttr = (node, sattr, tattr)=>{
+		let v = node[ga](sattr);
+		if (v !== null) {
+			node[tattr] = v;
+			node[ra](sattr);
+		}
+	};
+
 	// The guts of the lazy loader
 	let yall = ()=>{
 		if(!document[qsa](".lazy").length){
@@ -56,28 +64,11 @@
 							let sources = [].slice.call(img.parentNode[qsa]("source"));
 
 							sources.forEach((source)=>{
-								let sourceSrcset = source[ga](ss);
-
-								if(sourceSrcset != null){
-									source[sa]("srcset", sourceSrcset);
-									source[ra](ss);
-								}
+								replaceAttr(source, ss, "srcset");
 							});
 						}
-
-						let imgSrc = img[ga](s);
-						let imgSrcset = img[ga](ss);
-
-						if(imgSrc != null){
-							img.src = imgSrc;
-							img[ra](s);
-						}
-
-						if(imgSrcset != null){
-							img.srcset = imgSrcset;
-							img[ra](ss);
-						}
-
+						replaceAttr(img, s, "src");
+						replaceAttr(img, ss, "srcset");
 						img.classList.remove("lazy");
 					}
 				});
