@@ -7,20 +7,23 @@
  **/
 
 ((window, document)=>{
-	/** 
+	/**
 	 * Anything suffixed with a double asterisk (**)
 	 * indicates that it was defined solely to shave
 	 * bytes from the final build.
 	 **/
-		
-	const 
-		// Placeholders used common method names.**
+
+	const
+		// Placeholders used for common method names.**
 		qsa = "querySelectorAll",
-	    sa = "setAttribute",
+		sa = "setAttribute",
 		ga = "getAttribute",
 		ra = "removeAttribute",
 		ael = "addEventListener",
 		rel = "removeEventListener",
+		cl = "classList",
+		// Placeholder used for the lazy loading class**
+		l = "lazy",
 		// Placeholders used for "data-src" and "data-srcset" attribute references.**
 		s = "data-src",
 		ss = "data-srcset",
@@ -40,7 +43,7 @@
 
 	// The guts of the lazy loader
 	let yall = ()=>{
-		if(!document[qsa](".lazy").length){
+		if(!document[qsa]("."+l).length){
 			b(document, y, yall);
 			b(window, z, yall);
 			return;
@@ -51,7 +54,7 @@
 
 			setTimeout(()=>{
 				yall.i.forEach((img)=>{
-					if(img.getBoundingClientRect().top <= ((document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight + 100) && getComputedStyle(img, null).display != "none"){
+					if(img[cl].contains(l) && img.getBoundingClientRect().top <= ((document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight + 50) && getComputedStyle(img, null).display != "none"){
 						if(img.parentNode.tagName == "PICTURE"){
 							let sources = [].slice.call(img.parentNode[qsa]("source"));
 
@@ -78,18 +81,18 @@
 							img[ra](ss);
 						}
 
-						img.classList.remove("lazy");
+						img[cl].remove(l);
 					}
 				});
 
 				a = false;
 			}, 200);
 		}
-	};	
+	};
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, "DOMContentLoaded", ()=>{
-		yall.i = [].slice.call(document[qsa](".lazy"));
+		yall.i = [].slice.call(document[qsa]("."+l));
 		yall();
 		b(document, y, yall, true);
 		b(window, z, yall, true);
