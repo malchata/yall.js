@@ -30,6 +30,7 @@
 		ss = "srcset",
 		ds = "data-src",
 		dss = "data-srcset",
+		pn = "parentNode",
 		// Placeholders used for event handler strings.**
 		y = ["scroll", "touchmove"],
 		z = ["orientationchange", "resize"],
@@ -44,41 +45,29 @@
 		// Replaces target attribute value with source attribute, if applicable
 		replaceAttr = (node, sattr, tattr)=>{
 			let v = node[ga](sattr);
-			if(v != null){
-				node[tattr] = v;
-				node[ra](sattr);
-			}
+			v ? (node[tattr] = v, node[ra](sattr)) : 0;
 		},
 		// Lazy-loaded elements
 		els,
 		// The guts of the lazy loader
 		yall = ()=>{
-			if(!els.length){
-				b(document, y, yall);
-				b(window, z, yall);
-				return;
-			}
+			!els.length ? (b(document, y, yall), b(window, z, yall)) : 0;
 
-			a = 1;
-
-			setTimeout(()=>{
-				els[fe]((img)=>{
-					if(img[cl].contains(l) && img.getBoundingClientRect().top <= window.innerHeight + 100 && getComputedStyle(img).display != "none"){
-						if(img.parentNode.tagName == "PICTURE"){
-							let sources = [].slice.call(img.parentNode[qsa]("source"));
-
-							sources[fe]((source)=>{
-								replaceAttr(source, dss, ss);
-							});
+			if(!a){
+				a++;
+				setTimeout(()=>{
+					els[fe]((img)=>{
+						if(img[cl].contains(l) && img.getBoundingClientRect().top <= window.innerHeight + 100 && getComputedStyle(img).display != "none"){
+							img[pn].tagName == "PICTURE" ? [].slice.call(img[pn][qsa]("source"))[fe]((source)=>replaceAttr(source, dss, ss)) : 0;
+							replaceAttr(img, ds, "src");
+							replaceAttr(img, dss, ss);
+							img[cl].remove(l);
 						}
-						replaceAttr(img, ds, "src");
-						replaceAttr(img, dss, ss);
-						img[cl].remove(l);
-					}
-				});
+					});
 
-				a = 0;
-			}, 200);
+					a--;
+				}, 200);
+			}
 		};
 
 	// Everything's kicked off on DOMContentLoaded
