@@ -22,6 +22,7 @@
 		ael = "addEventListener",
 		rel = "removeEventListener",
 		cl = "classList",
+		fe = "forEach",
 		// Placeholder used for the lazy loading class**
 		l = "lazy",
 		// Placeholders used for "data-src" and "data-srcset" attribute references.**
@@ -36,7 +37,7 @@
 
 	// A multiple event binding handler.**
 	let b = (obj, handlers, func, add)=>{
-		handlers.forEach((handler)=>{
+		handlers[fe]((handler)=>{
 			add ? obj[ael](handler, func) : obj[rel](handler, func);
 		});
 	};
@@ -62,12 +63,12 @@
 			a = 1;
 
 			setTimeout(()=>{
-				yall.i.forEach((img)=>{
+				yall.i[fe]((img)=>{
 					if(img[cl].contains(l) && img.getBoundingClientRect().top <= ((document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight + 50) && getComputedStyle(img, null).display != "none"){
 						if(img.parentNode.tagName == "PICTURE"){
 							let sources = [].slice.call(img.parentNode[qsa]("source"));
 
-							sources.forEach((source)=>{
+							sources[fe]((source)=>{
 								replaceAttr(source, ss, "srcset");
 							});
 						}
