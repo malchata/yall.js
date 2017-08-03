@@ -65,7 +65,7 @@
 				els[fe]((img)=>{
 					if(img[cl].contains(l) && img.getBoundingClientRect().top <= ((document.documentElement[st] || document.body[st]) + window.innerHeight + 50) && getComputedStyle(img).display != "none"){
 						if(img.parentNode.tagName == "PICTURE"){
-							let sources = [].slice.call(img.parentNode[qsa]("source"));
+							let sources = img.parentNode[qsa]("source");
 
 							sources[fe]((source)=>{
 								replaceAttr(source, dss, ss);
@@ -83,7 +83,8 @@
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, ["DOMContentLoaded"], ()=>{
-		els = [].slice.call(document[qsa]("."+l));
+		els = document[qsa]("."+l);
+		console.log(els);
 		yall();
 		b(document, y, yall, 1);
 		b(window, z, yall, 1);
