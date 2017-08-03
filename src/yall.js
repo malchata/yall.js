@@ -52,7 +52,7 @@
 	};
 
 	// The guts of the lazy loader
-	let yall = ()=>{
+	let yall = (els)=>{
 		if(!document[qsa]("."+l).length){
 			b(document, y, yall);
 			b(window, z, yall);
@@ -63,7 +63,7 @@
 			a = 1;
 
 			setTimeout(()=>{
-				yall.i[fe]((img)=>{
+				els[fe]((img)=>{
 					if(img[cl].contains(l) && img.getBoundingClientRect().top <= ((document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight + 50) && getComputedStyle(img, null).display != "none"){
 						if(img.parentNode.tagName == "PICTURE"){
 							let sources = [].slice.call(img.parentNode[qsa]("source"));
@@ -85,8 +85,7 @@
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, ["DOMContentLoaded"], ()=>{
-		yall.i = [].slice.call(document[qsa]("."+l));
-		yall();
+		yall([].slice.call(document[qsa]("."+l)));
 		b(document, y, yall, true);
 		b(window, z, yall, true);
 	}, true);
