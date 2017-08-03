@@ -8,7 +8,7 @@ yall.js is a very small image lazy loader for reasonably modern browsers (IE10+ 
 yall.js assumes a lot, but because it does, it's very straightforward. Here's the simplest `<img>` element use case. All you need to do is add a class of `lazy` to the `<img>` element you want to place lazy loading behavior on, and point the `data-src` attribute to an image source to lazy load:
 
 ```html
-<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg">
+<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="alternative text to describe image.">
 ```
 
 An optional placeholder can be specified in the `src` attribute. This will be replaced by the lazy loader when the element is scrolled into view.
@@ -16,7 +16,7 @@ An optional placeholder can be specified in the `src` attribute. This will be re
 You can also use yall.js on `srcset` attributes, too:
 
 ```html
-<img class="lazy" data-srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="/img/placeholder.jpg">
+<img class="lazy" data-srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="/img/placeholder.jpg" alt="alternative text to describe image.">>
 ```
 
 You can use it on `<picture>` elements, too!
@@ -25,7 +25,7 @@ You can use it on `<picture>` elements, too!
 <picture>
   <source data-srcset="/img/image-to-lazy-load.webp" type="image/webp">
   <source data-srcset="/img/image-to-lazy-load.jpg" type="image/jpeg">
-  <img data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" class="lazy">
+  <img data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" class="lazy" alt="alternative text to describe image.">>
 </picture>
 ```
 
@@ -34,9 +34,9 @@ You can use it on `<picture>` elements, too!
 Easy solution. Slap on some `<noscript>` goodness:
 
 ```html
-<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg">
+<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="alternative text to describe image.">>
 <noscript>
-  <img src="/img/image-to-lazy-load.jpg">
+  <img src="/img/image-to-lazy-load.jpg" alt="alternative text to describe image.">>
 </noscript>
 ```
 
