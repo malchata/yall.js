@@ -83,7 +83,7 @@
 	};
 
 	// Everything's kicked off on DOMContentLoaded
-	b(document, "DOMContentLoaded", ()=>{
+	b(document, ["DOMContentLoaded"], ()=>{
 		yall.i = [].slice.call(document[qsa]("."+l));
 		yall();
 		b(document, y, yall, true);
