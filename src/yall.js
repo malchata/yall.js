@@ -41,6 +41,7 @@
 		});
 	};
 
+	// Replaces target attribute value with source attribute, if applicable
 	let replaceAttr = (node, sattr, tattr)=>{
 		let v = node[ga](sattr);
 		if (v !== null) {
