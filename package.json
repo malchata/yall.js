@@ -1,6 +1,6 @@
 {
   "name": "yall",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Yet Another Lazy Loader",
   "main": "gulpfile.js",
   "scripts": {
