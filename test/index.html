@@ -23,12 +23,17 @@
 				display: block;
 			}
 
-			h1{
-				margin: 0 0 128rem;
-			}
-
 			h2{
 				margin: 0 0 1rem;
+			}
+
+			h3{
+				margin: 1rem 0 0;
+			}
+
+			ul{
+				margin: .25rem 0 128rem;
+				list-style: none;
 			}
 
 			img+h2,
@@ -47,17 +52,26 @@
 	</head>
 	<body>
 		<h1>Scroll down...</h1>
+		<h3>Or jump to...</h3>
+		<ul>
+			<li><a href="#src">Lazy loading <code>&lt;img&gt;</code> using <code>src</code></a></li>
+			<li><a href="#srcset">Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></a></li>
+			<li><a href="#picture">Lazy loading <code>&lt;picture&gt;</code></a></li>
+		</ul>
 		<h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
+		<a name="src"></a>
 		<img class="lazy" data-src="test-768w.jpg" src="placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" title="Lazy loading &lt;img&gt; with src">
 		<noscript>
 			<img src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" title="&lt;noscript&gt; fallback for &lt;img&gt; with src">
 		</noscript>
 		<h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
+		<a name="srcset"></a>
 		<img class="lazy" data-srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" data-src="test-768w.jpg" src="placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" title="Lazy loading &lt;img&gt; with srcset">
 		<noscript>
 			<img srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" title="&lt;noscript&gt; fallback for &lt;img&gt; with srcset">
 		</noscript>
 		<h2>Lazy loading <code>&lt;picture&gt;</code></h2>
+		<a name="picture"></a>
 		<picture>
 			<source data-srcset="test-768w.webp 768w, test-1024w.webp 1024w, test-1280w.webp 1280w, test-1536w.webp 1536w" srcset="placeholder.webp" type="image/webp">
 			<source data-srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" srcset="placeholder.jpg" type="image/jpeg">
@@ -70,6 +84,6 @@
 				<img src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" title="&lt;noscript&gt; fallback for &lt;img&gt; with src">
 			</picture>
 		</noscript>
+		<script src="../dist/yall-1.0.6.min.js" defer></script>
 	</body>
-	<script src="../dist/yall-1.0.5.js" defer></script>
 </html>

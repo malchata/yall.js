@@ -1,5 +1,5 @@
 /**
- * yall.js version 1.0.5
+ * yall.js version 1.0.6
  * Yet Another Lazy loader
  * This library is intended to be very small. As such, some of may not be very readable.
  * I don't normally code like this, but I wanted to see just how small I could get it!
@@ -18,6 +18,7 @@
 		fe = "forEach",
 		pn = "parentNode",
 		pr = "prototype",
+		gbcr = "getBoundingClientRect",
 		// Placeholder used for the lazy loading class
 		l = "lazy",
 		// Placeholders used for "data-src" and "data-srcset" attribute references.
@@ -45,16 +46,13 @@
 		els,
 		// The guts of the lazy loader
 		yall = function(){
-			if(!els.length){
-				b(document, y, yall);
-				b(window, z, yall);
-			}
+			els.length || (b(document, y, yall), b(window, z, yall));
 
 			if(!a){
 				a = 1;
 				setTimeout(function(){
 					els[fe](function(img){
-						if(img.getBoundingClientRect().top <= window.innerHeight + 100 && getComputedStyle(img).display != "none"){
+						if(((img[gbcr]().top <= (window.innerHeight + 75)) && img[gbcr]().bottom >= -75) && getComputedStyle(img).display != "none"){
 							if(img[pn].tagName == "PICTURE") Array[pr].slice.call(img[pn][qsa]("source"))[fe](function(source){
 								replaceAttr(source, dss, "srcset")
 							});
