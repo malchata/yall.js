@@ -1,7 +1,7 @@
 # yall.js (Yet Another Lazy Loader)
 ### (Y'all need to lazy load images)
 
-yall.js is a very small image lazy loader for reasonably modern browsers (back to IE10) that weighs in at **860 bytes** uglified. You *could* compress it if you wanted, but the processing overhead wouldn't be worth it (unless maybe if you were using static compression). It depends on `classList`, `querySelectorAll`, supports the `<picture>` element and the `srcset` attribute. If you want to try it out, grab the copy in the `dist` folder. Or you can clone the repo and check out the `test` folder. If you want to tinker, work with the copy in the `src` folder and transpile with gulp (or babel-cli).
+yall.js is a very small image lazy loader for reasonably modern browsers (back to IE10) that weighs in at **848 bytes** uglified. You *could* compress it if you wanted, but the processing overhead wouldn't be worth it (unless maybe if you were using static compression). It depends on `classList`, `querySelectorAll`, supports the `<picture>` element and the `srcset` attribute. If you want to try it out, grab the copy in the `dist` folder. Or you can clone the repo and check out the `test` folder. If you want to tinker, work with the copy in the `src` folder and build using `npm run build` (requires `npx`).
 
 ## Usage Pattern
 

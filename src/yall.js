@@ -1,5 +1,5 @@
 /**
- * yall.js version 1.0.4
+ * yall.js version 1.0.5
  * Yet Another Lazy loader
  * This library is intended to be very small. As such, some of may not be very readable.
  * I don't normally code like this, but I wanted to see just how small I could get it!
@@ -18,12 +18,9 @@
 		fe = "forEach",
 		pn = "parentNode",
 		pr = "prototype",
-		sl = "slice",
-		ca = "call",
-		// Placeholder used for the lazy loading class**
+		// Placeholder used for the lazy loading class
 		l = "lazy",
-		// Placeholders used for "data-src" and "data-srcset" attribute references.**
-		ss = "srcset",
+		// Placeholders used for "data-src" and "data-srcset" attribute references.
 		dss = "data-srcset",
 		// Placeholders used for event handler strings.
 		y = ["scroll", "touchmove"],
@@ -58,11 +55,11 @@
 				setTimeout(function(){
 					els[fe](function(img){
 						if(img.getBoundingClientRect().top <= window.innerHeight + 100 && getComputedStyle(img).display != "none"){
-							if(img[pn].tagName == "PICTURE") Array[pr][sl][ca](img[pn][qsa]("source"))[fe](function(source){
-								replaceAttr(source, dss, ss)
+							if(img[pn].tagName == "PICTURE") Array[pr].slice.call(img[pn][qsa]("source"))[fe](function(source){
+								replaceAttr(source, dss, "srcset")
 							});
 							replaceAttr(img, "data-src", "src");
-							replaceAttr(img, dss, ss);
+							replaceAttr(img, dss, "srcset");
 							img.classList.remove(l);
 							els.splice(els.indexOf(img), 1);
 						}
@@ -75,7 +72,7 @@
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, ["DOMContentLoaded"], function(){
-		els = Array[pr][sl][ca](document[qsa]("img."+l));
+		els = Array[pr].slice.call(document[qsa]("img."+l));
 
 		if(els.length){
 			yall();
