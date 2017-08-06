@@ -16,7 +16,7 @@ An optional placeholder can be specified in the `src` attribute. This will be re
 You can also use yall.js on `srcset` attributes, too:
 
 ```html
-<img class="lazy" data-srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">>
+<img class="lazy" data-srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">
 ```
 
 You can use it on `<picture>` elements, too!
@@ -25,7 +25,7 @@ You can use it on `<picture>` elements, too!
 <picture>
   <source data-srcset="/img/image-to-lazy-load.webp" type="image/webp">
   <source data-srcset="/img/image-to-lazy-load.jpg" type="image/jpeg">
-  <img data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" class="lazy" alt="Alternative text to describe image.">>
+  <img data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" class="lazy" alt="Alternative text to describe image.">
 </picture>
 ```
 
@@ -34,9 +34,9 @@ You can use it on `<picture>` elements, too!
 Easy solution. Slap on some `<noscript>` goodness:
 
 ```html
-<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">>
+<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">
 <noscript>
-  <img src="/img/image-to-lazy-load.jpg" alt="Alternative text to describe image.">>
+  <img src="/img/image-to-lazy-load.jpg" alt="Alternative text to describe image.">
 </noscript>
 ```
 
