@@ -1,6 +1,5 @@
 const gulp = require("gulp");
 const util = require("gulp-util");
-const babel = require("gulp-babel");
 const uglify = require("gulp-uglify");
 const optimize = require("gulp-optimize-js");
 const del = require("del");
@@ -10,7 +9,6 @@ gulp.task("default", ()=>{
 		dest = "dist";
 
 	return gulp.src(src)
-		.pipe(babel())
 		.on("error", console.error.bind(console))
 		.pipe(uglify())
 		.pipe(optimize())

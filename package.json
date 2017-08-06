@@ -1,6 +1,6 @@
 {
   "name": "yall",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Yet Another Lazy Loader",
   "main": "gulpfile.js",
   "scripts": {
@@ -26,11 +26,8 @@
   },
   "homepage": "https://github.com/malchata/yall#readme",
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-preset-es2015": "^6.24.1",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
     "gulp-optimize-js": "^1.1.0",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8"
