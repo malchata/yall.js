@@ -1,14 +1,14 @@
 # yall.js (Yet Another Lazy Loader)
 ### (Y'all need to lazy load images)
 
-yall.js is a very small image lazy loader for reasonably modern browsers (IE10+ and everything else) that weighs in at **836 bytes** uglified. It depends on `classList`, `querySelectorAll`, supports the `<picture>` element and the `srcset` attribute. To use, grab the copy in the `dist` folder. If you want to tinker, work with the copy in the `src` folder and transpile with gulp (or babel-cli).
+yall.js is a very small image lazy loader for reasonably modern browsers (back to IE10) that weighs in at **876 bytes** uglified. You *could* compress it if you wanted, but the processing overhead wouldn't be worth it (unless maybe if you were using static compression). It depends on `classList`, `querySelectorAll`, supports the `<picture>` element and the `srcset` attribute. If you want to try it out, grab the copy in the `dist` folder. Or you can clone the repo and check out the `test` folder. If you want to tinker, work with the copy in the `src` folder and transpile with gulp (or babel-cli).
 
 ## Usage Pattern
 
 yall.js assumes a lot, but because it does, it's very straightforward. Here's the simplest `<img>` element use case. All you need to do is add a class of `lazy` to the `<img>` element you want to place lazy loading behavior on, and point the `data-src` attribute to an image source to lazy load:
 
 ```html
-<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="alternative text to describe image.">
+<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">
 ```
 
 An optional placeholder can be specified in the `src` attribute. This will be replaced by the lazy loader when the element is scrolled into view.
@@ -16,7 +16,7 @@ An optional placeholder can be specified in the `src` attribute. This will be re
 You can also use yall.js on `srcset` attributes, too:
 
 ```html
-<img class="lazy" data-srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="/img/placeholder.jpg" alt="alternative text to describe image.">>
+<img class="lazy" data-srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">>
 ```
 
 You can use it on `<picture>` elements, too!
@@ -25,7 +25,7 @@ You can use it on `<picture>` elements, too!
 <picture>
   <source data-srcset="/img/image-to-lazy-load.webp" type="image/webp">
   <source data-srcset="/img/image-to-lazy-load.jpg" type="image/jpeg">
-  <img data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" class="lazy" alt="alternative text to describe image.">>
+  <img data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" class="lazy" alt="Alternative text to describe image.">>
 </picture>
 ```
 
@@ -34,9 +34,9 @@ You can use it on `<picture>` elements, too!
 Easy solution. Slap on some `<noscript>` goodness:
 
 ```html
-<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="alternative text to describe image.">>
+<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">>
 <noscript>
-  <img src="/img/image-to-lazy-load.jpg" alt="alternative text to describe image.">>
+  <img src="/img/image-to-lazy-load.jpg" alt="Alternative text to describe image.">>
 </noscript>
 ```
 
@@ -55,6 +55,12 @@ From here, you can add some CSS that hides elements with a class of `lazy` when 
 ```
 
 If you want to see everything in action, check out the demo in the `test` folder.
+
+## Limitations
+
+Yall.js will only attach listeners to markup that has been sent by the server. Lazy-loaded markup injected into the DOM using this pattern will not be recognized. This makes yall.js just fine for the vast majority of use cases, but if you have some complex rendering and injection going on, you should find a more feature-rich lazy loader. I don't have any intention to add this functionality.
+
+Yall.js also doesn't try to guess at placeholder sizes to minimize disruption to the DOM. I would highly recommend you specify a placeholder `src` in your `<img>` tags. For example, you could serve an extremely low quality version of an image that has a heavy gaussian blur effect. This technique signals to the user that an image will appear in that space, but doesn't push many extra bytes down the wire.
 
 ## Contributing
 
