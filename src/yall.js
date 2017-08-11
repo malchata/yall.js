@@ -19,48 +19,50 @@
 		pn = "parentNode",
 		pr = "prototype",
 		gbcr = "getBoundingClientRect",
-		// Placeholder used for the lazy loading class
-		l = "lazy",
+		io = "IntersectionObserver",
 		// Placeholders used for "data-src" and "data-srcset" attribute references.
 		dss = "data-srcset",
 		// Placeholders used for event handler strings.
 		y = ["scroll", "touchmove"],
 		z = ["orientationchange", "resize"],
-		// Tracks if yall is currently processing. Used for throttling.
+		// The handler to load the image
+		l = function(img){
+			if(img[pn].tagName == "PICTURE"){
+				Array[pr].slice.call(img[pn][qsa]("source"))[fe](function(source){
+					ra(source, dss, "srcset");
+				});
+			}
+
+			ra(img, "data-src", "src");
+			ra(img, dss, "srcset");
+			img.classList.remove("lazy");
+			els.splice(els.indexOf(img), 1);
+		},
+		// Tracks if yall is currently processing. Used for throttling. Only matters if IntersectionObserver is unsupported.
 		a = 0,
 		// A multiple event binding handler.
-		b = function(obj, handlers, func, add){
+		b = function(obj, handlers, fn, add){
 			handlers[fe](function(handler){
-				add ? obj.addEventListener(handler, func) : obj.removeEventListener(handler, func);
+				add ? obj.addEventListener(handler, fn) : obj.removeEventListener(handler, fn);
 			});
 		},
 		// Replaces target attribute value with source attribute, if applicable
-		replaceAttr = function(node, sattr, tattr){
+		ra = function(node, sattr, tattr){
 			var v = node.getAttribute(sattr);
 			if(v){
 				node[tattr] = v;
 				node.removeAttribute(sattr);
 			}
 		},
-		// Lazy-loaded elements
-		els,
 		// The guts of the lazy loader
-		yall = function(){
-			els.length || (b(document, y, yall), b(window, z, yall));
+		ll = function(){
+			if(!els.length) (b(document, y, ll), b(window, z, ll));
 
 			if(!a){
 				a = 1;
 				setTimeout(function(){
 					els[fe](function(img){
-						if(((img[gbcr]().top <= (window.innerHeight + 75)) && img[gbcr]().bottom >= -75) && getComputedStyle(img).display != "none"){
-							if(img[pn].tagName == "PICTURE") Array[pr].slice.call(img[pn][qsa]("source"))[fe](function(source){
-								replaceAttr(source, dss, "srcset")
-							});
-							replaceAttr(img, "data-src", "src");
-							replaceAttr(img, dss, "srcset");
-							img.classList.remove(l);
-							els.splice(els.indexOf(img), 1);
-						}
+						if((img[gbcr]().top <= window.innerHeight && img[gbcr]().bottom >= 0) && getComputedStyle(img).display != "none") l(img);
 					});
 
 					a = 0;
@@ -70,12 +72,27 @@
 
 	// Everything's kicked off on DOMContentLoaded
 	b(document, ["DOMContentLoaded"], function(){
-		els = Array[pr].slice.call(document[qsa]("img."+l));
+		els = Array[pr].slice.call(document[qsa]("img.lazy"));
 
 		if(els.length){
-			yall();
-			b(document, y, yall, 1);
-			b(window, z, yall, 1);
+			if(io in window && io+"Entry" in window && "intersectionRatio" in window[io+"Entry"][pr]){
+				els[fe](function(img){
+					new window[io](function(entries, observer){
+						entries[fe](function(entry){
+							if(entry.isIntersecting){
+								l(img);
+								observer.disconnect();
+							}
+						});
+					}).observe(img);
+				});
+
+				return;
+			}
+
+			ll();
+			b(document, y, ll, 1);
+			b(window, z, ll, 1);
 		}
 	}, 1);
 })(window, document);
