@@ -1,9 +1,9 @@
 {
   "name": "yall",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Yet Another Lazy Loader",
   "scripts": {
-    "build": "npx uglifyjs --verbose -c -m --toplevel -o ./dist/yall.js ./src/yall.js"
+    "build": "npx uglifyjs --verbose --compress warnings --mangle -o ./dist/yall.js ./src/yall.js"
   },
   "repository": {
     "type": "git",
