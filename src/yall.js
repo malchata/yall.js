@@ -1,5 +1,5 @@
 /**
- * yall.js version 1.0.6
+ * yall.js version 1.1.0
  * Yet Another Lazy loader
  * This library is intended to be very small. As such, some of may not be very readable.
  * I don't normally code like this, but I wanted to see just how small I could get it!
@@ -54,7 +54,7 @@
 				node.removeAttribute(sattr);
 			}
 		},
-		// The guts of the lazy loader
+		// The guts of the lazy loader (now only used when IntersectionObserver is not supported)
 		ll = function(){
 			if(!els.length) (b(document, y, ll), b(window, z, ll));
 
