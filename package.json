@@ -2,12 +2,14 @@
   "name": "yall",
   "version": "1.1.1",
   "description": "Yet Another Lazy Loader",
+  "main": "./src/yall.js",
   "scripts": {
-    "build": "npx uglifyjs --verbose --compress warnings --mangle -o ./dist/yall.js ./src/yall.js"
+    "clean": "rm -rf ./dist&&mkdir -p ./dist",
+    "build": "npm run clean&&npx uglifyjs --verbose --toplevel --compress toplevel --mangle toplevel -o ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js $(node -p -e \"require('./package.json').main\")"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/malchata/yall.git"
+    "url": "git+https://github.com/malchata/yall.js.git"
   },
   "keywords": [
     "lazy load",
@@ -17,9 +19,9 @@
   "author": "Jeremy Wagner <jeremy.l.wagner@gmail.com> (https://jeremywagner.me/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/malchata/yall/issues"
+    "url": "https://github.com/malchata/yall.js/issues"
   },
-  "homepage": "https://github.com/malchata/yall#readme",
+  "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
     "uglify-js": "^3.0.27"
   },
