@@ -45,7 +45,6 @@
 			replaceAttr(img, "data-src", "src");
 			replaceAttr(img, dss, "srcset");
 			img.classList.remove("lazy");
-			elements.splice(elements.indexOf(img), 1);
 		},
 		// A multiple event binding handler.
 		multiBind = function(obj, handlers, fn, remove){
