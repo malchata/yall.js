@@ -88,11 +88,10 @@
 				var imageObserver = new window[io](function(entries, observer){
 					entries[fe](function(entry){
 						if(entry.isIntersecting){
-							loadImage(entry.target);
-
-							if(!elements[ln]){
-								observer.disconnect();
-							}
+							if(entry.isIntersecting){
+              					loadImage(entry.target);
+              					imageObserver.unobserve(entry.target);
+            				}
 						}
 					});
 				});
