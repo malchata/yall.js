@@ -1,7 +1,7 @@
 # yall.js (Yet Another Lazy Loader)
 ### (Y'all need to lazy load images)
 
-yall.js is a very small image lazy loader for reasonably modern browsers (back to IE10) that weighs in at 1.09 KB uglified (657 bytes with gzip/554 bytes with Brotli). It depends on `classList`, `querySelectorAll`, and supports the `<picture>` element and `srcset`. yall.js will also use `IntersectionObserver` if available, but will fall back to more traditional means if it's not. If you want to try out yall.js, grab the copy in the `dist` folder. Or you can clone the repo and check out the `test` folder. If you want to tinker, work with the copy in the `src` folder and build using `npm run build` (requires `npx`).
+yall.js is a very small image lazy loader for reasonably modern browsers (back to IE11) that weighs in at 1.1 KB uglified (650 bytes with gzip/545 bytes with Brotli). It depends on `classList`, `querySelectorAll`, and supports the `<picture>` element and `srcset`. yall.js will also use `IntersectionObserver` if available, but will fall back to more traditional means if it's not. If you want to try out yall.js, grab a copy from the releases tab. Or you can clone the repo and check out the `test` folder. If you want to tinker, work with the copy in the `src` folder and build using `npm run build` (requires `npx`).
 
 ## Usage Pattern
 
@@ -64,12 +64,12 @@ yall.js also doesn't try to guess at placeholder sizes to minimize layout shifti
 
 ## Contributing
 
-I'm not interested in expanding the functionality by much unless a good case can be made for increasing its performance without making it huge. The goal of yall.js is to be as small as reasonably possible while maintaining functionality. If you look at the source and can find ways to make this script's uglified output smaller than it already is without breaking it, I welcome your contributions.
+I'm not interested in expanding the functionality by much unless a good case can be made for increasing its performance without making it huge. The goal of yall.js is to be as small as reasonably possible while maintaining functionality.
 
 ## Special thanks
 
-Props to [Kamran Ayub](https://github.com/kamranayub) for his tremendous help with performance tuning this script.
+Props to [Kamran Ayub](https://github.com/kamranayub) for his tremendous help with performance tuning this script, and to [Anthony Gore](https://twitter.com/anthonygore) for fixing an elusive bug in my intersection observer code where sometimes the last image on a page would not lazy load.
 
 ## Why another dumb lazy loader?
 
-I explain how to write a lazy loader in Chapter 6 of my book [Web Performance in Action](https://www.manning.com/books/web-performance-in-action?a_aid=webopt&a_bid=63c31090) from Manning Publications. Otherwise, I wouldn't have bothered. The lazy loader in the book is much different than what you'll find here.
+I explain how to write a lazy loader in Chapter 6 of my book [Web Performance in Action](https://www.manning.com/books/web-performance-in-action?a_aid=webopt&a_bid=63c31090) from Manning Publications. Otherwise, I wouldn't have bothered. The lazy loader in the book is much different (and more improved!) than what you'll find here.
