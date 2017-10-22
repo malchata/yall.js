@@ -45,7 +45,6 @@
 			replaceAttr(img, "data-src", "src");
 			replaceAttr(img, dss, "srcset");
 			img.classList.remove("lazy");
-			elements.splice(elements.indexOf(img), 1);
 		},
 		// A multiple event binding handler.
 		multiBind = function(obj, handlers, fn, remove){
@@ -88,11 +87,10 @@
 				var imageObserver = new window[io](function(entries, observer){
 					entries[fe](function(entry){
 						if(entry.isIntersecting){
-							loadImage(entry.target);
-
-							if(!elements[ln]){
-								observer.disconnect();
-							}
+							if(entry.isIntersecting){
+              					loadImage(entry.target);
+              					imageObserver.unobserve(entry.target);
+            				}
 						}
 					});
 				});
