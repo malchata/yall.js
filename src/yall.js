@@ -1,5 +1,5 @@
 /**
- * yall.js version 1.1.1
+ * yall.js version 1.1.2
  * Yet Another Lazy loader
  **/
 
