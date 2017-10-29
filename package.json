@@ -24,7 +24,7 @@
   "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
     "npx": "^9.7.1",
-    "uglify-js": "^3.1.5"
+    "uglify-js": "^3.1.6"
   },
   "dependencies": {}
 }
