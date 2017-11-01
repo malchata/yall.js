@@ -1,5 +1,5 @@
 /**
- * yall.js version 1.1.2
+ * yall.js version 1.2.0
  * Yet Another Lazy loader
  **/
 
@@ -7,7 +7,7 @@
 	var
 		// The primary goal here is to keep this script as small as possible
 		// while maintaining functionality. The uglifier goes a long way,
-		// but we can take things a bit farther by saving strings for
+		// but we can take things a bit farther by saving references for
 		// frequently used method and strings.
 		fe = "forEach",
 		qsa = "querySelectorAll",
@@ -16,7 +16,11 @@
 		pr = "prototype",
 		io = "IntersectionObserver",
 		ioe = io + "Entry",
-		dss = "data-srcset",
+		s = "src",
+		ss = "srcset",
+		d = "data-",
+		ds = d + s,
+		dss = d + ss,
 		// Placeholders used for event handler strings.
 		documentEvents = ["scroll", "touchmove"],
 		windowEvents = ["orientationchange", "resize"],
@@ -33,19 +37,29 @@
 				node.removeAttribute(sourceAttr);
 			}
 		},
-		// The handler to load the image
-		loadImage = function(img){
-			if(img[pn].tagName == "PICTURE"){
-				Array[pr].slice.call(img[pn][qsa]("source"))[fe](function(source){
-					replaceAttr(source, dss, "srcset");
+		// The handler to load the media
+		loadMedia = function(media){
+			if(media.tagName == "VIDEO"){
+				media[qsa]("source")[fe](function(source){
+					replaceAttr(source, ds, s);
 				});
+
+				media.load();
+			}
+			else{
+				if(media[pn].tagName == "PICTURE"){
+					Array[pr].slice.call(media[pn][qsa]("source"))[fe](function(source){
+						replaceAttr(source, dss, ss);
+					});
+				}
+
+				replaceAttr(media, ds, s);
+				replaceAttr(media, dss, ss);
 			}
 
-			replaceAttr(img, "data-src", "src");
-			replaceAttr(img, dss, "srcset");
-			img.classList.remove("lazy");
+			media.classList.remove("lazy");
 			elements = elements.filter(function(e){
-				return e !== img;
+				return e !== media;
 			});
 		},
 		// A multiple event binding handler.
@@ -67,9 +81,9 @@
 				active = 1;
 
 				setTimeout(function(){
-					elements[fe](function(img){
-						if((img[gbcr]().top <= window.innerHeight && img[gbcr]().bottom >= 0) && getComputedStyle(img).display != "none"){
-							loadImage(img);
+					elements[fe](function(media){
+						if((media[gbcr]().top <= window.innerHeight && media[gbcr]().bottom >= 0) && getComputedStyle(media).display != "none"){
+							loadMedia(media);
 						}
 					});
 
@@ -80,23 +94,23 @@
 
 	// Everything's kicked off on DOMContentLoaded
 	multiBind(document, ["DOMContentLoaded"], function(){
-		elements = Array[pr].slice.call(document[qsa]("img.lazy"));
+		elements = Array[pr].slice.call(document[qsa](".lazy"));
 
-		// We're only going to do stuff if we found `img.lazy` elements
+		// We're only going to do stuff if we found `.lazy` elements
 		if(elements.length){
 			// This compatibility check has been taken from https://github.com/WICG/IntersectionObserver/blob/gh-pages/polyfill/intersection-observer.js
 			if(io in window && ioe in window && "intersectionRatio" in window[ioe][pr]){
-				var imageObserver = new window[io](function(entries, observer){
+				var mediaObserver = new window[io](function(entries, observer){
 					entries[fe](function(entry){
 						if(entry.isIntersecting){
-							loadImage(entry.target);
-							imageObserver.unobserve(entry.target);
+							loadMedia(entry.target);
+							mediaObserver.unobserve(entry.target);
 						}
 					});
 				});
 
-				elements[fe](function(img){
-					imageObserver.observe(img);
+				elements[fe](function(media){
+					mediaObserver.observe(media);
 				});
 			}
 			else{

@@ -36,9 +36,10 @@
 				list-style: none;
 			}
 
-			img+h2,
-			picture+h2,
-			noscript+h2{
+			img + h2,
+			picture + h2,
+			noscript + h2,
+			video + h2{
 				margin-top: 128rem;
 			}
 
@@ -57,6 +58,7 @@
 			<li><a href="#src">Lazy loading <code>&lt;img&gt;</code> using <code>src</code></a></li>
 			<li><a href="#srcset">Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></a></li>
 			<li><a href="#picture">Lazy loading <code>&lt;picture&gt;</code></a></li>
+			<li><a href="#video">Lazy loading <code>&lt;video&gt;</code></a></li>
 		</ul>
 		<h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
 		<a name="src"></a>
@@ -84,6 +86,20 @@
 				<img src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" title="&lt;noscript&gt; fallback for &lt;img&gt; with src">
 			</picture>
 		</noscript>
-		<script src="../dist/yall-1.1.2.min.js" defer></script>
+		<h2>Lazy loading <code>&lt;video&gt;</code></h2>
+		<a name="video"></a>
+		<video class="lazy" width="500" height="213" poster="https://res.cloudinary.com/drp9iwjqz/image/upload/f_auto,q_auto/v1508295315/jeremywagner.me/using-webp-images/bateman-1-placeholder.jpg" autoplay loop muted>
+			<source data-src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.webm" type="video/webm">
+			<source data-src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.ogv" type="video/ogg">
+			<source data-src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.mp4" type="video/mp4">
+		</video>
+		<noscript>
+			<video width="500" height="213" poster="https://res.cloudinary.com/drp9iwjqz/image/upload/f_auto,q_auto/v1508295315/jeremywagner.me/using-webp-images/bateman-1-placeholder.jpg" autoplay loop muted>
+				<source src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.webm" type="video/webm">
+				<source src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.ogv" type="video/ogg">
+				<source src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.mp4" type="video/mp4">
+			</video>
+		</noscript>
+		<script src="../dist/yall-1.2.0.min.js" defer></script>
 	</body>
 </html>
