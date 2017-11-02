@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=master)](https://travis-ci.org/malchata/yall.js)
 
-yall.js is a very small image and video lazy loader for reasonably modern browsers (back to IE11) that weighs in at 1.18 KB uglified (688 bytes with gzip/568 bytes with Brotli). It uses on `classList`, `querySelector`. It supports lazy loading `<img>` and `<picture>` with `src`/`srcset`, as well as `<video>`. yall.js will also use `IntersectionObserver` if available, but will fall back to throttled `scroll`/`resize` event handlers if it's not. If you want to try out yall.js, grab a copy from the releases tab. Or you can clone the repo and check out the `test` folder. If you want to tinker, work with the copy in the `src` folder and build using `npm run build` (requires `npx`).
+yall.js is a very small image and video lazy loader for reasonably modern browsers (back to IE11) that weighs in at 1.18 KB uglified (688 bytes with gzip/568 bytes with Brotli). It uses `classList`, `querySelector`. It supports lazy loading `<img>` and `<picture>` with `src`/`srcset`, as well as `<video>`. yall.js will also use `IntersectionObserver` if available, but will fall back to throttled `scroll`/`resize` event handlers if it's not. If you want to try out yall.js, [grab a copy from the releases tab](https://github.com/malchata/yall.js/releases). Or clone the repo and check out the `test` folder. If you want to tinker, work with the source in the `src` folder and build using `npm run build` (requires [`npx`](https://www.npmjs.com/package/npx)).
 
 ## Usage Pattern
 
