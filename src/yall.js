@@ -40,7 +40,7 @@
 		// The handler to load the media
 		loadMedia = function(media){
 			if(media.tagName == "VIDEO"){
-				media[qsa]("source")[fe](function(source){
+				Array[pr].slice.call(media[qsa]("source"))[fe](function(source){
 					replaceAttr(source, ds, s);
 				});
 
@@ -58,6 +58,7 @@
 			}
 
 			media.classList.remove("lazy");
+
 			elements = elements.filter(function(e){
 				return e !== media;
 			});

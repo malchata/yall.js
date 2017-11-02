@@ -18,8 +18,10 @@
 				font-family: sans-serif;
 			}
 
-			img{
+			img,
+			video{
 				width: 100%;
+				max-width: 100%;
 				display: block;
 			}
 
@@ -88,16 +90,16 @@
 		</noscript>
 		<h2>Lazy loading <code>&lt;video&gt;</code></h2>
 		<a name="video"></a>
-		<video class="lazy" width="500" height="213" poster="https://res.cloudinary.com/drp9iwjqz/image/upload/f_auto,q_auto/v1508295315/jeremywagner.me/using-webp-images/bateman-1-placeholder.jpg" autoplay loop muted>
-			<source data-src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.webm" type="video/webm">
-			<source data-src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.ogv" type="video/ogg">
-			<source data-src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.mp4" type="video/mp4">
+		<video class="lazy" width="500" height="213" poster="video-placeholder.jpg" autoplay loop muted>
+			<source data-src="test.webm" type="video/webm">
+			<source data-src="test.ogv" type="video/ogg">
+			<source data-src="test.mp4" type="video/mp4">
 		</video>
 		<noscript>
-			<video width="500" height="213" poster="https://res.cloudinary.com/drp9iwjqz/image/upload/f_auto,q_auto/v1508295315/jeremywagner.me/using-webp-images/bateman-1-placeholder.jpg" autoplay loop muted>
-				<source src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.webm" type="video/webm">
-				<source src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.ogv" type="video/ogg">
-				<source src="https://res.cloudinary.com/drp9iwjqz/video/upload/v1509066934/bateman_xrk1jh.mp4" type="video/mp4">
+			<video width="500" height="213" poster="video-placeholder.jpg" autoplay loop muted>
+				<source src="test.webm" type="video/webm">
+				<source src="test.ogv" type="video/ogg">
+				<source src="test.mp4" type="video/mp4">
 			</video>
 		</noscript>
 		<script src="../dist/yall-1.2.0.min.js" defer></script>
