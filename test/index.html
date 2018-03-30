@@ -1,107 +1,108 @@
-<!doctype html>
-<html class="no-js">
-	<head>
-		<title>
-			Lazy Loader Test
-		</title>
-		<style>
-			*{
-				margin: 0;
-				padding: 0;
-				box-sizing: border-box;
-			}
+<!DOCTYPE html>
+<html class="no-js no-yall">
+  <head>
+    <title>
+      Lazy Loader Test
+    </title>
+    <script>document.documentElement.classList.remove("no-js");</script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-			body{
-				font-size: 16px;
-				padding: 1rem;
-				text-align: center;
-				font-family: sans-serif;
-			}
+      body {
+        font-size: 16px;
+        padding: 1rem;
+        text-align: center;
+        font-family: sans-serif;
+      }
 
-			img,
-			video{
-				width: 100%;
-				max-width: 100%;
-				display: block;
-			}
+      img,
+      video {
+        width: 100%;
+        max-width: 100%;
+        display: block;
+      }
 
-			h2{
-				margin: 0 0 1rem;
-			}
+      h2 {
+        margin: 0 0 1rem;
+      }
 
-			h3{
-				margin: 1rem 0 0;
-			}
+      h3 {
+        margin: 1rem 0 0;
+      }
 
-			ul{
-				margin: .25rem 0 128rem;
-				list-style: none;
-			}
+      ul {
+        margin: .25rem 0 128rem;
+        list-style: none;
+      }
 
-			img + h2,
-			picture + h2,
-			noscript + h2,
-			video + h2{
-				margin-top: 128rem;
-			}
+      img+h2,
+      picture+h2,
+      noscript+h2,
+      video+h2 {
+        margin-top: 128rem;
+      }
 
-			.no-js .lazy{
-				display: none;
-			}
-		</style>
-		<script>
-			document.documentElement.classList.remove("no-js");
-		</script>
-	</head>
-	<body>
-		<h1>Scroll down...</h1>
-		<h3>Or jump to...</h3>
-		<ul>
-			<li><a href="#src">Lazy loading <code>&lt;img&gt;</code> using <code>src</code></a></li>
-			<li><a href="#srcset">Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></a></li>
-			<li><a href="#picture">Lazy loading <code>&lt;picture&gt;</code></a></li>
-			<li><a href="#video">Lazy loading <code>&lt;video&gt;</code></a></li>
-		</ul>
-		<h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
-		<a name="src"></a>
-		<img class="lazy" data-src="test-768w.jpg" src="placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" title="Lazy loading &lt;img&gt; with src">
-		<noscript>
-			<img src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" title="&lt;noscript&gt; fallback for &lt;img&gt; with src">
-		</noscript>
-		<h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
-		<a name="srcset"></a>
-		<img class="lazy" data-srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" data-src="test-768w.jpg" src="placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" title="Lazy loading &lt;img&gt; with srcset">
-		<noscript>
-			<img srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" title="&lt;noscript&gt; fallback for &lt;img&gt; with srcset">
-		</noscript>
-		<h2>Lazy loading <code>&lt;picture&gt;</code></h2>
-		<a name="picture"></a>
-		<picture>
-			<source data-srcset="test-768w.webp 768w, test-1024w.webp 1024w, test-1280w.webp 1280w, test-1536w.webp 1536w" srcset="placeholder.webp" type="image/webp">
-			<source data-srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" srcset="placeholder.jpg" type="image/jpeg">
-			<img class="lazy" data-src="test-768w.jpg" src="placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" title="Lazy loading &lt;img&gt; with src">
-		</picture>
-		<noscript>
-			<picture>
-				<source srcset="test-768w.webp 768w, test-1024w.webp 1024w, test-1280w.webp 1280w, test-1536w.webp 1536w" type="image/webp">
-				<source srcset="test-768w.jpg 768w, test-1024w.jpg 1024w, test-1280w.jpg 1280w, test-1536w.jpg 1536w" type="image/jpeg">
-				<img src="test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" title="&lt;noscript&gt; fallback for &lt;img&gt; with src">
-			</picture>
-		</noscript>
-		<h2>Lazy loading <code>&lt;video&gt;</code></h2>
-		<a name="video"></a>
-		<video class="lazy" width="500" height="213" poster="video-placeholder.jpg" autoplay loop muted>
-			<source data-src="test.webm" type="video/webm">
-			<source data-src="test.ogv" type="video/ogg">
-			<source data-src="test.mp4" type="video/mp4">
-		</video>
-		<noscript>
-			<video width="500" height="213" poster="video-placeholder.jpg" autoplay loop muted>
-				<source src="test.webm" type="video/webm">
-				<source src="test.ogv" type="video/ogg">
-				<source src="test.mp4" type="video/mp4">
-			</video>
-		</noscript>
-		<script src="../dist/yall-1.2.0.min.js" defer></script>
-	</body>
+      .no-js .lazy {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scroll down...</h1>
+    <h3>Or jump to...</h3>
+    <ul>
+      <li><a href="#src">Lazy loading <code>&lt;img&gt;</code> using <code>src</code></a></li>
+      <li><a href="#srcset">Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></a></li>
+      <li><a href="#picture">Lazy loading <code>&lt;picture&gt;</code></a></li>
+      <li><a href="#video">Lazy loading <code>&lt;video&gt;</code></a></li>
+    </ul>
+    <h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
+    <a name="src"></a>
+    <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src">
+    <noscript>
+      <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src">
+    </noscript>
+    <h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
+    <a name="srcset"></a>
+    <img class="lazy" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset">
+    <noscript>
+      <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset">
+    </noscript>
+    <h2>Lazy loading <code>&lt;picture&gt;</code></h2>
+    <a name="picture"></a>
+    <picture>
+      <source data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
+      <source data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
+      <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src">
+    </picture>
+    <noscript>
+      <picture>
+        <source srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" type="image/webp">
+        <source srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" type="image/jpeg">
+        <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src">
+      </picture>
+    </noscript>
+    <h2>Lazy loading <code>&lt;video&gt;</code></h2>
+    <a name="video"></a>
+    <video class="lazy" width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline>
+      <source data-src="video/test.webm" type="video/webm">
+      <source data-src="video/test.mp4" type="video/mp4">
+    </video>
+    <noscript>
+      <video width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline>
+        <source src="video/test.webm" type="video/webm">
+        <source src="video/test.mp4" type="video/mp4">
+      </video>
+    </noscript>
+    <script src="js/yall.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        yall();
+      });
+    </script>
+  </body>
 </html>

@@ -1,125 +1,144 @@
 /**
- * yall.js version 1.2.0
+ * yall.js version 2.0.0
  * Yet Another Lazy loader
  **/
 
-(function(window, document){
-	var
-		// The primary goal here is to keep this script as small as possible
-		// while maintaining functionality. The uglifier goes a long way,
-		// but we can take things a bit farther by saving references for
-		// frequently used method and strings.
-		fe = "forEach",
-		qsa = "querySelectorAll",
-		pn = "parentNode",
-		gbcr = "getBoundingClientRect",
-		pr = "prototype",
-		io = "IntersectionObserver",
-		ioe = io + "Entry",
-		s = "src",
-		ss = "srcset",
-		d = "data-",
-		ds = d + s,
-		dss = d + ss,
-		// Placeholders used for event handler strings.
-		documentEvents = ["scroll", "touchmove"],
-		windowEvents = ["orientationchange", "resize"],
-		// Tracks if yall is currently processing. Used for throttling. Only relevant if IntersectionObserver is unsupported.
-		active = 0,
-		// Placeholder for elements
-		elements,
-		// Replaces target attribute value with source attribute, if applicable
-		replaceAttr = function(node, sourceAttr, targetAttr){
-			var v = node.getAttribute(sourceAttr);
+const yallConfig = {
+  env: {
+    IntersectionObserverSupported: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
+    mutationObserverSupported: "MutationObserver" in window,
+    requestIdleCallbackSupported: "requestIdleCallback" in window,
+    decodeSupported: "decode" in new Image(),
+    eventsToBind: [
+      [document, "scroll"],
+      [document, "touchmove"],
+      [window, "resize"],
+      [window, "orientationchange"]
+    ]
+  },
+  options: {
+    lazyClass: "lazy",
+    throttleTime: 200,
+    idlyLoad: true,
+    observeChanges: false,
+    observeRootSelector: "body"
+  }
+}
 
-			if(v){
-				node[targetAttr] = v;
-				node.removeAttribute(sourceAttr);
-			}
-		},
-		// The handler to load the media
-		loadMedia = function(media){
-			if(media.tagName == "VIDEO"){
-				Array[pr].slice.call(media[qsa]("source"))[fe](function(source){
-					replaceAttr(source, ds, s);
-				});
+const yallLoad = (element, options) => {
+  switch (element.tagName) {
+    case "IMG":
+      let parentElement = element.parentNode;
 
-				media.load();
-			}
-			else{
-				if(media[pn].tagName == "PICTURE"){
-					Array[pr].slice.call(media[pn][qsa]("source"))[fe](function(source){
-						replaceAttr(source, dss, ss);
-					});
-				}
+      if (parentElement.tagName === "PICTURE") {
+        Array.from(parentElement.querySelectorAll("source")).forEach((source) => {
+          for (let dataAttribute in source.dataset) {
+            source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
+            source.removeAttribute(`data-${dataAttribute}`);
+          }
+        });
 
-				replaceAttr(media, ds, s);
-				replaceAttr(media, dss, ss);
-			}
+        for (let dataAttribute in element.dataset) {
+          element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
+          element.removeAttribute(`data-${dataAttribute}`);
+        }
+      } else {
+        let newImageElement = new Image();
+        newImageElement.src = element.dataset.src;
 
-			media.classList.remove("lazy");
+        if (typeof element.dataset.srcset !== "undefined") {
+          newImageElement.srcset = element.dataset.srcset;
+        }
 
-			elements = elements.filter(function(e){
-				return e !== media;
-			});
-		},
-		// A multiple event binding handler.
-		multiBind = function(obj, handlers, fn, remove){
-			handlers[fe](function(handler){
-				remove ? obj.removeEventListener(handler, fn) : obj.addEventListener(handler, fn);
-			});
-		},
-		// The guts of the lazy loader (now only used when IntersectionObserver is not supported)
-		yall = function(){
-			if(!elements.length){
-				// There are no more elements to lazy load, so we'll unbind everything.
-				multiBind(document, documentEvents, yall, 1);
-				multiBind(window, windowEvents, yall, 1);
-			}
+        if (options.env.decodeSupported === true) {
+          newImageElement.decode().then(() => {
+            newImageElement.alt = element.alt;
+            newImageElement.width = element.width;
+            newImageElement.height = element.height;
+            element.replaceWith(newImageElement);
+          });
+        } else {
+          for (let dataAttribute in element.dataset) {
+            element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
+            element.removeAttribute(`data-${dataAttribute}`);
+          }
+        }
+      }
+      break;
 
-			// Check if the lazy loader is active
-			if(!active){
-				active = 1;
+    case "VIDEO":
+      Array.from(element.querySelectorAll("source")).forEach((source) => {
+        for (let dataAttribute in source.dataset) {
+          source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
+          source.removeAttribute(`data-${dataAttribute}`);
+        }
+      });
 
-				setTimeout(function(){
-					elements[fe](function(media){
-						if((media[gbcr]().top <= window.innerHeight && media[gbcr]().bottom >= 0) && getComputedStyle(media).display != "none"){
-							loadMedia(media);
-						}
-					});
+      element.load();
+      break;
 
-					active = 0;
-				}, 200);
-			}
-		};
+    case "IFRAME":
+      element.src = element.dataset.src;
+      element.removeAttribute("data-src");
+      break;
+  }
+};
 
-	// Everything's kicked off on DOMContentLoaded
-	multiBind(document, ["DOMContentLoaded"], function(){
-		elements = Array[pr].slice.call(document[qsa](".lazy"));
+const yall = (userConfig = yallConfig) => {
+  let lazyElements = Array.from(document.querySelectorAll(`img.${userConfig.options.lazyClass},video.${userConfig.options.lazyClass},iframe.${userConfig.options.lazyClass}`));
 
-		// We're only going to do stuff if we found `.lazy` elements
-		if(elements.length){
-			// This compatibility check has been taken from https://github.com/WICG/IntersectionObserver/blob/gh-pages/polyfill/intersection-observer.js
-			if(io in window && ioe in window && "intersectionRatio" in window[ioe][pr]){
-				var mediaObserver = new window[io](function(entries, observer){
-					entries[fe](function(entry){
-						if(entry.isIntersecting){
-							loadMedia(entry.target);
-							mediaObserver.unobserve(entry.target);
-						}
-					});
-				});
+  if (userConfig.env.IntersectionObserverSupported === true) {
+    let observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        let element = entry.target;
 
-				elements[fe](function(media){
-					mediaObserver.observe(media);
-				});
-			}
-			else{
-				// If IntersectionObserver isn't available, we'll do things the old way.
-				yall();
-				multiBind(document, documentEvents, yall);
-				multiBind(window, windowEvents, yall);
-			}
-		}
-	});
-})(window, document);
+        if (entry.isIntersecting === true) {
+          if (userConfig.options.idlyLoad === true && userConfig.env.requestIdleCallbackSupported === true) {
+            requestIdleCallback(() => {
+              yallLoad(element, userConfig);
+            });
+          } else {
+            yallLoad(element, userConfig);
+          }
+
+          element.classList.remove(userConfig.options.lazyClass);
+          observer.unobserve(element);
+        }
+      });
+    }, {
+      rootMargin: "128px 0px"
+    });
+
+    lazyElements.forEach(lazyElement => observer.observe(lazyElement));
+  } else {
+    const yallBack = () => {
+      let active = false;
+
+      if (active === false) {
+        active = true;
+
+        setTimeout(() => {
+          lazyElements.forEach((lazyElement) => {
+            if ((lazyElement.getBoundingClientRect().top <= window.innerHeight && lazyElement.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyElement).display !== "none") {
+              if (userConfig.options.idlyLoad === true && userConfig.env.requestIdleCallbackSupported === true) {
+                requestIdleCallback(() => {
+                  yallLoad(lazyElement, userConfig);
+                });
+              } else {
+                yallLoad(lazyElement, userConfig);
+              }
+
+              lazyElements = lazyElements.filter((element) => {
+                return element !== lazyElement;
+              });
+            }
+          });
+
+          active = false;
+        }, userConfig.options.throttleTime);
+      }
+    }
+
+    userConfig.env.eventsToBind.forEach(eventPair => eventPair[0].addEventListener(eventPair[1], yallBack));
+  }
+};
