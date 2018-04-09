@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html class="no-js no-yall">
+<html  lang="en" dir="ltr" class="no-js no-yall">
   <head>
+    <meta charset="utf-8">
     <title>
       Lazy Loader Test
     </title>
@@ -34,10 +35,15 @@
       }
 
       img,
-      video {
-        width: 100%;
+      video,
+      iframe {
         max-width: 100%;
-        display: block;
+        display: inline-block;
+      }
+
+      img,
+      video {
+        height: auto;
       }
 
       h2 {
@@ -53,10 +59,11 @@
         list-style: none;
       }
 
-      img+h2,
-      picture+h2,
-      noscript+h2,
-      video+h2,
+      img + h2,
+      picture + h2,
+      noscript + h2,
+      video + h2,
+      iframe + h2,
       #server-markup + #dynamic-markup-container {
         margin-top: 128rem;
       }
@@ -72,26 +79,26 @@
     <div id="dynamic-markup-container"></div>
     <div id="server-markup">
       <h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
-      <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src">
+      <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" width="768" height="576">
       <noscript>
-        <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src">
+        <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" width="768" height="576">
       </noscript>
       <h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
-      <img class="lazy" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset">
+      <img class="lazy" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
       <noscript>
-        <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset">
+        <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
       </noscript>
       <h2>Lazy loading <code>&lt;picture&gt;</code></h2>
       <picture>
         <source data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
         <source data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
-        <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src">
+        <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" width="768" height="576">
       </picture>
       <noscript>
         <picture>
           <source srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" type="image/webp">
           <source srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" type="image/jpeg">
-          <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src">
+          <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" width="768" height="576">
         </picture>
       </noscript>
       <h2>Lazy loading <code>&lt;video&gt;</code></h2>
@@ -100,10 +107,15 @@
         <source data-src="video/test.mp4" type="video/mp4">
       </video>
       <noscript>
-        <video width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline>
+        <video width="500" height="213" autoplay loop muted playsinline>
           <source src="video/test.webm" type="video/webm">
           <source src="video/test.mp4" type="video/mp4">
         </video>
+      </noscript>
+      <h2>Lazy loading <code>&lt;iframe&gt;</code></h2>
+      <iframe class="lazy" width="512" height="384" data-src="iframe.html"></iframe>
+      <noscript>
+        <iframe width="512" height="384" src="iframe.html"></iframe>
       </noscript>
     </div>
     <script src="js/yall.min.js"></script>

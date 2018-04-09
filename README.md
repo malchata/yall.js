@@ -1,51 +1,64 @@
 # yall.js (Yet Another Lazy Loader)
-### (Y'all need to lazy load images)
 
-[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=master)](https://travis-ci.org/malchata/yall.js)
+[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=shadowfax)](https://travis-ci.org/malchata/yall.js)
 
-yall.js is a very small image and video lazy loader for reasonably modern browsers (back to IE11) that weighs in at 1.18 KB uglified (688 bytes with gzip/568 bytes with Brotli). It uses `classList`, `querySelector`. It supports lazy loading `<img>` and `<picture>` with `src`/`srcset`, as well as `<video>`. yall.js will also use `IntersectionObserver` if available, but will fall back to throttled `scroll`/`resize` event handlers if it's not. If you want to try out yall.js, [grab a copy from the releases tab](https://github.com/malchata/yall.js/releases). Or clone the repo and check out the `test` folder. If you want to tinker, work with the source in the `src` folder and build using `npm run build` (requires [`npx`](https://www.npmjs.com/package/npx)).
+yall.js is a featured-packed lazy loading library for `<img>`, `<picture>`, `<video>` and `<iframe>` elements. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also watch the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load image elements that have been appended to DOM after initial page render, which can be desirable for single page applications. It can also
 
-## Usage Pattern
+yall.js is reasonably small at around ~3.3 KB uglified and uncompressed. When compressed with gzip or Brotli, yall.js can be as small as ~1 KB.
 
-yall.js assumes a lot, but because it does, it's very straightforward. Here's the simplest `<img>` element use case: Just add a class of `lazy` to an `<img>` element you want to lazy load, and point the `data-src` attribute to the desired image source:
+## Usage
+
+This is version 2 of yall.js, and introduces some breaking changes. While version 1 only required you to include the script and tag elements with a special class, this script needs to be explicitly initialized like so:
 
 ```html
-<!-- Simple <img> example -->
-<img class="lazy" data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">
+<script src="yall.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    yall(); // Options can be passed into this function call!
+  });
+</script>
 ```
 
-An optional (but recommended) placeholder can be specified in the `src` attribute, which will be replaced by yall.js when the image is lazily loaded. If you go this route, be sure to specify `width` and `height` attributes to minimize layout shifting.
-
-You can also use yall.js on `srcset` attributes, too:
+Lazy loading elements with yall is simple! Let's look at the simplest `<img>` element use case:
 
 ```html
-<!-- A somewhat more complex <img> + srcset example -->
-<img class="lazy" data-srcset="/img/image-to-lazy-load-2x.jpg 2x, /img/image-to-lazy-load-1x.jpg 1x" data-src="/img/image-to-lazy-load-1x.jpg" src="/img/placeholder.jpg" alt="Alternative text to describe image.">
+<!-- A simple src-only <img> element example -->
+<img class="lazy" src="placeholder.jpg" data-src="image-to-lazy-load.jpg">
 ```
 
-You can use it on `<picture>` elements, too!
+In this case, we specify an optional placeholder image in the `src` attribute, and point to the image we want to lazy load in the `data-src` attribute. Attaching a `class` of `lazy` exposes elements to yall.js, and is necessary for the lazy loader to work (although this class value can be overridden via the API options). Let's look at an example using both `src` and `srcset`:
 
 ```html
-<!-- A more complex <picture> + <img> + srcset example -->
+<!-- A somewhat more complex src + srcset example -->
+<img class="lazy" src="placeholder.jpg" data-srcset="image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x" data-src="image-to-lazy-load-1x.jpg">
+```
+
+Since `<picture>` is a thing now, yall.js supports that, too:
+
+```html
+<!-- A more complex <picture> + <img> + src/srcset example -->
 <picture>
-  <source data-srcset="/img/image-to-lazy-load.webp" type="image/webp">
-  <source data-srcset="/img/image-to-lazy-load.jpg" type="image/jpeg">
-  <img data-src="/img/image-to-lazy-load.jpg" src="/img/placeholder.jpg" class="lazy" alt="Alternative text to describe image.">
+  <source data-srcset="image-to-lazy-load-2x.webp 2x, image-to-lazy-load-1x.webp 1x" type="image/webp">
+  <img class="lazy" src="placeholder.jpg" data-srcset="image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x" data-src="image-to-lazy-load-1x.jpg">
 </picture>
 ```
 
-And now as of the 1.2.0 release, you can use it on `<video>` elements! This is useful if you are replacing animated GIFs with autoplaying videos (which are usually much smaller).
+You can also use yall.js to lazy load `<video>` elements! This is useful if you are replacing animated GIF with autoplaying video:
 
 ```html
-<!-- Lazy load that video! -->
-<video class="lazy" autoplay loop muted>
-	<source data-src="video.webm" type="video/webm">
-	<source data-src="video.ogv" type="video/ogg">
-	<source data-src="video.mp4" type="video/mp4">
+<video class="lazy" autoplay loop muted playsinline>
+  <source data-src="video.webm" type="video/webm">
+  <source data-src="video.mp4" type="video/mp4">
 </video>
 ```
 
-The pattern is largely the same as it is with the `<picture>` use case, only the `lazy` class is applied to the `<video>` element. **Pro tip:** If you're embedding videos that don't emulate animated GIF behavior (i.e., non autoplaying video), it's probably best to lean on the `preload` attribute to defer loading rather than using yall.js. Read more about `preload` [in the MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video).
+The pattern is largely the same as it is with the `<picture>` use case, only the `lazy` class is applied to the `<video>` element. **Pro tip**: If you're embedding videos that don't emulate animated GIF behavior (i.e., non autoplaying video), it's better to lean on the [`preload` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#attr-preload) to defer loading rather than using yall.js.
+
+As of version 2, you can also lazy load `<iframe>` elements! This looks pretty much just like a simple `<img>` example:
+
+```html
+<iframe class="lazy" data-src="some-other-document.html">
+```
 
 ## What about users without JavaScript?
 
@@ -71,6 +84,12 @@ Easy! Slap on some `<noscript>` goodness:
 		<source src="video.mp4" type="video/mp4">
 	</video>
 </noscript>
+
+<!-- Here's an <iframe> example for good measure -->
+<iframe class="lazy" data-src="lazy.html"></iframe>
+<noscript>
+  <iframe src="lazy.html"></iframe>
+</noscript>
 ```
 
 Then place a `no-js` class on the `<html>` element, and finally add this JavaScript one-liner in the `<head>` of the document:
@@ -91,20 +110,17 @@ This snippet will remove the `no-js` class from the `<html>` element as the page
 
 To see all use cases in action, check out the demos in the `test` folder and go from there.
 
-## Limitations
+## API options
 
-yall.js will only attach listeners to markup sent by the server. Lazy-loaded markup injected into the DOM using this pattern will not be recognized. This makes yall.js just fine for the vast majority of use cases, but if you have really complex stuff going on (such as SPA environments), you should find a more feature-rich lazy loader. Eventually, I will modify yall.js to expose methods to destroy/init.
+When you call the main `yall` initializing function, you can pass an object in with some configuration options. Here are the current options available:
 
-yall.js also doesn't try to guess at placeholder sizes to minimize layout shifting. I would _highly recommend_ you specify a placeholder `src` in your `<img>` tags, or develop a CSS placeholder solution. For example, you could serve an extremely low quality version of an image that has a heavy gaussian blur effect. This technique signals to the user that an image will appear in that space, but doesn't push many extra bytes down the wire.
+- `lazyClass` (default is `"lazy"`): The element class used by yall.js to find elements to lazy load. Change this is if a class attribute value of `lazy` conflicts with your application.
+- `throttleTime` (default is `200`): In cases where Intersection Observer isn't available, standard event handlers are used. `throttleTime` allows you to control how often the code within these event handlers fire in milliseconds.
+- `idlyLoad` (default is `false`): If set to `true`, `requestIdleCallback` is used to optimize use of browser idle time to limit monopolization of the main thread. _Note: Enabling this could cause lazily loading to be delayed significantly more than you might be okay with! Test extensively!_
+- `idleLoadTimeout` (default is `100`): If `idlyLoad` is set to `true`, this option sets a deadline in milliseconds for `requestIdleCallback` to kick off lazy loading for an element.
+- `observeChanges` (default is `false`): Use a Mutation Observer to examine the DOM for changes. This is useful if you're using yall.js in a single page application and want to lazy load resources for markup injected into page after the initial page render. _Note: This option is ignored if set to `true` in a browser that doesn't support Mutation Observer!_
+- `observeRootSelector` (default is `"body"`): If `observeChanges` is set to `true`, the value of this string is fed into `document.querySelector` to limit the scope in which the Mutation Observer looks for DOM changes. `document.body` is inferred by default, but you can confine it to any valid CSS selector (e.g., `div#main-wrapper`).
 
 ## Contributing
 
-If you have an idea, file an issue and let's talk about it. Unsolicited pull requests for new features will generally be rejected, unless those requests contain bug fixes. Generally speaking, I want to avoid adding new features in lieu of keeping this library very, very small.
-
-## Special thanks
-
-Props to [Kamran Ayub](https://github.com/kamranayub) for his tremendous help with performance tuning this script, and to [Anthony Gore](https://twitter.com/anthonygore) for fixing an elusive bug in my `IntersectionObserver` code where sometimes the last image on a page would not lazy load.
-
-## Why another dumb lazy loader?
-
-I explain how to write a lazy loader in Chapter 6 of my book [Web Performance in Action](https://www.manning.com/books/web-performance-in-action?a_aid=webopt&a_bid=63c31090) from Manning Publications. Otherwise, I wouldn't have bothered. The lazy loader in the book is much different (and less powerful) than what you'll find here.
+If you have an idea, file an issue and let's talk about it. Unsolicited pull requests for new features will generally be rejected unless those requests contain bug fixes.

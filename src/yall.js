@@ -78,7 +78,8 @@ const yall = function(userOptions) {
     lazyClass: "lazy",
     throttleTime: 200,
     idlyLoad: false,
-    observeChanges: true,
+    idleLoadTimeout: 100,
+    observeChanges: false,
     observeRootSelector: "body"
   };
 
@@ -96,23 +97,22 @@ const yall = function(userOptions) {
           if (options.idlyLoad === true && env.requestIdleCallbackSupported === true) {
             requestIdleCallback(() => {
               yallLoad(element, env);
+            }, {
+              timeout: options.idleLoadTimeout
             });
           } else {
             yallLoad(element, env);
           }
 
           element.classList.remove(options.lazyClass);
+          observer.unobserve(element);
 
           lazyElements = lazyElements.filter((lazyElement) => {
             return lazyElement !== element;
           });
-
-          console.log(lazyElements);
-
-          observer.unobserve(element);
         }
       });
-    }, {rootMargin: "128px 0px"});
+    });
 
     lazyElements.forEach((lazyElement) => intersectionListener.observe(lazyElement));
   } else {
@@ -127,11 +127,15 @@ const yall = function(userOptions) {
             if (lazyElement.getBoundingClientRect().top <= window.innerHeight && lazyElement.getBoundingClientRect().bottom >= 0 && getComputedStyle(lazyElement).display !== "none") {
               if (options.idlyLoad === true && env.requestIdleCallbackSupported === true) {
                 requestIdleCallback(() => {
-                  yallLoad(lazyElement, userConfig);
+                  yallLoad(lazyElement, env);
+                }, {
+                  timeout: options.idleLoadTimeout
                 });
               } else {
-                yallLoad(lazyElement, userConfig);
+                yallLoad(lazyElement, env);
               }
+
+              lazyElement.classList.remove(options.lazyClass);
 
               lazyElements = lazyElements.filter((element) => {
                 return element !== lazyElement;
@@ -152,12 +156,9 @@ const yall = function(userOptions) {
   }
 
   if (env.mutationObserverSupported === true && options.observeChanges === true) {
-    const targetNode = options.observeRootSelector === "body" ? document.body : document.querySelector(options.observeRootSelector);
-    var mutationCallback = (mutations) => {
-      for(let mutation of mutations) {
-        let newElements = Array.from(document.querySelectorAll(selectorString));
-
-        for (let newElement of newElements) {
+    const mutationListener = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        Array.from(document.querySelectorAll(selectorString)).forEach((newElement) => {
           if (lazyElements.indexOf(newElement) === -1) {
             lazyElements.push(newElement);
 
@@ -165,13 +166,11 @@ const yall = function(userOptions) {
               intersectionListener.observe(newElement);
             }
           }
-        };
-      };
-    }
+        });
+      });
+    });
 
-    const mutationListener = new MutationObserver(mutationCallback);
-
-    mutationListener.observe(targetNode, {
+    mutationListener.observe(options.observeRootSelector === "body" ? document.body : document.querySelector(options.observeRootSelector), {
       childList: true
     });
   }
