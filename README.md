@@ -72,13 +72,13 @@ Easy! Slap on some `<noscript>` goodness:
 </noscript>
 
 <!-- Here's a <video> example, too -->
-<video class="lazy" autoplay loop muted>
+<video class="lazy" autoplay loop muted playsinline>
 	<source data-src="video.webm" type="video/webm">
 	<source data-src="video.ogv" type="video/ogg">
 	<source data-src="video.mp4" type="video/mp4">
 </video>
 <noscript>
-	<video autoplay loop muted>
+	<video autoplay loop muted playsinline>
 		<source src="video.webm" type="video/webm">
 		<source src="video.ogv" type="video/ogg">
 		<source src="video.mp4" type="video/mp4">
