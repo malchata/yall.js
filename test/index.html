@@ -12,6 +12,20 @@
         box-sizing: border-box;
       }
 
+      button {
+        font-size: 1.5rem;
+        margin: 128rem auto 0;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        color: #fff;
+        background: #000;
+        border: 0;
+        border-radius: .5rem;
+        padding: 1rem;
+        cursor: pointer;
+      }
+
       body {
         font-size: 16px;
         padding: 1rem;
@@ -42,7 +56,8 @@
       img+h2,
       picture+h2,
       noscript+h2,
-      video+h2 {
+      video+h2,
+      #server-markup + #dynamic-markup-container {
         margin-top: 128rem;
       }
 
@@ -53,55 +68,57 @@
   </head>
   <body>
     <h1>Scroll down...</h1>
-    <h3>Or jump to...</h3>
-    <ul>
-      <li><a href="#src">Lazy loading <code>&lt;img&gt;</code> using <code>src</code></a></li>
-      <li><a href="#srcset">Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></a></li>
-      <li><a href="#picture">Lazy loading <code>&lt;picture&gt;</code></a></li>
-      <li><a href="#video">Lazy loading <code>&lt;video&gt;</code></a></li>
-    </ul>
-    <h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
-    <a name="src"></a>
-    <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src">
-    <noscript>
-      <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src">
-    </noscript>
-    <h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
-    <a name="srcset"></a>
-    <img class="lazy" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset">
-    <noscript>
-      <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset">
-    </noscript>
-    <h2>Lazy loading <code>&lt;picture&gt;</code></h2>
-    <a name="picture"></a>
-    <picture>
-      <source data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
-      <source data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
+    <button id="add-markup">Add New Markup</button>
+    <div id="dynamic-markup-container"></div>
+    <div id="server-markup">
+      <h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
       <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src">
-    </picture>
-    <noscript>
-      <picture>
-        <source srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" type="image/webp">
-        <source srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" type="image/jpeg">
+      <noscript>
         <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src">
+      </noscript>
+      <h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
+      <img class="lazy" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset">
+      <noscript>
+        <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset">
+      </noscript>
+      <h2>Lazy loading <code>&lt;picture&gt;</code></h2>
+      <picture>
+        <source data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
+        <source data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
+        <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src">
       </picture>
-    </noscript>
-    <h2>Lazy loading <code>&lt;video&gt;</code></h2>
-    <a name="video"></a>
-    <video class="lazy" width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline>
-      <source data-src="video/test.webm" type="video/webm">
-      <source data-src="video/test.mp4" type="video/mp4">
-    </video>
-    <noscript>
-      <video width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline>
-        <source src="video/test.webm" type="video/webm">
-        <source src="video/test.mp4" type="video/mp4">
+      <noscript>
+        <picture>
+          <source srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" type="image/webp">
+          <source srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" type="image/jpeg">
+          <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src">
+        </picture>
+      </noscript>
+      <h2>Lazy loading <code>&lt;video&gt;</code></h2>
+      <video class="lazy" width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline>
+        <source data-src="video/test.webm" type="video/webm">
+        <source data-src="video/test.mp4" type="video/mp4">
       </video>
-    </noscript>
+      <noscript>
+        <video width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline>
+          <source src="video/test.webm" type="video/webm">
+          <source src="video/test.mp4" type="video/mp4">
+        </video>
+      </noscript>
+    </div>
     <script src="js/yall.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         yall();
+
+        var markupContainer = document.getElementById("dynamic-markup-container");
+        var addMarkupButton = document.getElementById("add-markup");
+        var serverMarkup = document.getElementById("server-markup").innerHTML;
+
+        addMarkupButton.addEventListener("click", function() {
+          document.body.removeChild(addMarkupButton);
+          markupContainer.innerHTML = serverMarkup;
+        });
       });
     </script>
   </body>

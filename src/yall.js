@@ -3,8 +3,65 @@
  * Yet Another Lazy loader
  **/
 
-const yallConfig = {
-  env: {
+const yallLoad = function(element, env) {
+  if (element.tagName === "IMG") {
+    let parentElement = element.parentNode;
+
+    if (parentElement.tagName === "PICTURE") {
+      Array.from(parentElement.querySelectorAll("source")).forEach(source => {
+        for (let dataAttribute in source.dataset) {
+          source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
+          source.removeAttribute(`data-${dataAttribute}`);
+        }
+      });
+
+      for (let dataAttribute in element.dataset) {
+        element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
+        element.removeAttribute(`data-${dataAttribute}`);
+      }
+    } else {
+      let newImageElement = new Image();
+      newImageElement.src = element.dataset.src;
+
+      if (typeof element.dataset.srcset !== "undefined") {
+        newImageElement.srcset = element.dataset.srcset;
+      }
+
+      if (env.decodeSupported === true) {
+        newImageElement.decode().then(() => {
+          newImageElement.alt = element.alt;
+          newImageElement.width = element.width;
+          newImageElement.height = element.height;
+          element.replaceWith(newImageElement);
+        });
+      } else {
+        for (let dataAttribute in element.dataset) {
+          element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
+          element.removeAttribute(`data-${dataAttribute}`);
+        }
+      }
+    }
+  }
+
+  if (element.tagName === "VIDEO") {
+    Array.from(element.querySelectorAll("source")).forEach(source => {
+      for (let dataAttribute in source.dataset) {
+        source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
+        source.removeAttribute(`data-${dataAttribute}`);
+      }
+    });
+
+    element.load();
+  }
+
+  if (element.tagName === "IFRAME") {
+    element.src = element.dataset.src;
+    element.removeAttribute("data-src");
+  }
+};
+
+const yall = function(userOptions) {
+  const env = {
     IntersectionObserverSupported: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
     mutationObserverSupported: "MutationObserver" in window,
     requestIdleCallbackSupported: "requestIdleCallback" in window,
@@ -15,112 +72,60 @@ const yallConfig = {
       [window, "resize"],
       [window, "orientationchange"]
     ]
-  },
-  options: {
+  };
+
+  const defaultOptions = {
     lazyClass: "lazy",
     throttleTime: 200,
-    idlyLoad: true,
-    observeChanges: false,
+    idlyLoad: false,
+    observeChanges: true,
     observeRootSelector: "body"
-  }
-}
+  };
 
-const yallLoad = (element, options) => {
-  switch (element.tagName) {
-    case "IMG":
-      let parentElement = element.parentNode;
+  const options = typeof userOptions === "object" ? Object.assign(defaultOptions, userOptions) : defaultOptions;
+  const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass}`;
 
-      if (parentElement.tagName === "PICTURE") {
-        Array.from(parentElement.querySelectorAll("source")).forEach((source) => {
-          for (let dataAttribute in source.dataset) {
-            source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
-            source.removeAttribute(`data-${dataAttribute}`);
-          }
-        });
+  let lazyElements = Array.from(document.querySelectorAll(selectorString));
 
-        for (let dataAttribute in element.dataset) {
-          element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
-          element.removeAttribute(`data-${dataAttribute}`);
-        }
-      } else {
-        let newImageElement = new Image();
-        newImageElement.src = element.dataset.src;
-
-        if (typeof element.dataset.srcset !== "undefined") {
-          newImageElement.srcset = element.dataset.srcset;
-        }
-
-        if (options.env.decodeSupported === true) {
-          newImageElement.decode().then(() => {
-            newImageElement.alt = element.alt;
-            newImageElement.width = element.width;
-            newImageElement.height = element.height;
-            element.replaceWith(newImageElement);
-          });
-        } else {
-          for (let dataAttribute in element.dataset) {
-            element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
-            element.removeAttribute(`data-${dataAttribute}`);
-          }
-        }
-      }
-      break;
-
-    case "VIDEO":
-      Array.from(element.querySelectorAll("source")).forEach((source) => {
-        for (let dataAttribute in source.dataset) {
-          source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
-          source.removeAttribute(`data-${dataAttribute}`);
-        }
-      });
-
-      element.load();
-      break;
-
-    case "IFRAME":
-      element.src = element.dataset.src;
-      element.removeAttribute("data-src");
-      break;
-  }
-};
-
-const yall = (userConfig = yallConfig) => {
-  let lazyElements = Array.from(document.querySelectorAll(`img.${userConfig.options.lazyClass},video.${userConfig.options.lazyClass},iframe.${userConfig.options.lazyClass}`));
-
-  if (userConfig.env.IntersectionObserverSupported === true) {
-    let observer = new IntersectionObserver((entries, observer) => {
+  if (env.IntersectionObserverSupported === true) {
+    var intersectionListener = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         let element = entry.target;
 
         if (entry.isIntersecting === true) {
-          if (userConfig.options.idlyLoad === true && userConfig.env.requestIdleCallbackSupported === true) {
+          if (options.idlyLoad === true && env.requestIdleCallbackSupported === true) {
             requestIdleCallback(() => {
-              yallLoad(element, userConfig);
+              yallLoad(element, env);
             });
           } else {
-            yallLoad(element, userConfig);
+            yallLoad(element, env);
           }
 
-          element.classList.remove(userConfig.options.lazyClass);
+          element.classList.remove(options.lazyClass);
+
+          lazyElements = lazyElements.filter((lazyElement) => {
+            return lazyElement !== element;
+          });
+
+          console.log(lazyElements);
+
           observer.unobserve(element);
         }
       });
-    }, {
-      rootMargin: "128px 0px"
-    });
+    }, {rootMargin: "128px 0px"});
 
-    lazyElements.forEach(lazyElement => observer.observe(lazyElement));
+    lazyElements.forEach((lazyElement) => intersectionListener.observe(lazyElement));
   } else {
     const yallBack = () => {
       let active = false;
 
-      if (active === false) {
+      if (active === false && lazyElements.length > 0) {
         active = true;
 
         setTimeout(() => {
           lazyElements.forEach((lazyElement) => {
-            if ((lazyElement.getBoundingClientRect().top <= window.innerHeight && lazyElement.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyElement).display !== "none") {
-              if (userConfig.options.idlyLoad === true && userConfig.env.requestIdleCallbackSupported === true) {
+            if (lazyElement.getBoundingClientRect().top <= window.innerHeight && lazyElement.getBoundingClientRect().bottom >= 0 && getComputedStyle(lazyElement).display !== "none") {
+              if (options.idlyLoad === true && env.requestIdleCallbackSupported === true) {
                 requestIdleCallback(() => {
                   yallLoad(lazyElement, userConfig);
                 });
@@ -135,10 +140,39 @@ const yall = (userConfig = yallConfig) => {
           });
 
           active = false;
-        }, userConfig.options.throttleTime);
+
+          if (lazyElements.length === 0 && (options.observeChanges === false)) {
+            env.eventsToBind.foreach((eventPair) => eventPair[0].removeEventListener(eventPair[1], yallBack));
+          }
+        }, options.throttleTime);
       }
+    };
+
+    env.eventsToBind.forEach((eventPair) => eventPair[0].addEventListener(eventPair[1], yallBack));
+  }
+
+  if (env.mutationObserverSupported === true && options.observeChanges === true) {
+    const targetNode = options.observeRootSelector === "body" ? document.body : document.querySelector(options.observeRootSelector);
+    var mutationCallback = (mutations) => {
+      for(let mutation of mutations) {
+        let newElements = Array.from(document.querySelectorAll(selectorString));
+
+        for (let newElement of newElements) {
+          if (lazyElements.indexOf(newElement) === -1) {
+            lazyElements.push(newElement);
+
+            if (env.IntersectionObserverSupported === true) {
+              intersectionListener.observe(newElement);
+            }
+          }
+        };
+      };
     }
 
-    userConfig.env.eventsToBind.forEach(eventPair => eventPair[0].addEventListener(eventPair[1], yallBack));
+    const mutationListener = new MutationObserver(mutationCallback);
+
+    mutationListener.observe(targetNode, {
+      childList: true
+    });
   }
 };
