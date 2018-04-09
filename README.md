@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=shadowfax)](https://travis-ci.org/malchata/yall.js)
 
-yall.js is a featured-packed lazy loading library for `<img>`, `<picture>`, `<video>` and `<iframe>` elements. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also watch the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load image elements that have been appended to DOM after initial page render, which can be desirable for single page applications. It can also
+yall.js is a featured-packed lazy loading library for `<img>`, `<picture>`, `<video>` and `<iframe>` elements. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also watch the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load image elements that have been appended to DOM after initial page render, which can be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
 
 yall.js is reasonably small at around ~3.3 KB uglified and uncompressed. When compressed with gzip or Brotli, yall.js can be as small as ~1 KB.
 
