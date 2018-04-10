@@ -146,7 +146,7 @@ const yall = function(userOptions) {
           active = false;
 
           if (lazyElements.length === 0 && (options.observeChanges === false)) {
-            env.eventsToBind.foreach((eventPair) => eventPair[0].removeEventListener(eventPair[1], yallBack));
+            env.eventsToBind.forEach((eventPair) => eventPair[0].removeEventListener(eventPair[1], yallBack));
           }
         }, options.throttleTime);
       }
