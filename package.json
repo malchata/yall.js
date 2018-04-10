@@ -1,12 +1,13 @@
 {
   "name": "yall",
-  "version": "2.0.0",
+  "version": "2.0.0-b",
   "description": "Yet Another Lazy Loader",
   "main": "./src/yall.js",
   "scripts": {
     "clean": "rimraf ./dist && mkdir -p ./dist",
-    "build": "npm run clean && npx babel $(node -p -e \"require('./package.json').main\") | npx uglifyjs --timings --warn --verbose --mangle --output ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js && npm run update-test",
-    "update-test": "cp -fv ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js ./test/js/yall.min.js"
+    "build": "npm run clean && npx babel $(node -p -e \"require('./package.json').main\") | npx uglifyjs --verbose --warn --config-file ./uglify.config.json --output ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js && npm run update-test",
+    "update-test": "cp -fv ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js ./test/js/yall.min.js",
+    "test": "node http.js"
   },
   "repository": {
     "type": "git",
@@ -14,6 +15,9 @@
   },
   "keywords": [
     "lazy load",
+    "intersection observer",
+    "mutation observer",
+    "requestIdleCallback",
     "images",
     "web performance"
   ],

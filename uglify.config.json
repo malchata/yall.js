@@ -1,0 +1,9 @@
+{
+  "mangle": true,
+  "timings": true,
+  "compress": {
+    "sequences": true,
+    "conditionals": true,
+    "evaluate": true
+  }
+}

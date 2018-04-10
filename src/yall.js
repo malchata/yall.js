@@ -8,7 +8,7 @@ const yallLoad = function(element, env) {
     let parentElement = element.parentNode;
 
     if (parentElement.tagName === "PICTURE") {
-      Array.from(parentElement.querySelectorAll("source")).forEach(source => {
+      [].slice.call(parentElement.querySelectorAll("source")).forEach(source => {
         for (let dataAttribute in source.dataset) {
           source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
           source.removeAttribute(`data-${dataAttribute}`);
@@ -21,13 +21,14 @@ const yallLoad = function(element, env) {
       }
     } else {
       let newImageElement = new Image();
-      newImageElement.src = element.dataset.src;
 
       if (typeof element.dataset.srcset !== "undefined") {
         newImageElement.srcset = element.dataset.srcset;
       }
 
-      if (env.decodeSupported === true) {
+      newImageElement.src = element.dataset.src;
+
+      if (env.asyncDecodeSupport === true) {
         newImageElement.decode().then(() => {
           newImageElement.alt = element.alt;
           newImageElement.width = element.width;
@@ -44,7 +45,7 @@ const yallLoad = function(element, env) {
   }
 
   if (element.tagName === "VIDEO") {
-    Array.from(element.querySelectorAll("source")).forEach(source => {
+    [].slice.call(element.querySelectorAll("source")).forEach(source => {
       for (let dataAttribute in source.dataset) {
         source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
         source.removeAttribute(`data-${dataAttribute}`);
@@ -62,10 +63,10 @@ const yallLoad = function(element, env) {
 
 const yall = function(userOptions) {
   const env = {
-    IntersectionObserverSupported: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
-    mutationObserverSupported: "MutationObserver" in window,
-    requestIdleCallbackSupported: "requestIdleCallback" in window,
-    decodeSupported: "decode" in new Image(),
+    intersectionObserverSupport: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
+    mutationObserverSupport: "MutationObserver" in window,
+    idleCallbackSupport: "requestIdleCallback" in window,
+    asyncDecodeSupport: "decode" in new Image(),
     eventsToBind: [
       [document, "scroll"],
       [document, "touchmove"],
@@ -74,32 +75,41 @@ const yall = function(userOptions) {
     ]
   };
 
-  const defaultOptions = {
+  let defaultOptions = {
     lazyClass: "lazy",
     throttleTime: 200,
     idlyLoad: false,
     idleLoadTimeout: 100,
+    threshold: 200,
     observeChanges: false,
-    observeRootSelector: "body"
+    observeRootSelector: "body",
+    mutationObserverOptions: {
+      childList: true
+    }
   };
+
+  defaultOptions.intersectionObserverOptions = {
+    rootMargin: `${defaultOptions.threshold}px 0%`
+  }
 
   const options = typeof userOptions === "object" ? Object.assign(defaultOptions, userOptions) : defaultOptions;
   const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass}`;
+  const idleCallbackOptions = {
+    timeout: options.idleLoadTimeout
+  };
 
-  let lazyElements = Array.from(document.querySelectorAll(selectorString));
+  let lazyElements = [].slice.call(document.querySelectorAll(selectorString));
 
-  if (env.IntersectionObserverSupported === true) {
+  if (env.intersectionObserverSupport === true) {
     var intersectionListener = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         let element = entry.target;
 
         if (entry.isIntersecting === true) {
-          if (options.idlyLoad === true && env.requestIdleCallbackSupported === true) {
+          if (options.idlyLoad === true && env.idleCallbackSupport === true) {
             requestIdleCallback(() => {
               yallLoad(element, env);
-            }, {
-              timeout: options.idleLoadTimeout
-            });
+            }, idleCallbackOptions);
           } else {
             yallLoad(element, env);
           }
@@ -112,7 +122,7 @@ const yall = function(userOptions) {
           });
         }
       });
-    });
+    }, options.intersectionObserverOptions);
 
     lazyElements.forEach((lazyElement) => intersectionListener.observe(lazyElement));
   } else {
@@ -124,13 +134,11 @@ const yall = function(userOptions) {
 
         setTimeout(() => {
           lazyElements.forEach((lazyElement) => {
-            if (lazyElement.getBoundingClientRect().top <= window.innerHeight && lazyElement.getBoundingClientRect().bottom >= 0 && getComputedStyle(lazyElement).display !== "none") {
-              if (options.idlyLoad === true && env.requestIdleCallbackSupported === true) {
+            if (lazyElement.getBoundingClientRect().top <= (window.innerHeight + options.threshold) && lazyElement.getBoundingClientRect().bottom >= -(options.threshold) && getComputedStyle(lazyElement).display !== "none") {
+              if (options.idlyLoad === true && env.idleCallbackSupport === true) {
                 requestIdleCallback(() => {
                   yallLoad(lazyElement, env);
-                }, {
-                  timeout: options.idleLoadTimeout
-                });
+                }, idleCallbackOptions);
               } else {
                 yallLoad(lazyElement, env);
               }
@@ -145,7 +153,7 @@ const yall = function(userOptions) {
 
           active = false;
 
-          if (lazyElements.length === 0 && (options.observeChanges === false)) {
+          if (lazyElements.length === 0 && options.observeChanges === false) {
             env.eventsToBind.forEach((eventPair) => eventPair[0].removeEventListener(eventPair[1], yallBack));
           }
         }, options.throttleTime);
@@ -155,14 +163,14 @@ const yall = function(userOptions) {
     env.eventsToBind.forEach((eventPair) => eventPair[0].addEventListener(eventPair[1], yallBack));
   }
 
-  if (env.mutationObserverSupported === true && options.observeChanges === true) {
+  if (env.mutationObserverSupport === true && options.observeChanges === true) {
     const mutationListener = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        Array.from(document.querySelectorAll(selectorString)).forEach((newElement) => {
+        [].slice.call(document.querySelectorAll(selectorString)).forEach((newElement) => {
           if (lazyElements.indexOf(newElement) === -1) {
             lazyElements.push(newElement);
 
-            if (env.IntersectionObserverSupported === true) {
+            if (env.intersectionObserverSupport === true) {
               intersectionListener.observe(newElement);
             }
           }
@@ -170,8 +178,6 @@ const yall = function(userOptions) {
       });
     });
 
-    mutationListener.observe(options.observeRootSelector === "body" ? document.body : document.querySelector(options.observeRootSelector), {
-      childList: true
-    });
+    mutationListener.observe(options.observeRootSelector === "body" ? document.body : document.querySelector(options.observeRootSelector), options.mutationObserverOptions);
   }
 };

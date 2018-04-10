@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=shadowfax)](https://travis-ci.org/malchata/yall.js)
 
+**Warning: This is a beta version, and has not been extensively tested in all browsers. It is _not_ production ready!**
+
 yall.js is a featured-packed lazy loading library for `<img>`, `<picture>`, `<video>` and `<iframe>` elements. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also watch the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load image elements that have been appended to DOM after initial page render, which can be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
 
 yall.js is reasonably small at around ~3.3 KB uglified and uncompressed. When compressed with gzip or Brotli, yall.js can be as small as ~1 KB.
@@ -23,14 +25,14 @@ Lazy loading elements with yall is simple! Let's look at the simplest `<img>` el
 
 ```html
 <!-- A simple src-only <img> element example -->
-<img class="lazy" src="placeholder.jpg" data-src="image-to-lazy-load.jpg">
+<img class="lazy" src="placeholder.jpg" data-src="image-to-lazy-load.jpg" alt="Alternative text to describe image.">
 ```
 
 In this case, we specify an optional placeholder image in the `src` attribute, and point to the image we want to lazy load in the `data-src` attribute. Attaching a `class` of `lazy` exposes elements to yall.js, and is necessary for the lazy loader to work (although this class value can be overridden via the API options). Let's look at an example using both `src` and `srcset`:
 
 ```html
 <!-- A somewhat more complex src + srcset example -->
-<img class="lazy" src="placeholder.jpg" data-srcset="image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x" data-src="image-to-lazy-load-1x.jpg">
+<img class="lazy" src="placeholder.jpg" data-srcset="image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x" data-src="image-to-lazy-load-1x.jpg" alt="Alternative text to describe image.">
 ```
 
 Since `<picture>` is a thing now, yall.js supports that, too:
@@ -39,7 +41,7 @@ Since `<picture>` is a thing now, yall.js supports that, too:
 <!-- A more complex <picture> + <img> + src/srcset example -->
 <picture>
   <source data-srcset="image-to-lazy-load-2x.webp 2x, image-to-lazy-load-1x.webp 1x" type="image/webp">
-  <img class="lazy" src="placeholder.jpg" data-srcset="image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x" data-src="image-to-lazy-load-1x.jpg">
+  <img class="lazy" src="placeholder.jpg" data-srcset="image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x" data-src="image-to-lazy-load-1x.jpg" alt="Alternative text to describe image.">
 </picture>
 ```
 
@@ -116,10 +118,19 @@ When you call the main `yall` initializing function, you can pass an object in w
 
 - `lazyClass` (default is `"lazy"`): The element class used by yall.js to find elements to lazy load. Change this is if a class attribute value of `lazy` conflicts with your application.
 - `throttleTime` (default is `200`): In cases where Intersection Observer isn't available, standard event handlers are used. `throttleTime` allows you to control how often the code within these event handlers fire in milliseconds.
-- `idlyLoad` (default is `false`): If set to `true`, `requestIdleCallback` is used to optimize use of browser idle time to limit monopolization of the main thread. _Note: Enabling this could cause lazily loading to be delayed significantly more than you might be okay with! Test extensively!_
+- `idlyLoad` (default is `false`): If set to `true`, `requestIdleCallback` is used to optimize use of browser idle time to limit monopolization of the main thread. _**Note:** Enabling this could cause lazy loading to be delayed significantly more than you might be okay with! This option trades off some degree of seamless lazy loading in favor of optimized use of browser idle time. Test extensively!_
 - `idleLoadTimeout` (default is `100`): If `idlyLoad` is set to `true`, this option sets a deadline in milliseconds for `requestIdleCallback` to kick off lazy loading for an element.
-- `observeChanges` (default is `false`): Use a Mutation Observer to examine the DOM for changes. This is useful if you're using yall.js in a single page application and want to lazy load resources for markup injected into page after the initial page render. _Note: This option is ignored if set to `true` in a browser that doesn't support Mutation Observer!_
+- `threshold` (default is `200`): The threshold (in pixels) for how far elements need to be within the viewport to begin lazy loading. This value affects lazy loading using Intersection Observer, as well as for legacy loading behavior relying on event handlers.
+- `observeChanges` (default is `false`): Use a Mutation Observer to examine the DOM for changes. This is useful if you're using yall.js in a single page application and want to lazy load resources for markup injected into page after the initial page render. _**Note:** This option is ignored if set to `true` in a browser that doesn't support Mutation Observer!_
 - `observeRootSelector` (default is `"body"`): If `observeChanges` is set to `true`, the value of this string is fed into `document.querySelector` to limit the scope in which the Mutation Observer looks for DOM changes. `document.body` is inferred by default, but you can confine it to any valid CSS selector (e.g., `div#main-wrapper`).
+- `mutationObserverOptions` (default is `{childList: true}`): Options to pass to the `MutationObserver` instance. Read [this MDN guide](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit) for a list of options.
+- `intersectionObserverOptions` (default is `{rootMargin: ${options.threshold}px 0%}`): Options to pass to the `IntersectionObserver` instance. Read [this MDN guide](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#Intersection_observer_options) for a list of options. _**Note:** You are probably better off not modifying this, as doing so could drop the `rootMargin` value if you're not careful. Future developments will probably incorporate specific options to pass into the API to avoid detrimental effects to functionality._
+
+## Limitations
+
+Currently, yall.js doesn't provide a mechanism for error handling. I'm currently trying to decide if this is worth implementing. In the meantime, you may want to make use of an inline `onerror` handler in your code.
+
+Additionally, yall.js also doesn't care about placeholders. It won't try to minimize layout shifting for you or perform any layout calculations. The recommended method is to use a placeholder method such as [LQIP](https://www.guypo.com/introducing-lqip-low-quality-image-placeholders/) or [SQIP](https://github.com/technopagan/sqip) to fill the image space prior to lazy loading in conjunction with appropriate `width` and `height` attributes on elements. Please check out `index.html` in the `test` folder to see how you might use placeholders in conjunction with yall.js. If you don't want to bother with placeholders, you can omit the `src` attribute in your lazy loading markup and yall.js will still do its job.
 
 ## Contributing
 
