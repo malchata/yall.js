@@ -5,9 +5,11 @@
   "main": "./src/yall.js",
   "scripts": {
     "clean": "rimraf ./dist && mkdir -p ./dist",
-    "build": "npm run clean && npx babel $(node -p -e \"require('./package.json').main\") | npx uglifyjs --verbose --warn --config-file ./uglify.config.json --output ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js && npm run update-test",
+    "uglify": "npx babel $(node -p -e \"require('./package.json').main\") | npx uglifyjs --verbose --warn --config-file ./uglify.config.json --output ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js",
     "update-test": "cp -fv ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js ./test/js/yall.min.js",
-    "test": "node http.js"
+    "show-size": "echo ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js is $(cat ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js | wc -c) bytes.",
+    "test": "node http.js",
+    "build": "npm run clean && npm run uglify && npm run update-test && npm run show-size"
   },
   "repository": {
     "type": "git",

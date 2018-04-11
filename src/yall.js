@@ -126,7 +126,7 @@ const yall = function(userOptions) {
 
     lazyElements.forEach((lazyElement) => intersectionListener.observe(lazyElement));
   } else {
-    const yallBack = () => {
+    var yallBack = () => {
       let active = false;
 
       if (active === false && lazyElements.length > 0) {
@@ -172,6 +172,8 @@ const yall = function(userOptions) {
 
             if (env.intersectionObserverSupport === true) {
               intersectionListener.observe(newElement);
+            } else {
+              yallBack();
             }
           }
         });

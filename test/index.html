@@ -64,7 +64,7 @@
       noscript + h2,
       video + h2,
       iframe + h2,
-      #server-markup + #dynamic-markup-container {
+      #dynamic-markup-container + #server-markup {
         margin-top: 128rem;
       }
 
@@ -121,7 +121,10 @@
     <script src="js/yall.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        yall();
+        yall({
+          observeChanges: true,
+          idlyLoad: true
+        });
 
         var markupContainer = document.getElementById("dynamic-markup-container");
         var addMarkupButton = document.getElementById("add-markup");
