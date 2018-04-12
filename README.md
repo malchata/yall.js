@@ -1,22 +1,29 @@
 # yall.js (Yet Another Lazy Loader)
 
-[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=shadowfax)](https://travis-ci.org/malchata/yall.js)
+[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=shadowfax)](https://travis-ci.org/malchata/yall.js) ![](http://img.badgesize.io/malchata/yall.js/shadowfax/dist/yall-2.0.0-b.min.js?label=Uncompressed) ![](http://img.badgesize.io/malchata/yall.js/shadowfax/dist/yall-2.0.0-b.min.js?compression=gzip&label=gzip)
 
 **Warning: This is a beta version, and has not been extensively tested in all browsers. It is _not_ production ready!**
 
-yall.js is a featured-packed lazy loading library for `<img>`, `<picture>`, `<video>` and `<iframe>` elements. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also watch the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load image elements that have been appended to DOM after initial page render, which can be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
-
-yall.js is reasonably small at around ~3.3 KB uglified and uncompressed. When compressed with gzip or Brotli, yall.js can be as small as ~1 KB.
+yall.js is a featured-packed lazy loading library for `<img>`, `<picture>`, `<video>` and `<iframe>` elements, and works in all modern browsers plus IE11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It also queries the DOM using `querySelector` and `querySelectorAll`. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load image elements that have been appended to DOM after initial page render, which can be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
 
 ## Usage
 
-This is version 2 of yall.js, and introduces some breaking changes. While version 1 only required you to include the script and tag elements with a special class, this script needs to be explicitly initialized like so:
+This is version 2 of yall.js, and introduces some breaking changes over version 1. While the first version only required you to include the script and tag elements with a special class, this script needs to be explicitly initialized like so:
+
+```html
+<script src="yall.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", yall);</script>
+```
+
+The above syntax is sufficient if you don't want to pass in any options. [If you want to specify some options](#api-options), however, you'll need to use a slightly more verbose syntax:
 
 ```html
 <script src="yall.min.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    yall(); // Options can be passed into this function call!
+    yall({
+      observeChanges: true
+    });
   });
 </script>
 ```
@@ -114,6 +121,8 @@ To see all use cases in action, check out the demos in the `test` folder and go 
 
 ## API options
 
+_**Note:** These are not stable, yet! Some may change before version 2 is out of beta!_
+
 When you call the main `yall` initializing function, you can pass an object in with some configuration options. Here are the current options available:
 
 - `lazyClass` (default is `"lazy"`): The element class used by yall.js to find elements to lazy load. Change this is if a class attribute value of `lazy` conflicts with your application.
@@ -128,9 +137,9 @@ When you call the main `yall` initializing function, you can pass an object in w
 
 ## Limitations
 
-Currently, yall.js doesn't provide a mechanism for error handling. I'm currently trying to decide if this is worth implementing. In the meantime, you may want to make use of an inline `onerror` handler in your code.
+Currently, yall.js doesn't provide an error handling mechanism. I'm currently trying to decide if this is worth implementing. In the meantime, you may want to make use of an inline `onerror` handler in your code.
 
-Additionally, yall.js also doesn't care about placeholders. It won't try to minimize layout shifting for you or perform any layout calculations. The recommended method is to use a placeholder method such as [LQIP](https://www.guypo.com/introducing-lqip-low-quality-image-placeholders/) or [SQIP](https://github.com/technopagan/sqip) to fill the image space prior to lazy loading in conjunction with appropriate `width` and `height` attributes on elements. Please check out `index.html` in the `test` folder to see how you might use placeholders in conjunction with yall.js. If you don't want to bother with placeholders, you can omit the `src` attribute in your lazy loading markup and yall.js will still do its job.
+Additionally, yall.js also doesn't care about placeholders, and it won't try to minimize layout shifting or perform any layout calculations for you. The recommended method is to use a placeholder method such as [LQIP](https://www.guypo.com/introducing-lqip-low-quality-image-placeholders/) or [SQIP](https://github.com/technopagan/sqip) to fill the image space prior to lazy loading in conjunction with appropriate `width` and `height` attributes on elements. For `<video>` elements, use the `poster` attribute set a placeholder image. Please check out `index.html` in the `test` folder to see how you might use placeholders in conjunction with yall.js. If you don't want to bother with placeholders, you can omit the `src` attribute entirely in your lazy loading markup and yall.js will still work. Alternatively, you could calculate placeholder size in CSS using the `padding-top` trick.
 
 ## Contributing
 
