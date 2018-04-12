@@ -1,6 +1,6 @@
 # yall.js (Yet Another Lazy Loader)
 
-[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=shadowfax)](https://travis-ci.org/malchata/yall.js) ![](http://img.badgesize.io/malchata/yall.js/shadowfax/dist/yall-2.0.0-b.min.js?label=Uncompressed) ![](http://img.badgesize.io/malchata/yall.js/shadowfax/dist/yall-2.0.0-b.min.js?compression=gzip&label=gzip)
+[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=shadowfax)](https://travis-ci.org/malchata/yall.js) ![](http://img.badgesize.io/malchata/yall.js/shadowfax/dist/yall-2.0.0b.min.js?label=Uncompressed) ![](http://img.badgesize.io/malchata/yall.js/shadowfax/dist/yall-2.0.0b.min.js?compression=gzip&label=gzip)
 
 **Warning: This is a beta version, and has not been extensively tested in all browsers. It is _not_ production ready!**
 
