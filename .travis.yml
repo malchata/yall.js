@@ -7,4 +7,4 @@ script:
   - npm run build
 branches:
   only:
-    - shadowfax
+    - master

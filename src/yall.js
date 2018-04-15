@@ -88,10 +88,6 @@ const yall = function(userOptions) {
     }
   };
 
-  defaultOptions.intersectionObserverOptions = {
-    rootMargin: `${defaultOptions.threshold}px 0%`
-  }
-
   const options = typeof userOptions === "object" ? Object.assign(defaultOptions, userOptions) : defaultOptions;
   const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass}`;
   const idleCallbackOptions = {
@@ -122,7 +118,9 @@ const yall = function(userOptions) {
           });
         }
       });
-    }, options.intersectionObserverOptions);
+    }, {
+      rootMargin: `${options.threshold}px 0%`
+    });
 
     lazyElements.forEach((lazyElement) => intersectionListener.observe(lazyElement));
   } else {
