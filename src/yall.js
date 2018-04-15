@@ -1,125 +1,183 @@
 /**
- * yall.js version 1.2.0
+ * yall.js version 2.0.0
  * Yet Another Lazy loader
  **/
 
-(function(window, document){
-	var
-		// The primary goal here is to keep this script as small as possible
-		// while maintaining functionality. The uglifier goes a long way,
-		// but we can take things a bit farther by saving references for
-		// frequently used method and strings.
-		fe = "forEach",
-		qsa = "querySelectorAll",
-		pn = "parentNode",
-		gbcr = "getBoundingClientRect",
-		pr = "prototype",
-		io = "IntersectionObserver",
-		ioe = io + "Entry",
-		s = "src",
-		ss = "srcset",
-		d = "data-",
-		ds = d + s,
-		dss = d + ss,
-		// Placeholders used for event handler strings.
-		documentEvents = ["scroll", "touchmove"],
-		windowEvents = ["orientationchange", "resize"],
-		// Tracks if yall is currently processing. Used for throttling. Only relevant if IntersectionObserver is unsupported.
-		active = 0,
-		// Placeholder for elements
-		elements,
-		// Replaces target attribute value with source attribute, if applicable
-		replaceAttr = function(node, sourceAttr, targetAttr){
-			var v = node.getAttribute(sourceAttr);
+const yallLoad = function(element, env) {
+  if (element.tagName === "IMG") {
+    let parentElement = element.parentNode;
 
-			if(v){
-				node[targetAttr] = v;
-				node.removeAttribute(sourceAttr);
-			}
-		},
-		// The handler to load the media
-		loadMedia = function(media){
-			if(media.tagName == "VIDEO"){
-				Array[pr].slice.call(media[qsa]("source"))[fe](function(source){
-					replaceAttr(source, ds, s);
-				});
+    if (parentElement.tagName === "PICTURE") {
+      [].slice.call(parentElement.querySelectorAll("source")).forEach(source => {
+        for (let dataAttribute in source.dataset) {
+          source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
+          source.removeAttribute(`data-${dataAttribute}`);
+        }
+      });
 
-				media.load();
-			}
-			else{
-				if(media[pn].tagName == "PICTURE"){
-					Array[pr].slice.call(media[pn][qsa]("source"))[fe](function(source){
-						replaceAttr(source, dss, ss);
-					});
-				}
+      for (let dataAttribute in element.dataset) {
+        element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
+        element.removeAttribute(`data-${dataAttribute}`);
+      }
+    } else {
+      let newImageElement = new Image();
 
-				replaceAttr(media, ds, s);
-				replaceAttr(media, dss, ss);
-			}
+      if (typeof element.dataset.srcset !== "undefined") {
+        newImageElement.srcset = element.dataset.srcset;
+      }
 
-			media.classList.remove("lazy");
+      newImageElement.src = element.dataset.src;
 
-			elements = elements.filter(function(e){
-				return e !== media;
-			});
-		},
-		// A multiple event binding handler.
-		multiBind = function(obj, handlers, fn, remove){
-			handlers[fe](function(handler){
-				remove ? obj.removeEventListener(handler, fn) : obj.addEventListener(handler, fn);
-			});
-		},
-		// The guts of the lazy loader (now only used when IntersectionObserver is not supported)
-		yall = function(){
-			if(!elements.length){
-				// There are no more elements to lazy load, so we'll unbind everything.
-				multiBind(document, documentEvents, yall, 1);
-				multiBind(window, windowEvents, yall, 1);
-			}
+      if (env.asyncDecodeSupport === true) {
+        newImageElement.decode().then(() => {
+          newImageElement.alt = element.alt;
+          newImageElement.width = element.width;
+          newImageElement.height = element.height;
+          element.replaceWith(newImageElement);
+        });
+      } else {
+        for (let dataAttribute in element.dataset) {
+          element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
+          element.removeAttribute(`data-${dataAttribute}`);
+        }
+      }
+    }
+  }
 
-			// Check if the lazy loader is active
-			if(!active){
-				active = 1;
+  if (element.tagName === "VIDEO") {
+    [].slice.call(element.querySelectorAll("source")).forEach(source => {
+      for (let dataAttribute in source.dataset) {
+        source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
+        source.removeAttribute(`data-${dataAttribute}`);
+      }
+    });
 
-				setTimeout(function(){
-					elements[fe](function(media){
-						if((media[gbcr]().top <= window.innerHeight && media[gbcr]().bottom >= 0) && getComputedStyle(media).display != "none"){
-							loadMedia(media);
-						}
-					});
+    element.load();
+  }
 
-					active = 0;
-				}, 200);
-			}
-		};
+  if (element.tagName === "IFRAME") {
+    element.src = element.dataset.src;
+    element.removeAttribute("data-src");
+  }
+};
 
-	// Everything's kicked off on DOMContentLoaded
-	multiBind(document, ["DOMContentLoaded"], function(){
-		elements = Array[pr].slice.call(document[qsa](".lazy"));
+const yall = function(userOptions) {
+  const env = {
+    intersectionObserverSupport: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
+    mutationObserverSupport: "MutationObserver" in window,
+    idleCallbackSupport: "requestIdleCallback" in window,
+    asyncDecodeSupport: "decode" in new Image(),
+    eventsToBind: [
+      [document, "scroll"],
+      [document, "touchmove"],
+      [window, "resize"],
+      [window, "orientationchange"]
+    ]
+  };
 
-		// We're only going to do stuff if we found `.lazy` elements
-		if(elements.length){
-			// This compatibility check has been taken from https://github.com/WICG/IntersectionObserver/blob/gh-pages/polyfill/intersection-observer.js
-			if(io in window && ioe in window && "intersectionRatio" in window[ioe][pr]){
-				var mediaObserver = new window[io](function(entries, observer){
-					entries[fe](function(entry){
-						if(entry.isIntersecting){
-							loadMedia(entry.target);
-							mediaObserver.unobserve(entry.target);
-						}
-					});
-				});
+  let defaultOptions = {
+    lazyClass: "lazy",
+    throttleTime: 200,
+    idlyLoad: false,
+    idleLoadTimeout: 100,
+    threshold: 200,
+    observeChanges: false,
+    observeRootSelector: "body",
+    mutationObserverOptions: {
+      childList: true
+    }
+  };
 
-				elements[fe](function(media){
-					mediaObserver.observe(media);
-				});
-			}
-			else{
-				// If IntersectionObserver isn't available, we'll do things the old way.
-				yall();
-				multiBind(document, documentEvents, yall);
-				multiBind(window, windowEvents, yall);
-			}
-		}
-	});
-})(window, document);
+  const options = typeof userOptions === "object" ? Object.assign(defaultOptions, userOptions) : defaultOptions;
+  const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass}`;
+  const idleCallbackOptions = {
+    timeout: options.idleLoadTimeout
+  };
+
+  let lazyElements = [].slice.call(document.querySelectorAll(selectorString));
+
+  if (env.intersectionObserverSupport === true) {
+    var intersectionListener = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        let element = entry.target;
+
+        if (entry.isIntersecting === true) {
+          if (options.idlyLoad === true && env.idleCallbackSupport === true) {
+            requestIdleCallback(() => {
+              yallLoad(element, env);
+            }, idleCallbackOptions);
+          } else {
+            yallLoad(element, env);
+          }
+
+          element.classList.remove(options.lazyClass);
+          observer.unobserve(element);
+
+          lazyElements = lazyElements.filter((lazyElement) => {
+            return lazyElement !== element;
+          });
+        }
+      });
+    }, {
+      rootMargin: `${options.threshold}px 0%`
+    });
+
+    lazyElements.forEach((lazyElement) => intersectionListener.observe(lazyElement));
+  } else {
+    var yallBack = () => {
+      let active = false;
+
+      if (active === false && lazyElements.length > 0) {
+        active = true;
+
+        setTimeout(() => {
+          lazyElements.forEach((lazyElement) => {
+            if (lazyElement.getBoundingClientRect().top <= (window.innerHeight + options.threshold) && lazyElement.getBoundingClientRect().bottom >= -(options.threshold) && getComputedStyle(lazyElement).display !== "none") {
+              if (options.idlyLoad === true && env.idleCallbackSupport === true) {
+                requestIdleCallback(() => {
+                  yallLoad(lazyElement, env);
+                }, idleCallbackOptions);
+              } else {
+                yallLoad(lazyElement, env);
+              }
+
+              lazyElement.classList.remove(options.lazyClass);
+
+              lazyElements = lazyElements.filter((element) => {
+                return element !== lazyElement;
+              });
+            }
+          });
+
+          active = false;
+
+          if (lazyElements.length === 0 && options.observeChanges === false) {
+            env.eventsToBind.forEach((eventPair) => eventPair[0].removeEventListener(eventPair[1], yallBack));
+          }
+        }, options.throttleTime);
+      }
+    };
+
+    env.eventsToBind.forEach((eventPair) => eventPair[0].addEventListener(eventPair[1], yallBack));
+  }
+
+  if (env.mutationObserverSupport === true && options.observeChanges === true) {
+    const mutationListener = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        [].slice.call(document.querySelectorAll(selectorString)).forEach((newElement) => {
+          if (lazyElements.indexOf(newElement) === -1) {
+            lazyElements.push(newElement);
+
+            if (env.intersectionObserverSupport === true) {
+              intersectionListener.observe(newElement);
+            } else {
+              yallBack();
+            }
+          }
+        });
+      });
+    });
+
+    mutationListener.observe(options.observeRootSelector === "body" ? document.body : document.querySelector(options.observeRootSelector), options.mutationObserverOptions);
+  }
+};

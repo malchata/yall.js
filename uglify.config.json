@@ -1,0 +1,13 @@
+{
+  "mangle": {
+    "keep_fnames": true,
+    "toplevel": true,
+    "reserved": ["yall"]
+  },
+  "timings": true,
+  "compress": {
+    "sequences": true,
+    "conditionals": true,
+    "evaluate": true
+  }
+}
