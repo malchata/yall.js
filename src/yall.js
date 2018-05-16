@@ -30,9 +30,15 @@ const yallLoad = function(element, env) {
 
       if (env.asyncDecodeSupport === true) {
         newImageElement.decode().then(() => {
-          newImageElement.alt = element.alt;
-          newImageElement.width = element.width;
-          newImageElement.height = element.height;
+          for (let i = 0; i < element.attributes.length; i++) {
+            let attrName = element.attributes[i].name;
+            let attrValue = element.attributes[i].value;
+
+            if (env.ignoredImgAttributes.indexOf(attrName) === -1) {
+              newImageElement.setAttribute(attrName, attrValue);
+            }
+          }
+
           element.replaceWith(newImageElement);
         });
       } else {
@@ -67,6 +73,7 @@ const yall = function(userOptions) {
     mutationObserverSupport: "MutationObserver" in window,
     idleCallbackSupport: "requestIdleCallback" in window,
     asyncDecodeSupport: "decode" in new Image(),
+    ignoredImgAttributes: ["data-src", "data-srcset", "src", "srcset"],
     eventsToBind: [
       [document, "scroll"],
       [document, "touchmove"],
@@ -75,7 +82,7 @@ const yall = function(userOptions) {
     ]
   };
 
-  let defaultOptions = {
+  const options = {
     lazyClass: "lazy",
     throttleTime: 200,
     idlyLoad: false,
@@ -85,10 +92,9 @@ const yall = function(userOptions) {
     observeRootSelector: "body",
     mutationObserverOptions: {
       childList: true
-    }
+    },
+    ...userOptions
   };
-
-  const options = typeof userOptions === "object" ? Object.assign(defaultOptions, userOptions) : defaultOptions;
   const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass}`;
   const idleCallbackOptions = {
     timeout: options.idleLoadTimeout
@@ -178,6 +184,6 @@ const yall = function(userOptions) {
       });
     });
 
-    mutationListener.observe(options.observeRootSelector === "body" ? document.body : document.querySelector(options.observeRootSelector), options.mutationObserverOptions);
+    mutationListener.observe(document.querySelector(options.observeRootSelector), options.mutationObserverOptions);
   }
 };
