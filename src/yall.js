@@ -10,14 +10,18 @@ const yallLoad = function(element, env) {
     if (parentElement.tagName === "PICTURE") {
       [].slice.call(parentElement.querySelectorAll("source")).forEach(source => {
         for (let dataAttribute in source.dataset) {
-          source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
-          source.removeAttribute(`data-${dataAttribute}`);
+          if (env.acceptedDataAttributes.indexOf(dataAttribute) !== -1) {
+            source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
+            source.removeAttribute(`data-${dataAttribute}`);
+          }
         }
       });
 
       for (let dataAttribute in element.dataset) {
-        element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
-        element.removeAttribute(`data-${dataAttribute}`);
+        if (env.acceptedDataAttributes.indexOf(dataAttribute) !== -1) {
+          element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
+          element.removeAttribute(`data-${dataAttribute}`);
+        }
       }
     } else {
       let newImageElement = new Image();
@@ -43,8 +47,10 @@ const yallLoad = function(element, env) {
         });
       } else {
         for (let dataAttribute in element.dataset) {
-          element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
-          element.removeAttribute(`data-${dataAttribute}`);
+          if (env.acceptedDataAttributes.indexOf(dataAttribute) !== -1) {
+            element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
+            element.removeAttribute(`data-${dataAttribute}`);
+          }
         }
       }
     }
@@ -53,8 +59,10 @@ const yallLoad = function(element, env) {
   if (element.tagName === "VIDEO") {
     [].slice.call(element.querySelectorAll("source")).forEach(source => {
       for (let dataAttribute in source.dataset) {
-        source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
-        source.removeAttribute(`data-${dataAttribute}`);
+        if (env.acceptedDataAttributes.indexOf(dataAttribute) !== -1) {
+          source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
+          source.removeAttribute(`data-${dataAttribute}`);
+        }
       }
     });
 
@@ -74,6 +82,7 @@ const yall = function(userOptions) {
     idleCallbackSupport: "requestIdleCallback" in window,
     asyncDecodeSupport: "decode" in new Image(),
     ignoredImgAttributes: ["data-src", "data-srcset", "src", "srcset"],
+    acceptedDataAttributes: ["data-src", "data-sizes", "data-media", "data-srcset"],
     eventsToBind: [
       [document, "scroll"],
       [document, "touchmove"],
