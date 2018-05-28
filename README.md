@@ -153,3 +153,8 @@ yall.js doesn't care about placeholders. It won't try to minimize layout shiftin
 ## Contributing
 
 If you have an idea, file an issue and let's talk about it. Unsolicited pull requests for new features will generally be rejected unless those requests contain bug fixes.
+
+## Special thanks
+
+Thank you to [BrowserStack](https://www.browserstack.com/) for graciously providing free cross-platform browser testing services!
+[![BrowserStack](https://res.cloudinary.com/drp9iwjqz/image/upload/f_auto,q_auto/v1527175969/browserstack_txnmf8.png)](https://www.browserstack.com/)
