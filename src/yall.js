@@ -8,58 +8,51 @@ const yallLoad = function(element, env) {
     let parentElement = element.parentNode;
 
     if (parentElement.tagName === "PICTURE") {
-      [].slice.call(parentElement.querySelectorAll("source")).forEach(source => {
+      [].slice.call(parentElement.querySelectorAll("source")).forEach((source) => {
         for (let dataAttribute in source.dataset) {
-          if (env.acceptedDataAttributes.indexOf(dataAttribute) !== -1) {
+          if (env.acceptedDataAttributes.indexOf(`data-${dataAttribute}`) !== -1) {
             source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
             source.removeAttribute(`data-${dataAttribute}`);
           }
         }
       });
+    }
 
+    let newImageElement = new Image();
+
+    if (typeof element.dataset.srcset !== "undefined") {
+      newImageElement.srcset = element.dataset.srcset;
+    }
+
+    newImageElement.src = element.dataset.src;
+
+    if (env.asyncDecodeSupport === true) {
+      newImageElement.decode().then(() => {
+        for (let i = 0; i < element.attributes.length; i++) {
+          let attrName = element.attributes[i].name;
+          let attrValue = element.attributes[i].value;
+
+          if (env.ignoredImgAttributes.indexOf(attrName) === -1) {
+            newImageElement.setAttribute(attrName, attrValue);
+          }
+        }
+
+        element.replaceWith(newImageElement);
+      });
+    } else {
       for (let dataAttribute in element.dataset) {
-        if (env.acceptedDataAttributes.indexOf(dataAttribute) !== -1) {
+        if (env.acceptedDataAttributes.indexOf(`data-${dataAttribute}`) !== -1) {
           element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
           element.removeAttribute(`data-${dataAttribute}`);
-        }
-      }
-    } else {
-      let newImageElement = new Image();
-
-      if (typeof element.dataset.srcset !== "undefined") {
-        newImageElement.srcset = element.dataset.srcset;
-      }
-
-      newImageElement.src = element.dataset.src;
-
-      if (env.asyncDecodeSupport === true) {
-        newImageElement.decode().then(() => {
-          for (let i = 0; i < element.attributes.length; i++) {
-            let attrName = element.attributes[i].name;
-            let attrValue = element.attributes[i].value;
-
-            if (env.ignoredImgAttributes.indexOf(attrName) === -1) {
-              newImageElement.setAttribute(attrName, attrValue);
-            }
-          }
-
-          element.replaceWith(newImageElement);
-        });
-      } else {
-        for (let dataAttribute in element.dataset) {
-          if (env.acceptedDataAttributes.indexOf(dataAttribute) !== -1) {
-            element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
-            element.removeAttribute(`data-${dataAttribute}`);
-          }
         }
       }
     }
   }
 
   if (element.tagName === "VIDEO") {
-    [].slice.call(element.querySelectorAll("source")).forEach(source => {
+    [].slice.call(element.querySelectorAll("source")).forEach((source) => {
       for (let dataAttribute in source.dataset) {
-        if (env.acceptedDataAttributes.indexOf(dataAttribute) !== -1) {
+        if (env.acceptedDataAttributes.indexOf(`data-${dataAttribute}`) !== -1) {
           source.setAttribute(dataAttribute, source.dataset[dataAttribute]);
           source.removeAttribute(`data-${dataAttribute}`);
         }
