@@ -74,6 +74,11 @@
     </style>
   </head>
   <body>
+    <h1>Above the fold image</h1>
+    <img class="lazy" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
+    <noscript>
+      <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
+    </noscript>
     <h1>Scroll down...</h1>
     <button id="add-markup">Add New Markup</button>
     <div id="dynamic-markup-container"></div>

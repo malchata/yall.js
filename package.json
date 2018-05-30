@@ -32,11 +32,21 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "express": "^4.16.3",
     "npx": "^10.2.0",
     "rimraf": "^2.6.2",
-    "uglify-js": "^3.3.23"
+    "uglify-js": "^3.3.28"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "babel": {
+    "presets": [
+      ["env", {
+        "targets": {
+          "browsers": ["last 3 versions", "safari >= 9", "ie >= 9"]
+        }
+      }]
+    ],
+    "plugins": ["transform-object-rest-spread"]
+  }
 }

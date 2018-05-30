@@ -1,5 +1,5 @@
 /**
- * yall.js version 2.0.0
+ * yall.js version 2.0.1
  * Yet Another Lazy loader
  **/
 
@@ -174,6 +174,8 @@ const yall = function(userOptions) {
     };
 
     env.eventsToBind.forEach((eventPair) => eventPair[0].addEventListener(eventPair[1], yallBack));
+
+    yallBack();
   }
 
   if (env.mutationObserverSupport === true && options.observeChanges === true) {
