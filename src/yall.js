@@ -1,12 +1,12 @@
 /**
- * yall.js version 2.0.2
+ * yall.js version 2.1.0
  * Yet Another Lazy loader
  **/
 
 // The eponymous function
 var yall = function(userOptions) {
   // This function handles the lazy loading of elements. It's kicked off by the
-  // scroll handlers/intersection observers below in the eponymous function.
+  // scroll handlers/intersection observers further down.
   let yallLoad = function(element) {
     // Lazy load <img> elements
     if (element.tagName === "IMG") {
@@ -49,6 +49,12 @@ var yall = function(userOptions) {
       element.src = element.dataset.src;
       element.removeAttribute("data-src");
     }
+
+    // Lazy load CSS background images
+    if (element.classList.contains(options.lazyBackgroundClass)) {
+      element.classList.remove(options.lazyBackgroundClass);
+      element.classList.add(options.lazyBackgroundLoaded);
+    }
   };
 
   // Added because there was a number of patterns like this peppered throughout
@@ -85,7 +91,6 @@ var yall = function(userOptions) {
             }
 
             lazyElement.classList.remove(options.lazyClass);
-
             lazyElements = lazyElements.filter(element => element !== lazyElement);
           }
         });
@@ -118,6 +123,8 @@ var yall = function(userOptions) {
 
   const options = {
     lazyClass: "lazy",
+    lazyBackgroundClass: "lazy-bg",
+    lazyBackgroundLoaded: "lazy-bg-loaded",
     throttleTime: 200,
     idlyLoad: false,
     idleLoadTimeout: 100,
@@ -129,7 +136,7 @@ var yall = function(userOptions) {
     },
     ...userOptions
   };
-  const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass}`;
+  const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass},.${options.lazyBackgroundClass}`;
   const idleCallbackOptions = {
     timeout: options.idleLoadTimeout
   };

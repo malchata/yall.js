@@ -69,7 +69,35 @@
         margin-top: 128rem;
       }
 
-      .no-js .lazy {
+      .css-bg-example-container {
+        max-width: 48rem;
+        position: relative;
+        margin: 0 auto 1rem;
+      }
+
+      .css-bg-example {
+        position: absolute;
+        padding-top: 75%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        background: #ccc;
+      }
+
+      .css-bg-example.lazy-bg-loaded {
+        background-image: url("img/test-768w.jpg");
+        background-size: 100% auto;
+      }
+
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .css-bg-example.lazy-bg-loaded {
+          background-image: url("img/test-1536w.jpg");
+          background-size: 100% auto;
+        }
+      }
+
+      .no-js .lazy,
+      .no-js .lazy-bg {
         display: none;
       }
     </style>
@@ -123,6 +151,10 @@
       <noscript>
         <iframe width="512" height="384" src="iframe.html"></iframe>
       </noscript>
+      <h2>Lazy loading CSS background images:</code></h2>
+      <div class="css-bg-example-container">
+        <div class="css-bg-example lazy-bg"></div>
+      </div>
     </div>
     <script src="js/yall.min.js"></script>
     <script>
