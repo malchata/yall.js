@@ -1,13 +1,13 @@
 # yall.js (Yet Another Lazy Loader)
 
-[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=master)](https://travis-ci.org/malchata/yall.js) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.0.1.min.js?label=Uncompressed) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.0.1.min.js?compression=gzip&label=gzip)
-![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.0.1.min.js?compression=brotli&label=brotli)
+[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=master)](https://travis-ci.org/malchata/yall.js) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.0.2.min.js?label=Uncompressed) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.0.2.min.js?compression=gzip&label=gzip)
+![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.0.2.min.js?compression=brotli&label=brotli)
 
 yall.js is a featured-packed lazy loading script for `<img>`, `<picture>`, `<video>` and `<iframe>` elements. It works in all modern browsers including IE11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load image elements that have been appended to the DOM after initial page render, which may be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback). To optimize decoding of `<img>` lazy loading for simple `src` and `srcset` use cases, yall.js uses [`Image.decode`](https://www.chromestatus.com/feature/5637156160667648) where available to decode images asynchronously before adding them to the DOM.
 
 ## Usage
 
-This is version 2 of yall.js, and introduces some breaking changes over version 1. While the first version only required you to include the script and tag elements with a `class` of `lazy`, this script needs to be explicitly initialized like so:
+This is version 2 of yall.js, and introduces breaking changes over version 1. While version 1 only required you to include the script and tag elements with a `class` of `lazy`, this script must be explicitly initialized like so:
 
 ```html
 <script src="yall.min.js"></script>
@@ -27,7 +27,11 @@ The above syntax is sufficient if you don't want to pass in any options. [If you
 </script>
 ```
 
-From there, lazy loading elements with yall.js is simple! Let's look at the simplest `<img>` element use case:
+From there, lazy loading elements with yall.js is simple!
+
+### `<img>`
+
+Let's look at the simplest `<img>` element use case:
 
 ```html
 <!-- A simple src-only <img> element example -->
@@ -41,6 +45,8 @@ In this case, we specify an optional placeholder image in the `src` attribute, a
 <img class="lazy" src="placeholder.jpg" data-srcset="image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x" data-src="image-to-lazy-load-1x.jpg" alt="Alternative text to describe image.">
 ```
 
+### `<picture>`
+
 Since `<picture>` is a thing now, yall.js supports that, too:
 
 ```html
@@ -51,7 +57,9 @@ Since `<picture>` is a thing now, yall.js supports that, too:
 </picture>
 ```
 
-You can also use yall.js to lazy load `<video>` elements! This is useful if you are replacing animated GIF with autoplaying video:
+### `<video>`
+
+You can also use yall.js to lazy load `<video>` elements! This could be useful if you are replacing animated GIF with autoplaying video:
 
 ```html
 <video class="lazy" autoplay loop muted playsinline>
@@ -60,7 +68,9 @@ You can also use yall.js to lazy load `<video>` elements! This is useful if you 
 </video>
 ```
 
-The pattern is largely the same as it is with the `<picture>` use case, only the `lazy` class is applied to the `<video>` element. **Tip**: If you're embedding videos that don't emulate animated GIF behavior (i.e., non autoplaying video), it's better to _not_ lazy load them. Instead, lean on the [`preload` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#attr-preload) to defer loading of video content.
+The pattern is largely the same as it is with the `<picture>` use case, only the `lazy` class is applied to the `<video>` element. **Tip**: If you're embedding videos that don't emulate animated GIF behavior (i.e., non autoplaying video), it's better to _not_ lazy load them. Instead, lean on the [`preload` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#attr-preload) to defer loading of video content. _**Please note that video autoplay policies may change at any time, meaning your video may not autoplay on some platforms!**_
+
+### `<iframe>`
 
 As of version 2, you can also lazy load `<iframe>`s! This looks pretty much just like a simple `<img>` example:
 
@@ -147,9 +157,11 @@ When you call the main `yall` initializing function, you can pass an in an optio
 - `observeRootSelector` (default is `"body"`): If `observeChanges` is set to `true`, the value of this string is fed into `document.querySelector` to limit the scope in which the Mutation Observer looks for DOM changes. `document.body` is inferred by default, but you can confine it to any valid CSS selector (e.g., `div#main-wrapper`).
 - `mutationObserverOptions` (default is `{childList: true}`): Options to pass to the `MutationObserver` instance. Read [this MDN guide](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit) for a list of options.
 
-## Limitations
+## Words of wisdom
 
-yall.js doesn't care about placeholders. It won't try to minimize layout shifting or perform layout calculations for you. It's recommended to use a placeholder method such as [LQIP](https://www.guypo.com/introducing-lqip-low-quality-image-placeholders/) or [SQIP](https://github.com/technopagan/sqip) to fill the image space prior to lazy loading in conjunction with appropriate `width` and `height` attributes on elements. For `<video>` elements, use the `poster` attribute set a placeholder image. Please check out the `test` folder to see how you might use placeholders in conjunction with yall.js. If you don't want to bother with placeholders, you can omit the `src` attribute entirely in your lazy loading markup, and yall.js will still work.
+yall.js doesn't care about placeholders. It won't try to minimize layout shifting or perform layout calculations for you. It's recommended to use a placeholder method such as [LQIP](https://www.guypo.com/introducing-lqip-low-quality-image-placeholders/) or [SQIP](https://github.com/technopagan/sqip) to fill the image space prior to lazy loading in conjunction with appropriate `width` and `height` attributes on elements. For `<video>` elements, use the [`poster` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#attr-poster) to set a placeholder image. Please check out the `test` folder to see how you might use placeholders in conjunction with yall.js. If you don't want to bother with placeholders, you can omit the `src` attribute entirely in your lazy loading markup, and yall.js will still work.
+
+Also, do not lazy load critical resources that are above the fold. Doing so is a performance anti-pattern, because those resources will not begin loading until yall.js has been loaded, which may take much longer than if the resources was loaded normally. Be smart. If the resource is critical, load it normally! If it's below the fold, _then_ lazy load it!
 
 ## Contributing
 

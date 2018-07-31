@@ -1,15 +1,14 @@
 {
   "name": "yall",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Yet Another Lazy Loader",
   "main": "./src/yall.js",
   "scripts": {
-    "clean": "rimraf ./dist && mkdir -p ./dist",
-    "uglify": "npx babel $(node -p -e \"require('./package.json').main\") | npx uglifyjs --verbose --warn --config-file ./uglify.config.json --output ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js",
-    "update-test": "cp -fv ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js ./test/js/yall.min.js",
-    "show-size": "echo ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js is $(cat ./dist/yall-$(node -p -e \"require('./package.json').version\").min.js | wc -c) bytes.",
+    "clean": "rimraf \"./dist\" && mkdirp \"./dist\"",
+    "uglify": "cross-var npx babel $npm_package_main | cross-var npx uglifyjs --verbose --warn --config-file ./uglify.config.json --output ./dist/yall-$npm_package_version.min.js",
+    "update-test": "cross-var cp -fv ./dist/yall-$npm_package_version.min.js ./test/js/yall.min.js",
     "test": "node http.js",
-    "build": "npm run clean && npm run uglify && npm run update-test && npm run show-size"
+    "build": "npm run clean && npm run uglify && npm run update-test"
   },
   "repository": {
     "type": "git",
@@ -33,20 +32,29 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "cross-var": "^1.1.0",
     "express": "^4.16.3",
-    "npx": "^10.2.0",
+    "mkdirp": "^0.5.1",
     "rimraf": "^2.6.2",
-    "uglify-js": "^3.3.28"
+    "uglify-js": "^3.4.6"
   },
-  "dependencies": {},
   "babel": {
     "presets": [
-      ["env", {
-        "targets": {
-          "browsers": ["last 3 versions", "safari >= 9", "ie >= 9"]
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": [
+              "last 3 versions",
+              "safari >= 10",
+              "ie >= 10"
+            ]
+          }
         }
-      }]
+      ]
     ],
-    "plugins": ["transform-object-rest-spread"]
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
   }
 }
