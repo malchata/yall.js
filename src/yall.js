@@ -32,6 +32,8 @@ var yall = function(userOptions) {
           }
 
           element.replaceWith(newImageElement);
+        }).catch(() => {
+          yallFlipDataAttrs(element);
         });
       } else {
         yallFlipDataAttrs(element);
