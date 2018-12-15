@@ -122,7 +122,6 @@
       <noscript>
         <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
       </noscript>
-      <h2>Lazy loading <code>&lt;picture&gt;</code></h2>
       <picture>
         <source data-sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
         <source data-sizes="(min-width: 50rem) 48rem, 100vw"  data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
@@ -135,15 +134,26 @@
           <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" width="768" height="576">
         </picture>
       </noscript>
-      <h2>Lazy loading <code>&lt;video&gt;</code></h2>
-      <video class="lazy" width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline inline>
+      <h2>Lazy loading <code>&lt;video&gt;</code> (<code>autoplay</code>/GIF-like behavior)</h2>
+      <video class="lazy" width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline inline preload="none">
         <source data-src="video/test.webm" type="video/webm">
         <source data-src="video/test.mp4" type="video/mp4">
       </video>
       <noscript>
-        <video width="500" height="213" autoplay loop muted playsinline inline>
+        <video width="500" height="213" autoplay loop muted playsinline inline preload="none">
           <source src="video/test.webm" type="video/webm">
           <source src="video/test.mp4" type="video/mp4">
+        </video>
+      </noscript>
+      <h2>Lazy loading <code>&lt;video&gt;</code> (No <code>autoplay</code>, lazy load <code>poster</code> image)</h2>
+      <video class="lazy" width="500" height="257" data-poster="img/video-2-placeholder.jpg" loop muted controls preload="none">
+        <source src="video/test-2.webm" type="video/webm">
+        <source src="video/test-2.mp4" type="video/mp4">
+      </video>
+      <noscript>
+        <video class="lazy" width="500" height="257" poster="img/video-2-placeholder.jpg" loop muted controls preload="none">
+          <source src="video/test-2.webm" type="video/webm">
+          <source src="video/test-2.mp4" type="video/mp4">
         </video>
       </noscript>
       <h2>Lazy loading <code>&lt;iframe&gt;</code></h2>

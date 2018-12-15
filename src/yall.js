@@ -1,10 +1,14 @@
+/* exported yall */
+
 /**
- * yall.js version 2.1.0
+ * yall.js version 2.2.0
  * Yet Another Lazy loader
  **/
 
 // The eponymous function
-var yall = function(userOptions) {
+window.yall = function (userOptions) {
+  "use strict";
+
   // This function handles the lazy loading of elements. It's kicked off by the
   // scroll handlers/intersection observers further down.
   let yallLoad = function(element) {
@@ -17,33 +21,21 @@ var yall = function(userOptions) {
         [].slice.call(parentElement.querySelectorAll("source")).forEach(source => yallFlipDataAttrs(source));
       }
 
-      if (env.asyncDecodeSupport === true && env.replaceWithSupport === true) {
-        let newImageElement = new Image();
-        yallFlipDataAttrs(newImageElement, element);
-
-        newImageElement.decode().then(() => {
-          for (let i = 0; i < element.attributes.length; i++) {
-            let attrName = element.attributes[i].name;
-            let attrValue = element.attributes[i].value;
-
-            if (env.ignoredImgAttributes.indexOf(attrName) === -1) {
-              newImageElement.setAttribute(attrName, attrValue);
-            }
-          }
-
-          element.replaceWith(newImageElement);
-        }).catch(() => {
-          yallFlipDataAttrs(element);
-        });
-      } else {
-        yallFlipDataAttrs(element);
-      }
+      yallFlipDataAttrs(element);
     }
 
     // Lazy load <video> elements
     if (element.tagName === "VIDEO") {
       [].slice.call(element.querySelectorAll("source")).forEach(source => yallFlipDataAttrs(source));
-      element.load();
+
+      // We didn't need this before, but with the addition of lazy loading
+      // `poster` images, we need to run the flip attributes function on the
+      // video element itself so we can trigger lazy loading behavior on those.
+      yallFlipDataAttrs(element);
+
+      if (element.autoplay === true) {
+        element.load();
+      }
     }
 
     // Lazy load <iframe> elements
@@ -62,12 +54,10 @@ var yall = function(userOptions) {
   // Added because there was a number of patterns like this peppered throughout
   // the code. This just flips all the data- attrs on an element (after checking
   // to make sure the data attr is in a whitelist to avoid changing *all* of them)
-  let yallFlipDataAttrs = function(element, refElement = false) {
-    let sourceDataset = refElement.dataset || element.dataset;
-
-    for (let dataAttribute in sourceDataset) {
+  let yallFlipDataAttrs = function(element) {
+    for (let dataAttribute in element.dataset) {
       if (env.acceptedDataAttributes.indexOf(`data-${dataAttribute}`) !== -1) {
-        element.setAttribute(dataAttribute, sourceDataset[dataAttribute]);
+        element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
         element.removeAttribute(`data-${dataAttribute}`);
       }
     }
@@ -106,15 +96,12 @@ var yall = function(userOptions) {
     }
   };
 
-  const testImage = new Image();
   const env = {
     intersectionObserverSupport: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
     mutationObserverSupport: "MutationObserver" in window,
     idleCallbackSupport: "requestIdleCallback" in window,
-    asyncDecodeSupport: "decode" in testImage,
-    replaceWithSupport: "replaceWith" in testImage,
     ignoredImgAttributes: ["data-src", "data-sizes", "data-media", "data-srcset", "src", "srcset"],
-    acceptedDataAttributes: ["data-src", "data-sizes", "data-media", "data-srcset"],
+    acceptedDataAttributes: ["data-src", "data-sizes", "data-media", "data-srcset", "data-poster"],
     eventsToBind: [
       [document, "scroll"],
       [document, "touchmove"],
@@ -152,9 +139,7 @@ var yall = function(userOptions) {
           let element = entry.target;
 
           if (options.idlyLoad === true && env.idleCallbackSupport === true) {
-            requestIdleCallback(() => {
-              yallLoad(element);
-            }, idleCallbackOptions);
+            requestIdleCallback(() => yallLoad(element), idleCallbackOptions);
           } else {
             yallLoad(element);
           }
@@ -175,22 +160,18 @@ var yall = function(userOptions) {
   }
 
   if (env.mutationObserverSupport === true && options.observeChanges === true) {
-    const mutationListener = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        [].slice.call(document.querySelectorAll(selectorString)).forEach(newElement => {
-          if (lazyElements.indexOf(newElement) === -1) {
-            lazyElements.push(newElement);
+    new MutationObserver(mutations => mutations.forEach(() => {
+      [].slice.call(document.querySelectorAll(selectorString)).forEach(newElement => {
+        if (lazyElements.indexOf(newElement) === -1) {
+          lazyElements.push(newElement);
 
-            if (env.intersectionObserverSupport === true) {
-              intersectionListener.observe(newElement);
-            } else {
-              yallBack();
-            }
+          if (env.intersectionObserverSupport === true) {
+            intersectionListener.observe(newElement);
+          } else {
+            yallBack();
           }
-        });
+        }
       });
-    });
-
-    mutationListener.observe(document.querySelector(options.observeRootSelector), options.mutationObserverOptions);
+    })).observe(document.querySelector(options.observeRootSelector), options.mutationObserverOptions);
   }
-};
+}
