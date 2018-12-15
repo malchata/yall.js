@@ -1,12 +1,4 @@
-/* exported yall */
-
-/**
- * yall.js version 2.2.0
- * Yet Another Lazy loader
- **/
-
-// The eponymous function
-window.yall = function (userOptions) {
+export function yall(userOptions) {
   "use strict";
 
   // This function handles the lazy loading of elements. It's kicked off by the
@@ -123,8 +115,13 @@ window.yall = function (userOptions) {
     mutationObserverOptions: {
       childList: true
     },
-    ...userOptions
   };
+
+  if (userOptions != null) {
+    for (let key in userOptions)
+      options[key] = userOptions[key];
+  }
+
   const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass},.${options.lazyBackgroundClass}`;
   const idleCallbackOptions = {
     timeout: options.idleLoadTimeout

@@ -4,12 +4,7 @@
   "description": "Yet Another Lazy Loader",
   "main": "./src/yall.js",
   "scripts": {
-    "clean": "rimraf \"./dist\" && mkdirp \"./dist\"",
-    "uglify": "cross-var npx babel $npm_package_main | cross-var npx uglifyjs --verbose --warn --config-file ./uglify.config.json --output ./dist/yall-$npm_package_version.min.js",
-    "update-test": "cross-var cp -fv ./dist/yall-$npm_package_version.min.js ./test/js/yall.min.js",
-    "lint": "npx eslint ./src/yall.js",
-    "test": "npm run lint && node http.js",
-    "build": "npm run clean && npm run uglify && npm run update-test"
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -30,18 +25,8 @@
   },
   "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.2.0",
-    "@babel/core": "^7.2.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
-    "cross-var": "^1.1.0",
-    "eslint": "^5.10.0",
-    "express": "^4.16.4",
-    "mkdirp": "^0.5.1",
-    "rimraf": "^2.6.2",
-    "uglify-js": "^3.4.9"
-  },
-  "dependencies": {
-    "@babel/plugin-proposal-export-default-from": "^7.2.0"
+    "rollup": "^1.0.0",
+    "rollup-plugin-buble": "^0.19.6",
+    "rollup-plugin-terser": "^3.0.0"
   }
 }
