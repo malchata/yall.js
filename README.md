@@ -206,7 +206,11 @@ When you call the main `yall` initializing function, you can pass an in an optio
 
 ## Words of wisdom
 
-yall.js doesn't care about placeholders, and won't try to minimize layout shifting for you. Use appropriate `width` and `height` attributes on elements, as well as lightweight placeholders. In the case of `<video>`, avoid setting a `poster` attribute for autoplaying videos. On the other hand _do_ consider lazy loading a placeholder image with `data-poster` for non-autoplaying videos. Please check out the `test` folder to see how you might use placeholders in conjunction with yall.js. If you don't want to bother with placeholders, you can omit the `src` attribute entirely in your lazy loading markup, and yall.js will still work, albeit the experience may be super jumpy for your users.
+yall.js doesn't care about placeholders, and won't try to minimize layout shifting for you. Use appropriate `width` and `height` attributes on elements, as well as lightweight placeholders
+
+In the case of `<video>`, avoid lazy loading a placeholder with the `data-poster` attribute for autoplaying videos and just use `poster`. On the other hand _do_ consider lazy loading a placeholder image with `data-poster` for non-autoplaying videos.
+
+For general guidance, please check out the `test` folder to see how you might use placeholders with yall.js. If you don't want to bother with placeholders, you can omit them in all use cases. Yall.js will still work, albeit the experience may be weird and jumpy and weird for your users as resources load.
 
 Also, do _not_ lazy load resources that are likely to near the top of the page ("above the fold", as it were). Doing so is a performance anti-pattern, because those resources will not begin loading until yall.js has been loaded, which may take much longer than if those resources were loaded normally.
 
