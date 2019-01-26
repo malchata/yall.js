@@ -104,7 +104,7 @@
   </head>
   <body>
     <h1>Above the fold image (<code>&lt;srcset&gt;</code> example)</h1>
-    <img class="lazy" data-sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
+    <img class="lazy" sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
     <noscript>
       <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
     </noscript>
@@ -118,14 +118,14 @@
         <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" width="768" height="576">
       </noscript>
       <h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
-      <img class="lazy" data-sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
+      <img class="lazy" sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
       <noscript>
         <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
       </noscript>
       <picture>
-        <source data-sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
-        <source data-sizes="(min-width: 50rem) 48rem, 100vw"  data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
-        <img class="lazy" data-sizes="(min-width: 50rem) 48rem, 100vw" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" width="768" height="576">
+        <source sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
+        <source sizes="(min-width: 50rem) 48rem, 100vw"  data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
+        <img class="lazy" sizes="(min-width: 50rem) 48rem, 100vw" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" width="768" height="576">
       </picture>
       <noscript>
         <picture>

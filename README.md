@@ -1,6 +1,6 @@
 # yall.js (Yet Another Lazy Loader)
 
-[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=master)](https://travis-ci.org/malchata/yall.js) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.0.min.js?label=Uncompressed) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.0.min.js?compression=gzip&label=gzip) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.0.min.js?compression=brotli&label=brotli)
+[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=master)](https://travis-ci.org/malchata/yall.js) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.1.min.js?label=Uncompressed) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.1.min.js?compression=gzip&label=gzip) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.1.min.js?compression=brotli&label=brotli)
 
 yall.js is a featured-packed script that lazy loads content for `<img>`, `<picture>`, `<video>` and `<iframe>` elements, and can also lazy load CSS background images. It works in all modern browsers including IE11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load media elements that have been appended to the DOM after initial page render, which may be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
 
@@ -43,6 +43,8 @@ In this case, we specify an optional placeholder image in the `src` attribute, a
 <!-- A somewhat more complex src + srcset example -->
 <img class="lazy" src="placeholder.jpg" data-srcset="image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x" data-src="image-to-lazy-load-1x.jpg" alt="Alternative text to describe image.">
 ```
+
+**Note:** If you're using `media` and `sizes` atttributes on your elements, you don't need to prefix them with `data-`. Leave them as is and the browser will still choose the proper sources for the given viewport conditions.
 
 ### `<picture>`
 

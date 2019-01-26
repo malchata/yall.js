@@ -1,4 +1,6 @@
-/* global module */
+/* eslint-env node */
+
+"use strict";
 
 module.exports = {
   presets: [

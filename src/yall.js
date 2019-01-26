@@ -1,7 +1,7 @@
 /* exported yall */
 
 /**
- * yall.js version 2.2.0
+ * yall.js version 2.2.1
  * Yet Another Lazy loader
  **/
 
@@ -9,16 +9,61 @@
 window.yall = function (userOptions) {
   "use strict";
 
+  // Environmental stuff. Stores feature support information, as well as other
+  // stuff yall needs to refer to during operation.
+  const env = {
+    intersectionObserverSupport: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
+    mutationObserverSupport: "MutationObserver" in window,
+    idleCallbackSupport: "requestIdleCallback" in window,
+    eventsToBind: [
+      [document, "scroll"],
+      [document, "touchmove"],
+      [window, "resize"],
+      [window, "orientationchange"]
+    ]
+  };
+
+  // Default options, merged with user options. Use of Object.assign instead of
+  // object spread to merge saves ~200 bytes. Thanks to @leeoniya for making me
+  // aware of this.
+  const options = {
+    lazyClass: "lazy",
+    lazyBackgroundClass: "lazy-bg",
+    lazyBackgroundLoaded: "lazy-bg-loaded",
+    throttleTime: 200,
+    idlyLoad: false,
+    idleLoadTimeout: 100,
+    threshold: 200,
+    observeChanges: false,
+    observeRootSelector: "body",
+    mutationObserverOptions: {
+      childList: true,
+      subtree: true
+    },
+    ...userOptions
+  };
+
+  // CSS selector for all the lazy little elements.
+  const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass},.${options.lazyBackgroundClass}`;
+
+  // Options that get passed to requestIdleCallback
+  const idleCallbackOptions = {
+    timeout: options.idleLoadTimeout
+  };
+
+  // This small abstraction saves a few bytes.
+  const sliceCall = arr => [].slice.call(arr);
+
   // This function handles the lazy loading of elements. It's kicked off by the
   // scroll handlers/intersection observers further down.
-  let yallLoad = function(element) {
+  const yallLoad = element => {
     // Lazy load <img> elements
     if (element.tagName === "IMG") {
       let parentElement = element.parentNode;
 
       // Is the parent element a <picture>?
       if (parentElement.tagName === "PICTURE") {
-        [].slice.call(parentElement.querySelectorAll("source")).forEach(source => yallFlipDataAttrs(source));
+        sliceCall(parentElement.querySelectorAll("source")).forEach(source => yallFlipDataAttrs(source));
       }
 
       yallFlipDataAttrs(element);
@@ -26,7 +71,7 @@ window.yall = function (userOptions) {
 
     // Lazy load <video> elements
     if (element.tagName === "VIDEO") {
-      [].slice.call(element.querySelectorAll("source")).forEach(source => yallFlipDataAttrs(source));
+      sliceCall(element.querySelectorAll("source")).forEach(source => yallFlipDataAttrs(source));
 
       // We didn't need this before, but with the addition of lazy loading
       // `poster` images, we need to run the flip attributes function on the
@@ -40,8 +85,7 @@ window.yall = function (userOptions) {
 
     // Lazy load <iframe> elements
     if (element.tagName === "IFRAME") {
-      element.src = element.dataset.src;
-      element.removeAttribute("data-src");
+      yallFlipDataAttrs(element);
     }
 
     // Lazy load CSS background images
@@ -54,12 +98,19 @@ window.yall = function (userOptions) {
   // Added because there was a number of patterns like this peppered throughout
   // the code. This just flips all the data- attrs on an element (after checking
   // to make sure the data attr is in a whitelist to avoid changing *all* of them)
-  let yallFlipDataAttrs = function(element) {
-    for (let dataAttribute in element.dataset) {
-      if (env.acceptedDataAttributes.indexOf(`data-${dataAttribute}`) !== -1) {
-        element.setAttribute(dataAttribute, element.dataset[dataAttribute]);
-        element.removeAttribute(`data-${dataAttribute}`);
-      }
+  const yallFlipDataAttrs = element => {
+    // Do `srcset` first. Doing `src` first can cause loading of additional
+    // assets on Safari (and possibly other webkit browsers).
+    if (element.getAttribute("data-srcset") !== null) {
+      element.setAttribute("srcset", element.getAttribute("data-srcset"));
+    }
+
+    if (element.getAttribute("data-src") !== null) {
+      element.setAttribute("src", element.getAttribute("data-src"));
+    }
+
+    if (element.getAttribute("data-poster") !== null) {
+      element.setAttribute("poster", element.getAttribute("data-poster"));
     }
   };
 
@@ -96,41 +147,7 @@ window.yall = function (userOptions) {
     }
   };
 
-  const env = {
-    intersectionObserverSupport: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
-    mutationObserverSupport: "MutationObserver" in window,
-    idleCallbackSupport: "requestIdleCallback" in window,
-    ignoredImgAttributes: ["data-src", "data-sizes", "data-media", "data-srcset", "src", "srcset"],
-    acceptedDataAttributes: ["data-src", "data-sizes", "data-media", "data-srcset", "data-poster"],
-    eventsToBind: [
-      [document, "scroll"],
-      [document, "touchmove"],
-      [window, "resize"],
-      [window, "orientationchange"]
-    ]
-  };
-
-  const options = {
-    lazyClass: "lazy",
-    lazyBackgroundClass: "lazy-bg",
-    lazyBackgroundLoaded: "lazy-bg-loaded",
-    throttleTime: 200,
-    idlyLoad: false,
-    idleLoadTimeout: 100,
-    threshold: 200,
-    observeChanges: false,
-    observeRootSelector: "body",
-    mutationObserverOptions: {
-      childList: true
-    },
-    ...userOptions
-  };
-  const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass},.${options.lazyBackgroundClass}`;
-  const idleCallbackOptions = {
-    timeout: options.idleLoadTimeout
-  };
-
-  let lazyElements = [].slice.call(document.querySelectorAll(selectorString));
+  let lazyElements = sliceCall(document.querySelectorAll(selectorString));
 
   if (env.intersectionObserverSupport === true) {
     var intersectionListener = new IntersectionObserver((entries, observer) => {
@@ -161,7 +178,7 @@ window.yall = function (userOptions) {
 
   if (env.mutationObserverSupport === true && options.observeChanges === true) {
     new MutationObserver(mutations => mutations.forEach(() => {
-      [].slice.call(document.querySelectorAll(selectorString)).forEach(newElement => {
+      sliceCall(document.querySelectorAll(selectorString)).forEach(newElement => {
         if (lazyElements.indexOf(newElement) === -1) {
           lazyElements.push(newElement);
 
