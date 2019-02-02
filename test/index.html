@@ -65,7 +65,8 @@
       noscript + h2,
       video + h2,
       iframe + h2,
-      #dynamic-markup-container + #server-markup {
+      #dynamic-markup-container + #server-markup,
+      .add-title-margin {
         margin-top: 128rem;
       }
 
@@ -94,6 +95,25 @@
           background-image: url("img/test-1536w.jpg");
           background-size: 100% auto;
         }
+      }
+      
+
+      .css-bg-deferred-example-container {
+        max-width: 48rem;
+        position: relative;
+        margin: 0 auto 1rem;
+      }
+
+      .css-bg-deferred-example {
+        position: absolute;
+        padding-top: 75%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        background: #ccc;
+        background-position: center;
+        background-size: cover;
+        background-image: url('img/placeholder.jpg');
       }
 
       .no-js .lazy,
@@ -164,6 +184,10 @@
       <h2>Lazy loading CSS background images:</code></h2>
       <div class="css-bg-example-container">
         <div class="css-bg-example lazy-bg"></div>
+      </div>
+      <h2 class="add-title-margin">Lazy loading CSS background images with deferred:</code></h2>
+      <div class="css-bg-deferred-example-container">
+        <div class="css-bg-deferred-example lazy-bg" data-src="img/test-768w.jpg"></div>
       </div>
     </div>
     <script src="js/yall.min.js"></script>

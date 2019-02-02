@@ -29,7 +29,9 @@ window.yall = function (userOptions) {
   const options = {
     lazyClass: "lazy",
     lazyBackgroundClass: "lazy-bg",
+    lazyBackgroundLoading: "lazy-bg-loading",
     lazyBackgroundLoaded: "lazy-bg-loaded",
+    lazyBackgroundError: "lazy-bg-error",
     throttleTime: 200,
     idlyLoad: false,
     idleLoadTimeout: 100,
@@ -90,8 +92,25 @@ window.yall = function (userOptions) {
 
     // Lazy load CSS background images
     if (element.classList.contains(options.lazyBackgroundClass)) {
+      const elementDataSrc = element.getAttribute("data-src");
+
       element.classList.remove(options.lazyBackgroundClass);
-      element.classList.add(options.lazyBackgroundLoaded);
+      if (elementDataSrc === null) {
+        element.classList.add(options.lazyBackgroundLoaded);
+      } else {
+        element.classList.add(options.lazyBackgroundLoading);
+        // Start deferred loading
+        const deferredImage = new Image();
+
+        deferredImage.onload = () => {
+          element.style.backgroundImage = ["url(", elementDataSrc, ")"].join("");
+          element.classList.add(options.lazyBackgroundLoaded);
+        };
+        deferredImage.onerror = () => {
+          element.classList.add(options.lazyBackgroundError);
+        }
+        deferredImage.src = elementDataSrc;
+      }
     }
   };
 
@@ -177,6 +196,7 @@ window.yall = function (userOptions) {
   }
 
   if (env.mutationObserverSupport === true && options.observeChanges === true) {
+    // eslint-disable-next-line no-new
     new MutationObserver(mutations => mutations.forEach(() => {
       sliceCall(document.querySelectorAll(selectorString)).forEach(newElement => {
         if (lazyElements.indexOf(newElement) === -1) {
