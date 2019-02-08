@@ -1,32 +1,34 @@
 # yall.js (Yet Another Lazy Loader)
 
-[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=master)](https://travis-ci.org/malchata/yall.js) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.1.min.js?label=Uncompressed) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.1.min.js?compression=gzip&label=gzip) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall-2.2.1.min.js?compression=brotli&label=brotli)
+[![Build Status](https://travis-ci.org/malchata/yall.js.svg?branch=master)](https://travis-ci.org/malchata/yall.js) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?label=Uncompressed) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?compression=gzip&label=gzip) ![](https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?compression=brotli&label=brotli)
 
 yall.js is a featured-packed script that lazy loads content for `<img>`, `<picture>`, `<video>` and `<iframe>` elements, and can also lazy load CSS background images. It works in all modern browsers including IE11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load media elements that have been appended to the DOM after initial page render, which may be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
 
+While yall.js has only been offered in the past as a drop-in script, it's now installable as an npm package:
+
+```shell
+npm install yall-js
+```
+
 ## Usage
 
-This is version 2 of yall.js, and introduces breaking changes over version 1. While version 1 only required you to include the script and tag elements with a `class` of `lazy`, this script must be explicitly initialized like so:
+This is version 2 of yall.js, and introduces breaking changes over version 1. While version 1 only required you to include the script and tag elements with a `class` of `lazy`, this script must be explicitly initialized:
 
-```html
-<script src="yall.min.js"></script>
-<script>document.addEventListener("DOMContentLoaded", yall);</script>
+```javascript
+document.addEventListener("DOMContentLoaded", yall);
 ```
 
-The above syntax is sufficient if you don't want to pass in any options. [If you want to specify options](#api-options), however, you'll need to use a slightly more verbose syntax:
+The above syntax is sufficient if you don't want to pass in any options. [If you _do_ want to specify options](#api-options), you'll need to use a slightly more verbose syntax:
 
-```html
-<script src="yall.min.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    yall({
-      observeChanges: true
-    });
+```javascript
+document.addEventListener("DOMContentLoaded", function() {
+  yall({
+    observeChanges: true
   });
-</script>
+});
 ```
 
-From there, lazy loading elements with yall.js is a snap!
+From there, lazy loading elements with yall.js depends on _what_ you want to lazy load. Let's take a look at what you can do with it.
 
 ### `<img>`
 
@@ -218,7 +220,7 @@ Also, do _not_ lazy load resources that are likely to near the top of the page (
 
 ## Contributing
 
-If you have an idea, file an issue and let's talk about it. Unsolicited pull requests for new features will generally be rejected unless those requests contain bug fixes.
+If you have an idea, file an issue and let's talk about it. Unsolicited pull requests for new features will generally be rejected unless those requests contain bug fixes. Please see [`CONTRIBUTING.md`](https://github.com/malchata/yall.js/blob/master/CONTRIBUTING.md) for more details.
 
 ## Special thanks
 

@@ -1,14 +1,12 @@
-/* exported yall */
+'use strict';
 
 /**
- * yall.js version 2.2.1
+ * yall.js version 2.2.2
  * Yet Another Lazy loader
  **/
 
 // The eponymous function
-window.yall = function (userOptions) {
-  "use strict";
-
+function yall (userOptions) {
   // Environmental stuff. Stores feature support information, as well as other
   // stuff yall needs to refer to during operation.
   const env = {
@@ -23,9 +21,7 @@ window.yall = function (userOptions) {
     ]
   };
 
-  // Default options, merged with user options. Use of Object.assign instead of
-  // object spread to merge saves ~200 bytes. Thanks to @leeoniya for making me
-  // aware of this.
+  // Default options, merged with user options.
   const options = {
     lazyClass: "lazy",
     lazyBackgroundClass: "lazy-bg",
@@ -96,8 +92,7 @@ window.yall = function (userOptions) {
   };
 
   // Added because there was a number of patterns like this peppered throughout
-  // the code. This just flips all the data- attrs on an element (after checking
-  // to make sure the data attr is in a whitelist to avoid changing *all* of them)
+  // the code. This just flips necessary data- attrs on an element
   const yallFlipDataAttrs = element => {
     // Do `srcset` first. Doing `src` first can cause loading of additional
     // assets on Safari (and possibly other webkit browsers).
@@ -116,7 +111,7 @@ window.yall = function (userOptions) {
 
   // When intersection observer is unavailable, this function is bound to scroll
   // (and other) event handlers to load images the "old" way.
-  let yallBack = function() {
+  const yallBack = function() {
     let active = false;
 
     if (active === false && lazyElements.length > 0) {
@@ -192,3 +187,5 @@ window.yall = function (userOptions) {
     })).observe(document.querySelector(options.observeRootSelector), options.mutationObserverOptions);
   }
 }
+
+module.exports = yall;

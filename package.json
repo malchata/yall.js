@@ -1,15 +1,14 @@
 {
-  "name": "yall",
-  "version": "2.2.1",
+  "name": "yall-js",
+  "version": "2.2.2",
   "description": "Yet Another Lazy Loader",
-  "main": "./src/yall.js",
+  "main": "./dist/yall.js",
+  "module": "./src/yall.mjs",
   "scripts": {
-    "clean": "rimraf \"./dist\" && mkdirp \"./dist\"",
-    "uglify": "cross-var npx babel $npm_package_main | cross-var npx uglifyjs --verbose --warn --config-file ./uglify.config.json --output ./dist/yall-$npm_package_version.min.js",
-    "update-test": "cross-var cp -fv ./dist/yall-$npm_package_version.min.js ./test/js/yall.min.js",
-    "lint": "npx eslint ./src/yall.js",
+    "clean": "npx rimraf ./dist",
+    "lint": "npx eslint ./src/yall.mjs",
     "test": "npm run lint && node http.js",
-    "build": "npm run clean && npm run uglify && npm run update-test"
+    "build": "npm run clean && npx rollup -c"
   },
   "repository": {
     "type": "git",
@@ -32,14 +31,15 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-object-rest-spread": "^7.3.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
     "@babel/preset-env": "^7.3.1",
-    "cross-var": "^1.1.0",
-    "eslint": "^5.12.1",
+    "eslint": "^5.13.0",
     "express": "^4.16.4",
-    "mkdirp": "^0.5.1",
     "rimraf": "^2.6.3",
-    "uglify-js": "^3.4.9"
+    "rollup": "^1.1.2",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-copy": "^0.2.3",
+    "rollup-plugin-terser": "^4.0.4"
   },
   "dependencies": {}
 }

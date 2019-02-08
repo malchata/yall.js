@@ -161,19 +161,34 @@
       <noscript>
         <iframe width="512" height="384" src="iframe.html"></iframe>
       </noscript>
-      <h2>Lazy loading CSS background images:</code></h2>
+      <h2>Lazy loading CSS background images:</h2>
       <div class="css-bg-example-container">
         <div class="css-bg-example lazy-bg"></div>
       </div>
     </div>
-    <script src="js/yall.min.js"></script>
-    <script>
+    <!-- Polyfill for Safari not supporting `nomodule` on script tags -->
+    <script>(function(){var d=document;var c=d.createElement('script');if(!('noModule' in c)&&'onbeforeload' in c){var s=false;d.addEventListener('beforeload',function(e){if(e.target===c){s=true}else if(!e.target.hasAttribute('nomodule')||!s){return}e.preventDefault()},true);c.type='module';c.src='.';d.head.appendChild(c);c.remove()}}())</script>
+    <script type="module">
+      import yall from "./js/yall.min.mjs";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        yall({
+          observeChanges: true,
+          idlyLoad: true
+        });
+      });
+    </script>
+    <script nomodule src="js/yall.min.js"></script>
+    <script nomodule>
       document.addEventListener("DOMContentLoaded", function() {
         yall({
           observeChanges: true,
           idlyLoad: true
         });
-
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
         var markupContainer = document.getElementById("dynamic-markup-container");
         var addMarkupButton = document.getElementById("add-markup");
         var serverMarkup = document.getElementById("server-markup").innerHTML;
