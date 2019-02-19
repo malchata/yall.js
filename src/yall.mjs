@@ -24,6 +24,7 @@ function yall (userOptions) {
     lazyClass: "lazy",
     lazyBackgroundClass: "lazy-bg",
     lazyBackgroundLoaded: "lazy-bg-loaded",
+    lazyLoadedClass: "loaded",
     throttleTime: 200,
     idlyLoad: false,
     idleLoadTimeout: 100,
@@ -128,6 +129,10 @@ function yall (userOptions) {
 
             lazyElement.classList.remove(options.lazyClass);
             lazyElements = lazyElements.filter(element => element !== lazyElement);
+
+            lazyElement.onload(function () {
+              lazyElement.addClass(options.lazyLoadedClass);
+            });
           }
         });
 
