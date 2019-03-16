@@ -1,8 +1,19 @@
 # yall.js (Yet Another Lazy Loader)
 
-![Uncompressed build size](https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?label=Uncompressed) ![gzip build size](https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?compression=gzip&label=gzip) ![Brotli build size](https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?compression=brotli&label=brotli)
+<p align="center">
+  <strong>ES5 (.js) version</strong>
+</p>
+<p align="center">
+  <img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?compression=brotli&label=brotli" alt="Brotli size.">
+</p>
+<p align="center">
+  <strong>ES6 (.mjs) version</strong>
+</p>
+<p align="center">
+  <img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?compression=brotli&label=brotli" alt="Brotli size.">
+</p>
 
-yall.js is a featured-packed script that lazy loads content for `<img>`, `<picture>`, `<video>` and `<iframe>` elements, and can also lazy load CSS background images. It works in all modern browsers including IE11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load media elements that have been appended to the DOM after initial page render, which may be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
+yall.js is a featured-packed SEO-friendly lazy loader for `<img>`, `<picture>`, `<video>` and `<iframe>` elements, and can also lazy load CSS background images. It works in all modern browsers as well as IE11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but falls back to `scroll`, `touchmove`, `resize`, and `orientationchange` events where necessary. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load media elements that have been appended to the DOM after initial page render, which may be desirable for single page applications. It can also (optionally) optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
 
 While yall.js has only been offered in the past as a drop-in script, it's now installable as an npm package:
 
@@ -201,16 +212,15 @@ When you call the main `yall` initializing function, you can pass an in an optio
 - `lazyBackgroundClass` (default: `"lazy-bg"`): The element class used by yall.js to find elements to lazy load CSS background images for. Change this if you'd prefer not to use the default.
 - `lazyBackgroundLoaded` (default: `"lazy-bg-loaded"`): When yall.js finds elements using the class specified by `lazyBackgroundClass`, it will remove that class and put this one in its place. This will be the class you use in your CSS to bring in your background image when the affected element is in the viewport.
 - `throttleTime` (default: `200`): In cases where Intersection Observer isn't available, standard event handlers are used. `throttleTime` allows you to control how often the code within these event handlers fire in milliseconds.
-- `idlyLoad` (default: `false`): If set to `true`, `requestIdleCallback` is used to optimize use of browser idle time to limit monopolization of the main thread. _**Notes:** This setting is ignored if set to `true` in a browser that doesn't support `requestIdleCallback`! Additionally, enabling this could cause lazy loading to be delayed significantly more than you might be okay with! This option trades off some degree of seamless lazy loading in favor of optimized use of browser idle time. Test extensively, and consider increasing the `threshold` option if you set this option to `true`!_
-- `idleLoadTimeout` (default: `100`): If `idlyLoad` is set to `true`, this option sets a deadline in milliseconds for `requestIdleCallback` to kick off lazy loading for an element.
+- `idleLoadTimeout` (default: `100`): In environments where `requestIdleCallback` is available, this option sets a deadline in milliseconds for `requestIdleCallback` to kick off lazy loading for an element. If this option is set to `0`, `requestIdleCallback` is never called, and lazy loading for the affected element(s) will begin immediately once they're in the viewport.
 - `threshold` (default: `200`): The threshold (in pixels) for how far elements need to be within the viewport to begin lazy loading.
 - `observeChanges` (default: `false`): Use a Mutation Observer to examine the DOM for changes. This is useful if you're using yall.js in a single page application and want to lazy load resources for markup injected into the page after initial page render. _**Note:** This option is ignored if set to `true` in a browser that doesn't support Mutation Observer!_
 - `observeRootSelector` (default: `"body"`): If `observeChanges` is set to `true`, the value of this string is fed into `document.querySelector` to limit the scope in which the Mutation Observer looks for DOM changes. The `<body>` element is used by default, but you can confine the observer to any valid CSS selector (e.g., `#main-wrapper`).
 - `mutationObserverOptions` (default: `{childList: true}`): Options to pass to the `MutationObserver` instance. Read [this MDN guide](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit) for a list of options.
 
-## Words of wisdom
+## Words of advice
 
-yall.js doesn't care about placeholders, and won't try to minimize layout shifting for you. Use appropriate `width` and `height` attributes on elements, as well as lightweight placeholders
+It is not yall.js's job to minimize layout shifting for you. Use appropriate `width` and `height` attributes on elements, as well as lightweight placeholders for your images.
 
 In the case of `<video>`, avoid lazy loading a placeholder with the `data-poster` attribute for autoplaying videos and just use `poster`. On the other hand _do_ consider lazy loading a placeholder image with `data-poster` for non-autoplaying videos.
 

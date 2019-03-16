@@ -103,7 +103,7 @@
     </style>
   </head>
   <body>
-    <h1>Above the fold image (<code>&lt;srcset&gt;</code> example)</h1>
+    <h1>Above the fold image (<code>src</code>+<code>srcset</code>)</h1>
     <img class="lazy" sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
     <noscript>
       <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
@@ -122,6 +122,7 @@
       <noscript>
         <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
       </noscript>
+      <h2>Lazy loading <code>&lt;picture&gt;</code></h2>
       <picture>
         <source sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
         <source sizes="(min-width: 50rem) 48rem, 100vw"  data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
@@ -166,28 +167,15 @@
         <div class="css-bg-example lazy-bg"></div>
       </div>
     </div>
-    <!-- Polyfill for Safari not supporting `nomodule` on script tags -->
-    <script>(function(){var d=document;var c=d.createElement('script');if(!('noModule' in c)&&'onbeforeload' in c){var s=false;d.addEventListener('beforeload',function(e){if(e.target===c){s=true}else if(!e.target.hasAttribute('nomodule')||!s){return}e.preventDefault()},true);c.type='module';c.src='.';d.head.appendChild(c);c.remove()}}())</script>
-    <script type="module">
-      import yall from "./js/yall.min.mjs";
-
-      document.addEventListener("DOMContentLoaded", () => {
-        yall({
-          observeChanges: true,
-          idlyLoad: true
-        });
-      });
-    </script>
-    <script nomodule src="js/yall.min.js"></script>
-    <script nomodule>
+    <script src="js/yall.min.js"></script>
+    <script>
       document.addEventListener("DOMContentLoaded", function() {
         yall({
           observeChanges: true,
           idlyLoad: true
         });
       });
-    </script>
-    <script>
+
       document.addEventListener("DOMContentLoaded", function() {
         var markupContainer = document.getElementById("dynamic-markup-container");
         var addMarkupButton = document.getElementById("add-markup");

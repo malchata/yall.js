@@ -5,14 +5,15 @@ import pkg from "./package.json";
 
 const commonTerserOptions = {
   output: {
-    preamble: `/* yall.js v${pkg.version} */`,
+    preamble: `/*yall.js ${pkg.version}*/`,
   },
   timings: true,
   compress: {
     sequences: true,
     conditionals: true,
     evaluate: true,
-    unsafe_arrows: true
+    unsafe_arrows: true,
+    warnings: true
   }
 };
 
@@ -60,7 +61,7 @@ export default [
           keep_fnames: true,
           toplevel: true,
           reserved: ["yall"],
-          module: true
+          module: false
         },
         ...commonTerserOptions
       })

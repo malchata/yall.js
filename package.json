@@ -1,9 +1,10 @@
 {
   "name": "yall-js",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "Yet Another Lazy Loader",
   "main": "./dist/yall.js",
   "module": "./src/yall.mjs",
+  "jsnext:main": "./src/yall.mjs",
   "scripts": {
     "clean": "npx rimraf ./dist",
     "lint": "npx eslint ./src/yall.mjs",
@@ -12,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "urnl": "git+ssh://git@github.com/malchata/yall.js.git"
+    "url": "git+ssh://git@github.com/malchata/yall.js.git"
   },
   "keywords": [
     "lazy load",
@@ -33,10 +34,10 @@
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
-    "eslint": "^5.15.0",
+    "eslint": "^5.15.2",
     "express": "^4.16.4",
     "rimraf": "^2.6.3",
-    "rollup": "^1.4.1",
+    "rollup": "^1.6.0",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-copy": "^0.2.3",
     "rollup-plugin-terser": "^4.0.4"

@@ -1,126 +1,99 @@
 'use strict';
 
-/**
- * yall.js version 2.2.2
- * Yet Another Lazy loader
- **/
+function yall (options) {
+  if (!options) {
+    options = {};
+  }
 
-// The eponymous function
-function yall (userOptions) {
-  // Environmental stuff. Stores feature support information, as well as other
-  // stuff yall needs to refer to during operation.
-  const env = {
-    intersectionObserverSupport: "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype,
-    mutationObserverSupport: "MutationObserver" in window,
-    idleCallbackSupport: "requestIdleCallback" in window,
-    eventsToBind: [
-      [document, "scroll"],
-      [document, "touchmove"],
-      [window, "resize"],
-      [window, "orientationchange"]
-    ]
-  };
-
-  // Default options, merged with user options.
-  const options = {
-    lazyClass: "lazy",
-    lazyBackgroundClass: "lazy-bg",
-    lazyBackgroundLoaded: "lazy-bg-loaded",
-    throttleTime: 200,
-    idlyLoad: false,
-    idleLoadTimeout: 100,
-    threshold: 200,
-    observeChanges: false,
-    observeRootSelector: "body",
-    mutationObserverOptions: {
-      childList: true,
-      subtree: true
-    },
-    ...userOptions
-  };
-
-  // CSS selector for all the lazy little elements.
-  const selectorString = `img.${options.lazyClass},video.${options.lazyClass},iframe.${options.lazyClass},.${options.lazyBackgroundClass}`;
-
-  // Options that get passed to requestIdleCallback
+  const intersectionObserverSupport = "IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype;
+  const idleCallbackSupport = "requestIdleCallback" in window;
+  const eventsToBind = [
+    [document, "scroll"],
+    [document, "touchmove"],
+    [window, "resize"],
+    [window, "orientationchange"]
+  ];
+  const lazyClass = options.lazyClass || "lazy";
+  const lazyBackgroundClass = options.lazyBackgroundClass || "lazy-bg";
+  const idleLoadTimeout = options.idleLoadTimeout || 100;
+  const threshold = options.threshold || 200;
+  const observeChanges = options.observeChanges || false;
+  const selectorString = `img.${lazyClass},video.${lazyClass},iframe.${lazyClass},.${lazyBackgroundClass}`;
+  const dataAttrs = ["srcset", "src", "poster"];
   const idleCallbackOptions = {
-    timeout: options.idleLoadTimeout
+    timeout: idleLoadTimeout
   };
-
-  // This small abstraction saves a few bytes.
   const sliceCall = arr => [].slice.call(arr);
 
   // This function handles the lazy loading of elements. It's kicked off by the
   // scroll handlers/intersection observers further down.
   const yallLoad = element => {
-    // Lazy load <img> elements
-    if (element.tagName === "IMG") {
-      let parentElement = element.parentNode;
+    switch (element.nodeName) {
+      case "IMG":
+        let parentElement = element.parentNode;
 
-      // Is the parent element a <picture>?
-      if (parentElement.tagName === "PICTURE") {
-        sliceCall(parentElement.querySelectorAll("source")).forEach(source => yallFlipDataAttrs(source));
-      }
+        // Is the parent element a <picture>?
+        if (parentElement.nodeName == "PICTURE") {
+          sliceCall(parentElement.querySelectorAll("source")).forEach(source => {
+            yallFlipDataAttrs(source);
+          });
+        }
 
-      yallFlipDataAttrs(element);
-    }
+        yallFlipDataAttrs(element);
 
-    // Lazy load <video> elements
-    if (element.tagName === "VIDEO") {
-      sliceCall(element.querySelectorAll("source")).forEach(source => yallFlipDataAttrs(source));
+        break;
 
-      // We didn't need this before, but with the addition of lazy loading
-      // `poster` images, we need to run the flip attributes function on the
-      // video element itself so we can trigger lazy loading behavior on those.
-      yallFlipDataAttrs(element);
+      case "VIDEO":
+        sliceCall(element.querySelectorAll("source")).forEach(source => {
+          yallFlipDataAttrs(source);
+        });
 
-      if (element.autoplay === true) {
-        element.load();
-      }
-    }
+        // We didn't need this before, but with the addition of lazy loading
+        // `poster` images, we need to run the flip attributes function on the
+        // video element itself so we can trigger lazy loading behavior on those.
+        yallFlipDataAttrs(element);
 
-    // Lazy load <iframe> elements
-    if (element.tagName === "IFRAME") {
-      yallFlipDataAttrs(element);
+        if (element.autoplay) {
+          element.load();
+        }
+
+        break;
+
+      case "IFRAME":
+        yallFlipDataAttrs(element);
+
+        break;
     }
 
     // Lazy load CSS background images
-    if (element.classList.contains(options.lazyBackgroundClass)) {
-      element.classList.remove(options.lazyBackgroundClass);
-      element.classList.add(options.lazyBackgroundLoaded);
+    if (element.classList.contains(lazyBackgroundClass)) {
+      element.classList.remove(lazyBackgroundClass);
+      element.classList.add(options.lazyBackgroundLoaded || "lazy-bg-loaded");
     }
   };
 
   // Added because there was a number of patterns like this peppered throughout
   // the code. This just flips necessary data- attrs on an element
   const yallFlipDataAttrs = element => {
-    // Do `srcset` first. Doing `src` first can cause loading of additional
-    // assets on Safari (and possibly other webkit browsers).
-    if (element.getAttribute("data-srcset") !== null) {
-      element.setAttribute("srcset", element.getAttribute("data-srcset"));
-    }
-
-    if (element.getAttribute("data-src") !== null) {
-      element.setAttribute("src", element.getAttribute("data-src"));
-    }
-
-    if (element.getAttribute("data-poster") !== null) {
-      element.setAttribute("poster", element.getAttribute("data-poster"));
-    }
+    dataAttrs.forEach(dataAttr => {
+      if (dataAttr in element.dataset) {
+        element[dataAttr] = element.dataset[dataAttr];
+      }
+    });
   };
 
   // When intersection observer is unavailable, this function is bound to scroll
   // (and other) event handlers to load images the "old" way.
-  const yallBack = function() {
+  const yallBack = () => {
     let active = false;
 
-    if (active === false && lazyElements.length > 0) {
+    if (!active && lazyElements.length) {
       active = true;
 
       setTimeout(() => {
         lazyElements.forEach(lazyElement => {
-          if (lazyElement.getBoundingClientRect().top <= (window.innerHeight + options.threshold) && lazyElement.getBoundingClientRect().bottom >= -(options.threshold) && getComputedStyle(lazyElement).display !== "none") {
-            if (options.idlyLoad === true && env.idleCallbackSupport === true) {
+          if (lazyElement.getBoundingClientRect().top <= (window.innerHeight + threshold) && lazyElement.getBoundingClientRect().bottom >= -threshold && getComputedStyle(lazyElement).display != "none") {
+            if (idleCallbackSupport && idleLoadTimeout) {
               requestIdleCallback(() => {
                 yallLoad(lazyElement);
               }, idleCallbackOptions);
@@ -128,63 +101,87 @@ function yall (userOptions) {
               yallLoad(lazyElement);
             }
 
-            lazyElement.classList.remove(options.lazyClass);
-            lazyElements = lazyElements.filter(element => element !== lazyElement);
+            lazyElement.classList.remove(lazyClass);
+            lazyElements = lazyElements.filter(element => element != lazyElement);
           }
         });
 
         active = false;
 
-        if (lazyElements.length === 0 && options.observeChanges === false) {
-          env.eventsToBind.forEach(eventPair => eventPair[0].removeEventListener(eventPair[1], yallBack));
+        if (!lazyElements.length && !observeChanges) {
+          eventsToBind.forEach(eventPair => {
+            eventPair[0].removeEventListener(eventPair[1], yallBack);
+          });
         }
-      }, options.throttleTime);
+      }, options.throttleTime || 200);
     }
   };
 
   let lazyElements = sliceCall(document.querySelectorAll(selectorString));
 
-  if (env.intersectionObserverSupport === true) {
+  // If the current user agent is a known crawler, immediately load all media
+  // for the elements yall is listening for and halt execution (good for SEO).
+  if (/(google|bing|yandex|duckduck)bot/i.test(navigator.userAgent)) {
+    lazyElements.forEach(lazyElement => {
+      yallLoad(lazyElement);
+    });
+
+    return;
+  }
+
+  if (intersectionObserverSupport) {
     var intersectionListener = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting === true || entry.intersectionRatio > 0) {
+        if (entry.isIntersecting) {
           let element = entry.target;
 
-          if (options.idlyLoad === true && env.idleCallbackSupport === true) {
-            requestIdleCallback(() => yallLoad(element), idleCallbackOptions);
+          if (idleCallbackSupport && idleLoadTimeout) {
+            requestIdleCallback(() => {
+              yallLoad(element);
+            }, idleCallbackOptions);
           } else {
             yallLoad(element);
           }
 
-          element.classList.remove(options.lazyClass);
+          element.classList.remove(lazyClass);
           observer.unobserve(element);
-          lazyElements = lazyElements.filter(lazyElement => lazyElement !== element);
+          lazyElements = lazyElements.filter(lazyElement => lazyElement != element);
         }
       });
     }, {
-      rootMargin: `${options.threshold}px 0%`
+      rootMargin: `${threshold}px 0%`
     });
 
-    lazyElements.forEach(lazyElement => intersectionListener.observe(lazyElement));
+    lazyElements.forEach(lazyElement => {
+      intersectionListener.observe(lazyElement);
+    });
   } else {
-    env.eventsToBind.forEach(eventPair => eventPair[0].addEventListener(eventPair[1], yallBack));
+    eventsToBind.forEach(eventPair => {
+      eventPair[0].addEventListener(eventPair[1], yallBack);
+    });
+
     yallBack();
   }
 
-  if (env.mutationObserverSupport === true && options.observeChanges === true) {
-    new MutationObserver(mutations => mutations.forEach(() => {
-      sliceCall(document.querySelectorAll(selectorString)).forEach(newElement => {
-        if (lazyElements.indexOf(newElement) === -1) {
-          lazyElements.push(newElement);
+  if ("MutationObserver" in window && observeChanges) {
+    new MutationObserver(mutations => {
+      mutations.forEach(() => {
+        sliceCall(document.querySelectorAll(selectorString)).forEach(newElement => {
+          if (lazyElements.indexOf(newElement) == -1) {
+            lazyElements.push(newElement);
 
-          if (env.intersectionObserverSupport === true) {
-            intersectionListener.observe(newElement);
-          } else {
-            yallBack();
+            if (intersectionObserverSupport) {
+              intersectionListener.observe(newElement);
+            } else {
+              yallBack();
+            }
           }
-        }
+        });
       });
-    })).observe(document.querySelector(options.observeRootSelector), options.mutationObserverOptions);
+    }).observe(document.querySelector(options.observeRootSelector || "body"), options.mutationObserverOptions || {
+      childList: true,
+      subtree: true
+    });
   }
 }
 
