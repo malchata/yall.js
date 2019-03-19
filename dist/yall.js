@@ -15,11 +15,10 @@ function yall (options) {
   ];
   const lazyClass = options.lazyClass || "lazy";
   const lazyBackgroundClass = options.lazyBackgroundClass || "lazy-bg";
-  const idleLoadTimeout = options.idleLoadTimeout || 100;
-  const threshold = options.threshold || 200;
+  const idleLoadTimeout = "idleLoadTimeout" in options ? options.idleLoadTimeout : 100;
+  const threshold = "threshold" in options ? options.threshold : 200;
   const observeChanges = options.observeChanges || false;
   const selectorString = `img.${lazyClass},video.${lazyClass},iframe.${lazyClass},.${lazyBackgroundClass}`;
-  const dataAttrs = ["srcset", "src", "poster"];
   const idleCallbackOptions = {
     timeout: idleLoadTimeout
   };
@@ -75,7 +74,7 @@ function yall (options) {
   // Added because there was a number of patterns like this peppered throughout
   // the code. This just flips necessary data- attrs on an element
   const yallFlipDataAttrs = element => {
-    dataAttrs.forEach(dataAttr => {
+    ["srcset", "src", "poster"].forEach(dataAttr => {
       if (dataAttr in element.dataset) {
         element[dataAttr] = element.dataset[dataAttr];
       }
@@ -113,7 +112,7 @@ function yall (options) {
             eventPair[0].removeEventListener(eventPair[1], yallBack);
           });
         }
-      }, options.throttleTime || 200);
+      }, "throttleTime" in options ? options.throttleTime : 200);
     }
   };
 
@@ -146,6 +145,10 @@ function yall (options) {
           element.classList.remove(lazyClass);
           observer.unobserve(element);
           lazyElements = lazyElements.filter(lazyElement => lazyElement != element);
+
+          if (!lazyElements.length && !observeChanges) {
+            intersectionListener.disconnect();
+          }
         }
       });
     }, {

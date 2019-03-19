@@ -1,6 +1,6 @@
 {
   "name": "yall-js",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Yet Another Lazy Loader",
   "main": "./dist/yall.js",
   "module": "./src/yall.mjs",
@@ -32,9 +32,8 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
-    "eslint": "^5.15.2",
+    "eslint": "^5.15.3",
     "express": "^4.16.4",
     "rimraf": "^2.6.3",
     "rollup": "^1.6.0",
