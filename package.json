@@ -1,6 +1,6 @@
 {
   "name": "yall-js",
-  "version": "2.3.1",
+  "version": "3.0.0",
   "description": "Yet Another Lazy Loader",
   "main": "./dist/yall.js",
   "module": "./src/yall.mjs",
@@ -9,7 +9,8 @@
     "clean": "npx rimraf ./dist",
     "lint": "npx eslint ./src/yall.mjs",
     "test": "npm run lint && node http.js",
-    "build": "npm run clean && npx rollup -c"
+    "build": "npm run clean && npx rollup -c",
+    "postinstall": "node -e \"console.log('Thank you for install version 3 of yall.js. If you find bugs, please file an issue with appropriate details at https://github.com/malchata/yall.js/issues')\""
   },
   "repository": {
     "type": "git",
@@ -31,12 +32,12 @@
   "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
     "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.4",
-    "@babel/preset-env": "^7.3.4",
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
     "eslint": "^5.15.3",
     "express": "^4.16.4",
     "rimraf": "^2.6.3",
-    "rollup": "^1.6.0",
+    "rollup": "^1.7.0",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-copy": "^0.2.3",
     "rollup-plugin-terser": "^4.0.4"
