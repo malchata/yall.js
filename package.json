@@ -10,7 +10,7 @@
     "lint": "npx eslint ./src/yall.mjs",
     "test": "npm run lint && node http.js",
     "build": "npm run clean && npx rollup -c",
-    "postinstall": "node -e \"console.log('Thank you for install version 3 of yall.js. If you find bugs, please file an issue with appropriate details at https://github.com/malchata/yall.js/issues')\""
+    "postinstall": "node -e \"console.log('Thank you for trying out version 3 of yall.js. If you find bugs, please file an issue with appropriate details at https://github.com/malchata/yall.js/issues')\""
   },
   "repository": {
     "type": "git",
