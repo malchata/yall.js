@@ -15,10 +15,10 @@
 
 yall.js is a featured-packed SEO-friendly lazy loader for `<img>`, `<picture>`, `<video>` and `<iframe>` elements, and can also lazy load CSS background images. It works in all modern browsers as well as IE11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but as of version 3, this API must be polyfilled for older browsers. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load media elements that have been appended to the DOM after initial page render, which may be desirable for single page applications. It can also optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
 
-To use yall, you can grab `yall.min.js` (or `yall.min.mjs` if you're the modern sort) from the `dist` directory and slap it on your page. You can also install it with npm:
+To use yall, you can grab `yall.min.js` (or `yall.min.mjs` if you're the modern sort) from the `dist` directory and slap it on your page. You can also install version 3 with npm by pointing to the `next` tag:
 
 ```shell
-npm install yall-js
+npm install yall-js@next
 ```
 
 ## Usage
