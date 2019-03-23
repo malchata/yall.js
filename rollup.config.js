@@ -49,7 +49,7 @@ export default [
         presets: [
           [
             "@babel/preset-env", {
-              targets: ">0.5%, last 5 versions, ie > 10, not dead",
+              targets: ">0.25%, last 2 versions, ie > 10, not dead",
               loose: true
             }
           ]
