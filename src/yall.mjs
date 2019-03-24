@@ -63,7 +63,7 @@ export default function (options) {
 
   // If the current user agent is a known crawler, immediately load all media
   // for the elements yall is listening for and halt execution (good for SEO).
-  if (/(google|bing|yandex|duckduck)bot/i.test(navigator.userAgent)) {
+  if (/baidu|(?:google|bing|yandex|duckduck)bot/i.test(navigator.userAgent)) {
     for (let lazyElementIndex in lazyElements) {
       yallLoad(lazyElements[lazyElementIndex]);
     }
