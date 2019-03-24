@@ -65,7 +65,8 @@
       noscript + h2,
       video + h2,
       iframe + h2,
-      #dynamic-markup-container + #server-markup {
+      #dynamic-markup-container + #server-markup,
+      .message + h2 {
         margin-top: 128rem;
       }
 
@@ -94,6 +95,45 @@
           background-image: url("img/test-1536w.jpg");
           background-size: 100% auto;
         }
+      }
+
+      img {
+        transition: opacity 2s ease-out;
+        position: relative;
+        z-index: 1;
+      }
+
+      img.lazy {
+        opacity: .5;
+      }
+
+      img.yall-loaded
+      img.yall-error {
+        opacity: 1;
+      }
+
+      .message {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 2s ease-out;
+        text-align: center;
+        padding: 1rem .5rem;
+        color: #fff;
+        font-size: 1.5rem;
+        margin: 1rem 0 0;
+      }
+
+      .message.error {
+        background: #f00;
+      }
+
+      .message.notice {
+        background: #00f;
+      }
+
+      .message.visible {
+        visibility: visible;
+        opacity: 1;
       }
 
       .no-js .lazy,
@@ -135,11 +175,15 @@
           <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" width="768" height="576">
         </picture>
       </noscript>
+      <h2>An image that doesn't exist</h2>
+      <img class="lazy" data-src="img/BLARP.jpg" src="img/placeholder.jpg" alt="An image that doesn't exist" width="768" height="576">
+      <div class="message error">Oh no, the image didn't load :(</div>
       <h2>Lazy loading <code>&lt;video&gt;</code> (<code>autoplay</code>/GIF-like behavior)</h2>
       <video class="lazy" width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline inline preload="none">
         <source data-src="video/test.webm" type="video/webm">
         <source data-src="video/test.mp4" type="video/mp4">
       </video>
+      <div class="message notice">The video autoplayed. :)</div>
       <noscript>
         <video width="500" height="213" autoplay loop muted playsinline inline preload="none">
           <source src="video/test.webm" type="video/webm">
@@ -172,7 +216,30 @@
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         yall({
-          observeChanges: true
+          observeChanges: true,
+          events: {
+            load: function (event) {
+              if (!event.target.classList.contains("lazy") && event.target.nodeName == "IMG") {
+                event.target.classList.add("yall-loaded");
+              }
+            },
+            play: function (event) {
+              if (event.target.nodeName == "VIDEO") {
+                event.target.nextElementSibling.classList.add("visible");
+              }
+            },
+            error: {
+              listener: function (event) {
+                if (!event.target.classList.contains("lazy") && event.target.nodeName == "IMG") {
+                  event.target.classList.add("yall-error");
+                  event.target.nextElementSibling.classList.add("visible");
+                }
+              },
+              options: {
+                once: true
+              }
+            }
+          }
         });
       });
 

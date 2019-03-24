@@ -1,17 +1,15 @@
 export default function (options) {
-  if (!options) {
-    options = {};
-  }
+  options = options || {};
 
-  const intersectionObserverSupport = "IntersectionObserver" in window && "IntersectionObserverEntry" in window;
   const lazyClass = options.lazyClass || "lazy";
   const lazyBackgroundClass = options.lazyBackgroundClass || "lazy-bg";
-  const idleLoadTimeout = "idleLoadTimeout" in options ? options.idleLoadTimeout : 100;
+  const idleLoadTimeout = "idleLoadTimeout" in options ? options.idleLoadTimeout : 200;
   const observeChanges = options.observeChanges || false;
   const selectorString = `img.${lazyClass},video.${lazyClass},iframe.${lazyClass},.${lazyBackgroundClass}`;
+  const events = options.events || {};
 
   // This abstraction shaves off a few bytes (plus it's nifty).
-  const sliceCall = arr => [].slice.call(arr);
+  const nodeListToArray = nodeList => [].slice.call(nodeList);
 
   // This function handles lazy loading of elements.
   const yallLoad = element => {
@@ -19,11 +17,11 @@ export default function (options) {
     let sourceElements;
 
     if (parentNode.nodeName == "PICTURE") {
-      sourceElements = sliceCall(parentNode.querySelectorAll("source"));
+      sourceElements = nodeListToArray(parentNode.querySelectorAll("source"));
     }
 
     if (element.nodeName == "VIDEO") {
-      sourceElements = sliceCall(element.querySelectorAll("source"));
+      sourceElements = nodeListToArray(element.querySelectorAll("source"));
     }
 
     for (let sourceElementIndex in sourceElements) {
@@ -43,6 +41,14 @@ export default function (options) {
     }
   };
 
+  const yallBind = (intersectionListener, element) => {
+    intersectionListener.observe(element);
+
+    Object.keys(events).forEach(eventKey => {
+      element.addEventListener(eventKey, events[eventKey].listener || events[eventKey], events[eventKey].options || undefined);
+    });
+  };
+
   // Added because there was a number of patterns like this peppered throughout
   // the code. This just flips necessary data- attrs on an element
   const yallFlipDataAttrs = element => {
@@ -53,7 +59,7 @@ export default function (options) {
     });
   };
 
-  let lazyElements = sliceCall(document.querySelectorAll(selectorString));
+  let lazyElements = nodeListToArray(document.querySelectorAll(selectorString));
 
   // If the current user agent is a known crawler, immediately load all media
   // for the elements yall is listening for and halt execution (good for SEO).
@@ -65,7 +71,7 @@ export default function (options) {
     return;
   }
 
-  if (intersectionObserverSupport) {
+  if ("IntersectionObserver" in window && "IntersectionObserverEntry" in window) {
     var intersectionListener = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -95,21 +101,21 @@ export default function (options) {
     });
 
     for (let lazyElementIndex in lazyElements) {
-      intersectionListener.observe(lazyElements[lazyElementIndex]);
+      yallBind(intersectionListener, lazyElements[lazyElementIndex]);
     }
-  }
 
-  if ("MutationObserver" in window && observeChanges) {
-    new MutationObserver(() => {
-      sliceCall(document.querySelectorAll(selectorString)).forEach(newElement => {
-        if (lazyElements.indexOf(newElement) < 0 && intersectionObserverSupport) {
-          lazyElements.push(newElement);
-          intersectionListener.observe(newElement);
-        }
+    if ("MutationObserver" in window && observeChanges) {
+      new MutationObserver(() => {
+        nodeListToArray(document.querySelectorAll(selectorString)).forEach(newElement => {
+          if (lazyElements.indexOf(newElement) < 0) {
+            lazyElements.push(newElement);
+            yallBind(intersectionListener, newElement);
+          }
+        });
+      }).observe(document.querySelector(options.observeRootSelector || "body"), options.mutationObserverOptions || {
+        childList: true,
+        subtree: true
       });
-    }).observe(document.querySelector(options.observeRootSelector || "body"), options.mutationObserverOptions || {
-      childList: true,
-      subtree: true
-    });
+    }
   }
 }

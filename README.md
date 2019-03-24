@@ -220,42 +220,83 @@ When you call the main `yall` initializing function, you can pass an in an optio
 
 ### `lazyClass`
 
-**default:** `"lazy"`
+**default:** `"lazy"`<br>
 The element class used by yall.js to find elements to lazy load. Change this is if a `class` attribute value of `lazy` conflicts with your application.
 
 ### `lazyBackgroundClass`
 
-**default:** `"lazy-bg"`
+**default:** `"lazy-bg"`<br>
 The element class used by yall.js to find elements to lazy load CSS background images for. Change this if you'd prefer not to use the default.
 
 ### `lazyBackgroundLoaded`
 
-**default:** `"lazy-bg-loaded"`
+**default:** `"lazy-bg-loaded"`<br>
 When yall.js finds elements using the class specified by `lazyBackgroundClass`, it will remove that class and put this one in its place. This will be the class you use in your CSS to bring in your background image when the affected element is in the viewport.
 
 ### `idleLoadTimeout`
 
-**default:** `100`
+**default:** `200`<br>
 In environments where `requestIdleCallback` is available, this option sets a deadline in milliseconds for `requestIdleCallback` to kick off lazy loading for an element. If this option is set to `0`, `requestIdleCallback` is never called, and lazy loading for the affected element(s) will begin immediately once they're in the viewport.
 
 ### `threshold`
 
-**default:** `200`
+**default:** `200`<br>
 The threshold (in pixels) for how far elements need to be within the viewport to begin lazy loading.
+
+### `events`
+**default:** `{}`<br>
+An object of events that get sent directly to [`addEventListener`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) for each element to be lazy loaded. Rather than building some opinionated, bespoke event management system, this system gets out of your way and allows you to specify whatever events you are possible to bind with `addEventListener`. Here's an example below:
+
+```javascript
+document.addEventListener("DOMContentLoaded", function () {
+  yall({
+    events: {
+      // The object key is sent as the first argument to `addEventListener`,
+      // which is the event. The corresponding value can be the callback if you
+      // don't want to send any options to `addEventListener`.
+      load: function (event) {
+        if (!event.target.classList.contains("lazy") && event.target.nodeName == "IMG") {
+          event.target.classList.add("yall-loaded");
+        }
+      },
+      // If we want to pass options to the third argument in `addEventListener`,
+      // we can use a nested object syntax like so:
+      error: {
+        // Here, the `listener` member is the callback.
+        listener: function (event) {
+          if (!event.target.classList.contains("lazy") && event.target.nodeName == "IMG") {
+            event.target.classList.add("yall-error");
+          }
+        },
+        // The option below is sent as the third argument to `addEventListener`,
+        // offering more control over how events are bound. If you want to
+        // specify `useCapture` in lieu of options pass a boolean here instead.
+        options: {
+          once: true
+        }
+      }
+    }
+  });
+});
+```
+
+Events for yall are bound at initialization time. This means that some events could fire multiple times. For instance, in the above `load` event example you can see that we check for the default class of `"lazy"` on the element. This is because the `load` event could fire when the initial image placeholder loaded (if one is specified) _and_ when the final image is lazy loaded.
+
+The advantage of this approach is that you can do pretty much anything you want in any of the events on the elements yall observes. The disadvantage is that it places the responsibility squarely on you to manage events. This feature is also not finalized, so there are chances you may find some unexpected behavior or breaking API changes in the future.
 
 ### `observeChanges`
 
-**default:** `false`
+**default:** `false`<br>
 Use a Mutation Observer to examine the DOM for changes. This is useful if you're using yall.js in a single page application and want to lazy load resources for markup injected into the page after initial page render. _**Note:** This option is ignored if set to `true` in a browser that doesn't support Mutation Observer!_
 
 ### `observeRootSelector`
 
-**default:** `"body"`
+**default:** `"body"`<br>
 If `observeChanges` is set to `true`, the value of this string is fed into `document.querySelector` to limit the scope in which the Mutation Observer looks for DOM changes. The `<body>` element is used by default, but you can confine the observer to any valid CSS selector (e.g., `#main-wrapper`).
 
 ### `mutationObserverOptions`
 
-**default:** `{ childList: true, subtree: true }`
+**default:** `{ childList: true, subtree: true }`<br>
 Options to pass to the `MutationObserver` instance. Read [this MDN guide](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit) for a list of options.
 
 ## Words of advice
