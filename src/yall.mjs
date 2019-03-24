@@ -3,15 +3,19 @@ export default function (options) {
     options = {};
   }
 
-  const intersectionObserverSupport = "IntersectionObserver" in window && "IntersectionObserverEntry" in window;
+  const doc = document;
+  const win = window;
+  const arr = [];
+  const qsa = (root, sel) => arr.slice.call(root.querySelectorAll(sel));
+
+  const intersectionObserverSupport = "IntersectionObserver" in win && "IntersectionObserverEntry" in win;
   const lazyClass = options.lazyClass || "lazy";
   const lazyBackgroundClass = options.lazyBackgroundClass || "lazy-bg";
   const idleLoadTimeout = "idleLoadTimeout" in options ? options.idleLoadTimeout : 100;
   const observeChanges = options.observeChanges || false;
   const selectorString = `img.${lazyClass},video.${lazyClass},iframe.${lazyClass},.${lazyBackgroundClass}`;
 
-  // This abstraction shaves off a few bytes (plus it's nifty).
-  const sliceCall = arr => [].slice.call(arr);
+  const dataAttrs = ["srcset", "src", "poster"];
 
   // This function handles lazy loading of elements.
   const yallLoad = element => {
@@ -19,11 +23,11 @@ export default function (options) {
     let sourceElements;
 
     if (parentNode.nodeName == "PICTURE") {
-      sourceElements = sliceCall(parentNode.querySelectorAll("source"));
+      sourceElements = qsa(parentNode, "source");
     }
 
     if (element.nodeName == "VIDEO") {
-      sourceElements = sliceCall(element.querySelectorAll("source"));
+      sourceElements = qsa(element, "source");
     }
 
     for (let sourceElementIndex in sourceElements) {
@@ -36,24 +40,26 @@ export default function (options) {
       element.load();
     }
 
+    const classList = element.classList;
+
     // Lazy load CSS background images
-    if (element.classList.contains(lazyBackgroundClass)) {
-      element.classList.remove(lazyBackgroundClass);
-      element.classList.add(options.lazyBackgroundLoaded || "lazy-bg-loaded");
+    if (classList.contains(lazyBackgroundClass)) {
+      classList.remove(lazyBackgroundClass);
+      classList.add(options.lazyBackgroundLoaded || "lazy-bg-loaded");
     }
   };
 
   // Added because there was a number of patterns like this peppered throughout
   // the code. This just flips necessary data- attrs on an element
   const yallFlipDataAttrs = element => {
-    ["srcset", "src", "poster"].forEach(dataAttr => {
+    dataAttrs.forEach(dataAttr => {
       if (dataAttr in element.dataset) {
         element[dataAttr] = element.dataset[dataAttr];
       }
     });
   };
 
-  let lazyElements = sliceCall(document.querySelectorAll(selectorString));
+  let lazyElements = qsa(doc, selectorString);
 
   // If the current user agent is a known crawler, immediately load all media
   // for the elements yall is listening for and halt execution (good for SEO).
@@ -71,7 +77,7 @@ export default function (options) {
         if (entry.isIntersecting) {
           const element = entry.target;
 
-          if ("requestIdleCallback" in window && idleLoadTimeout) {
+          if ("requestIdleCallback" in win && idleLoadTimeout) {
             requestIdleCallback(() => {
               yallLoad(element);
             }, {
@@ -99,15 +105,15 @@ export default function (options) {
     }
   }
 
-  if ("MutationObserver" in window && observeChanges) {
+  if ("MutationObserver" in win && observeChanges) {
     new MutationObserver(() => {
-      sliceCall(document.querySelectorAll(selectorString)).forEach(newElement => {
+      qsa(doc, selectorString).forEach(newElement => {
         if (lazyElements.indexOf(newElement) < 0 && intersectionObserverSupport) {
           lazyElements.push(newElement);
           intersectionListener.observe(newElement);
         }
       });
-    }).observe(document.querySelector(options.observeRootSelector || "body"), options.mutationObserverOptions || {
+    }).observe(qsa(doc, options.observeRootSelector || "body")[0], options.mutationObserverOptions || {
       childList: true,
       subtree: true
     });
