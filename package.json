@@ -1,6 +1,6 @@
 {
   "name": "yall-js",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Yet Another Lazy Loader",
   "main": "./dist/yall.js",
   "module": "./src/yall.mjs",
@@ -10,7 +10,7 @@
     "lint": "npx eslint ./src/yall.mjs",
     "test": "npm run lint && node http.js",
     "build": "npm run clean && npx rollup -c",
-    "postinstall": "node -e \"console.log('Thank you for trying out version 3 of yall.js. If you find bugs, please file an issue with appropriate details at https://github.com/malchata/yall.js/issues')\""
+    "postinstall": "node -e \"console.log('\\u001b[31m\\u001b[1mHey, y\\'all! Thanks for using yall.js! This is version 3 and contains breaking changes from version 2. Read the README at:\\u001b[21m\\u001b[39m\\n > \\u001b[34mhttps://github.com/malchata/yall.js\\u001b[0m')\""
   },
   "repository": {
     "type": "git",
@@ -18,11 +18,18 @@
   },
   "keywords": [
     "lazy load",
+    "lazy loader",
+    "lazy loading",
     "intersection observer",
+    "IntersectionObserver",
     "mutation observer",
+    "MutationObserver",
     "requestIdleCallback",
     "images",
-    "web performance"
+    "video",
+    "iframe",
+    "web performance",
+    "requestAnimationFrame"
   ],
   "author": "Jeremy L. Wagner <jeremy.l.wagner@gmail.com>",
   "license": "MIT",
@@ -31,13 +38,13 @@
   },
   "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.4.0",
-    "@babel/preset-env": "^7.4.2",
-    "eslint": "^5.15.3",
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "eslint": "^5.16.0",
     "express": "^4.16.4",
     "rimraf": "^2.6.3",
-    "rollup": "^1.7.0",
+    "rollup": "^1.8.0",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-copy": "^0.2.3",
     "rollup-plugin-terser": "^4.0.4"

@@ -3,31 +3,41 @@
 function yall (options) {
   options = options || {};
 
+  // Options
   const lazyClass = options.lazyClass || "lazy";
   const lazyBackgroundClass = options.lazyBackgroundClass || "lazy-bg";
   const idleLoadTimeout = "idleLoadTimeout" in options ? options.idleLoadTimeout : 200;
   const observeChanges = options.observeChanges || false;
-  const selectorString = `img.${lazyClass},video.${lazyClass},iframe.${lazyClass},.${lazyBackgroundClass}`;
   const events = options.events || {};
 
-  // This abstraction shaves off a few bytes (plus it's nifty).
-  const nodeListToArray = nodeList => [].slice.call(nodeList);
+  // Shorthands (saves more than a few bytes!)
+  const win = window;
+  const ric = "requestIdleCallback";
+  const io = "IntersectionObserver";
+
+  // App stuff
+  const dataAttrs = ["srcset", "src", "poster"];
+  const arr = [];
+  const queryDOM = (selector, root) => arr.slice.call((root || document).querySelectorAll(selector || `img.${lazyClass},video.${lazyClass},iframe.${lazyClass},.${lazyBackgroundClass}`));
 
   // This function handles lazy loading of elements.
   const yallLoad = element => {
     const parentNode = element.parentNode;
-    let sourceElements;
+    let elements = [];
+    let sourceNode;
 
     if (parentNode.nodeName == "PICTURE") {
-      sourceElements = nodeListToArray(parentNode.querySelectorAll("source"));
+      sourceNode = parentNode;
     }
 
     if (element.nodeName == "VIDEO") {
-      sourceElements = nodeListToArray(element.querySelectorAll("source"));
+      sourceNode = element;
     }
 
-    for (let sourceElementIndex in sourceElements) {
-      yallFlipDataAttrs(sourceElements[sourceElementIndex]);
+    elements = queryDOM("source", sourceNode);
+
+    for (let elementIndex in elements) {
+      yallFlipDataAttrs(elements[elementIndex]);
     }
 
     yallFlipDataAttrs(element);
@@ -36,36 +46,40 @@ function yall (options) {
       element.load();
     }
 
+    const classList = element.classList;
+
     // Lazy load CSS background images
-    if (element.classList.contains(lazyBackgroundClass)) {
-      element.classList.remove(lazyBackgroundClass);
-      element.classList.add(options.lazyBackgroundLoaded || "lazy-bg-loaded");
+    if (classList.contains(lazyBackgroundClass)) {
+      classList.remove(lazyBackgroundClass);
+      classList.add(options.lazyBackgroundLoaded || "lazy-bg-loaded");
     }
   };
 
-  const yallBind = (intersectionListener, element) => {
-    intersectionListener.observe(element);
+  const yallBind = element => {
+    for (let eventIndex in events) {
+      element.addEventListener(eventIndex, events[eventIndex].listener || events[eventIndex], events[eventIndex].options || undefined);
+    }
 
-    Object.keys(events).forEach(eventKey => {
-      element.addEventListener(eventKey, events[eventKey].listener || events[eventKey], events[eventKey].options || undefined);
-    });
+    intersectionListener.observe(element);
   };
 
   // Added because there was a number of patterns like this peppered throughout
   // the code. This just flips necessary data- attrs on an element
   const yallFlipDataAttrs = element => {
-    ["srcset", "src", "poster"].forEach(dataAttr => {
+    dataAttrs.forEach(dataAttr => {
       if (dataAttr in element.dataset) {
-        element[dataAttr] = element.dataset[dataAttr];
+        win["requestAnimationFrame"](() => {
+          element[dataAttr] = element.dataset[dataAttr];
+        });
       }
     });
   };
 
-  let lazyElements = nodeListToArray(document.querySelectorAll(selectorString));
+  let lazyElements = queryDOM();
 
   // If the current user agent is a known crawler, immediately load all media
   // for the elements yall is listening for and halt execution (good for SEO).
-  if (/(google|bing|yandex|duckduck)bot/i.test(navigator.userAgent)) {
+  if (/baidu|(?:google|bing|yandex|duckduck)bot/i.test(navigator.userAgent)) {
     for (let lazyElementIndex in lazyElements) {
       yallLoad(lazyElements[lazyElementIndex]);
     }
@@ -73,14 +87,14 @@ function yall (options) {
     return;
   }
 
-  if ("IntersectionObserver" in window && "IntersectionObserverEntry" in window) {
-    var intersectionListener = new IntersectionObserver((entries, observer) => {
+  if (io in win && `${io}Entry` in win) {
+    var intersectionListener = new win[io]((entries, observer) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
+        if (entry.intersectionRatio) {
           const element = entry.target;
 
-          if ("requestIdleCallback" in window && idleLoadTimeout) {
-            requestIdleCallback(() => {
+          if (ric in win && idleLoadTimeout) {
+            win[ric](() => {
               yallLoad(element);
             }, {
               timeout: idleLoadTimeout
@@ -103,18 +117,18 @@ function yall (options) {
     });
 
     for (let lazyElementIndex in lazyElements) {
-      yallBind(intersectionListener, lazyElements[lazyElementIndex]);
+      yallBind(lazyElements[lazyElementIndex]);
     }
 
-    if ("MutationObserver" in window && observeChanges) {
+    if (observeChanges) {
       new MutationObserver(() => {
-        nodeListToArray(document.querySelectorAll(selectorString)).forEach(newElement => {
+        queryDOM().forEach(newElement => {
           if (lazyElements.indexOf(newElement) < 0) {
             lazyElements.push(newElement);
-            yallBind(intersectionListener, newElement);
+            yallBind(newElement);
           }
         });
-      }).observe(document.querySelector(options.observeRootSelector || "body"), options.mutationObserverOptions || {
+      }).observe(queryDOM(options.observeRootSelector || "body")[0], options.mutationObserverOptions || {
         childList: true,
         subtree: true
       });
