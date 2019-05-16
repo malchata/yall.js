@@ -21,21 +21,21 @@ export default function (options) {
   // This function handles lazy loading of elements.
   const yallLoad = element => {
     const parentNode = element.parentNode;
-    let elements = [];
     let sourceNode;
 
-    if (parentNode.nodeName == "PICTURE") {
+    if (parentNode.nodeName === "PICTURE") {
       sourceNode = parentNode;
     }
 
-    if (element.nodeName == "VIDEO") {
+    if (element.nodeName === "VIDEO") {
       sourceNode = element;
     }
 
-    elements = queryDOM("source", sourceNode);
-
-    for (let elementIndex in elements) {
-      yallFlipDataAttrs(elements[elementIndex]);
+    if(sourceNode){
+      const elements = queryDOM("source", sourceNode);
+      elements.forEach(element => {
+        yallFlipDataAttrs(element);
+      });
     }
 
     yallFlipDataAttrs(element);
@@ -57,7 +57,6 @@ export default function (options) {
     for (let eventIndex in events) {
       element.addEventListener(eventIndex, events[eventIndex].listener || events[eventIndex], events[eventIndex].options || undefined);
     }
-
     intersectionListener.observe(element);
   };
 
@@ -78,10 +77,9 @@ export default function (options) {
   // If the current user agent is a known crawler, immediately load all media
   // for the elements yall is listening for and halt execution (good for SEO).
   if (/baidu|(?:google|bing|yandex|duckduck)bot/i.test(navigator.userAgent)) {
-    for (let lazyElementIndex in lazyElements) {
-      yallLoad(lazyElements[lazyElementIndex]);
-    }
-
+    lazyElements.forEach(azyElement => {
+      yallBind(azyElement);
+    });
     return;
   }
 
@@ -103,7 +101,7 @@ export default function (options) {
 
           element.classList.remove(lazyClass);
           observer.unobserve(element);
-          lazyElements = lazyElements.filter(lazyElement => lazyElement != element);
+          lazyElements = lazyElements.filter(lazyElement => lazyElement !== element);
 
           if (!lazyElements.length && !observeChanges) {
             intersectionListener.disconnect();
@@ -114,9 +112,9 @@ export default function (options) {
       rootMargin: `${"threshold" in options ? options.threshold : 200}px 0%`
     });
 
-    for (let lazyElementIndex in lazyElements) {
-      yallBind(lazyElements[lazyElementIndex]);
-    }
+    lazyElements.forEach(azyElement => {
+      yallBind(azyElement);
+    });
 
     if (observeChanges) {
       new MutationObserver(() => {
