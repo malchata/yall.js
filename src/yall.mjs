@@ -6,7 +6,6 @@ export default function (options) {
   const lazyBackgroundClass = options.lazyBackgroundClass || "lazy-bg";
   const idleLoadTimeout = "idleLoadTimeout" in options ? options.idleLoadTimeout : 200;
   const observeChanges = options.observeChanges || false;
-  const { observerThreshold } = options;
   const events = options.events || {};
 
   // Shorthands (saves more than a few bytes!)
@@ -89,7 +88,7 @@ export default function (options) {
   if (io in win && `${io}Entry` in win) {
     var intersectionListener = new win[io]((entries, observer) => {
       entries.forEach(entry => {
-        if (entry.intersectionRatio) {
+        if (entry.isIntersecting) {
           const element = entry.target;
 
           if (ric in win && idleLoadTimeout) {
@@ -112,8 +111,7 @@ export default function (options) {
         }
       });
     }, {
-      rootMargin: `${"threshold" in options ? options.threshold : 200}px 0%`,
-      threshold: observerThreshold || 0
+      rootMargin: `${"threshold" in options ? options.threshold : 200}px 0%`
     });
 
     for (let lazyElementIndex in lazyElements) {
