@@ -6,6 +6,7 @@ export default function (options) {
   const lazyBackgroundClass = options.lazyBackgroundClass || "lazy-bg";
   const idleLoadTimeout = "idleLoadTimeout" in options ? options.idleLoadTimeout : 200;
   const observeChanges = options.observeChanges || false;
+  const { observerThreshold } = options;
   const events = options.events || {};
 
   // Shorthands (saves more than a few bytes!)
@@ -111,7 +112,8 @@ export default function (options) {
         }
       });
     }, {
-      rootMargin: `${"threshold" in options ? options.threshold : 200}px 0%`
+      rootMargin: `${"threshold" in options ? options.threshold : 200}px 0%`,
+      threshold: observerThreshold || 0
     });
 
     for (let lazyElementIndex in lazyElements) {
