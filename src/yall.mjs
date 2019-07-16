@@ -85,10 +85,10 @@ export default function (options) {
     return;
   }
 
-  if (io in win && `${io}Entry` in win && "isIntersecting" in win[`${io}Entry`].prototype) {
+  if (io in win && `${io}Entry` in win) {
     var intersectionListener = new win[io]((entries, observer) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting || entry.intersectionRatio) {
           const element = entry.target;
 
           if (ric in win && idleLoadTimeout) {
