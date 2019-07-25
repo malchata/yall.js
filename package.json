@@ -8,9 +8,9 @@
   "scripts": {
     "clean": "npx rimraf ./dist",
     "lint": "npx eslint ./src/yall.mjs",
-    "test": "npm run lint && node http.js",
-    "build": "npm run clean && npx rollup -c",
-    "postinstall": "node -e \"console.log('\\u001b[31m\\u001b[1mHey, y\\'all! Thanks for using yall.js! This is version 3 and contains breaking changes from version 2. Read the README at:\\u001b[21m\\u001b[39m\\n > \\u001b[34mhttps://github.com/malchata/yall.js\\u001b[0m')\""
+    "test": "npm run lint && npm run build && cp -fv ./dist/yall.min.js ./test/js && npm run server",
+    "server": "node http.js",
+    "build": "npm run clean && npx rollup -c"
   },
   "repository": {
     "type": "git",
@@ -38,15 +38,14 @@
   },
   "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.5.0",
-    "@babel/core": "^7.5.4",
-    "@babel/preset-env": "^7.5.4",
-    "eslint": "^6.0.1",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "eslint": "^6.1.0",
     "express": "^4.17.1",
     "rimraf": "^2.6.3",
-    "rollup": "^1.16.7",
+    "rollup": "^1.17.0",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-copy": "^3.0.0",
     "rollup-plugin-terser": "^5.1.1"
   },
   "dependencies": {}
