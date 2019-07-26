@@ -69,7 +69,7 @@ function yall (options) {
     dataAttrs.forEach(dataAttr => {
       if (dataAttr in element.dataset) {
         win["requestAnimationFrame"](() => {
-          element[dataAttr] = element.dataset[dataAttr];
+          element.setAttribute(dataAttr, element.dataset[dataAttr]);
         });
       }
     });
