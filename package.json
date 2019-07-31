@@ -1,6 +1,6 @@
 {
   "name": "yall-js",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "description": "Yet Another Lazy Loader",
   "main": "./dist/yall.js",
   "module": "./src/yall.mjs",
@@ -10,8 +10,7 @@
     "lint": "npx eslint ./src/yall.mjs",
     "test": "npm run lint && npm run build && cp -fv ./dist/yall.min.js ./test/js && npm run server",
     "server": "node http.js",
-    "build": "npm run clean && npx rollup -c",
-    "postinstall": "npm run build"
+    "build": "npm run clean && npx rollup -c"
   },
   "repository": {
     "type": "git",

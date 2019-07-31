@@ -1,5 +1,7 @@
 .editorconfig
 .eslintrc.json
+*.min.mjs
+*.min.js
 http.js
 test
 LICENSE-MIT
