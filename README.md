@@ -111,11 +111,11 @@ Sometimes you have video you'd rather not autoplay, such as those with an audio 
 
 This pattern is slightly different than the one before it. Because we're not trying to emulate animated GIFs, we've removed a number of attributes from the `<video>` element that aren't necessary in this case:
 
-1., We've done away with the usual `data-src` attribute, and specified `preload="none"` to ensure the browser doesn't preload any portion of the video (which, depending on the browser, can't be guaranteed).
+1. We've done away with the usual `data-src` attribute, and specified `preload="none"` to ensure the browser doesn't preload any portion of the video (which, depending on the browser, can't be guaranteed).
 2. To lazy load the `poster` image itself, we specify the image to load in a `data-poster` attribute.
 3. The `controls` attribute is added here to allow the user to control video playback.
 
-**Note:** For the sake of your users, don't mix the above markup patterns. If a video is going to use `autoplay` to replace an animated image, lazy loading a placeholder image via `data-poster` isn't necessary. Furthermore, if you're unsure of what to do, let the browser handle this stuff and don't use yall.js to manage loading of videos.
+**Note:** For the sake of your users, don't mix the above markup patterns. If a video is going to use `autoplay` to replace an animated image, lazy loading a placeholder image via `data-poster` isn't necessary. Furthermore, if you're unsure of what to do, _let the browser handle this stuff and don't use yall.js to manage loading of videos_.
 
 ### `<iframe>`
 
