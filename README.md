@@ -303,6 +303,11 @@ If `observeChanges` is set to `true`, the value of this string is fed into `docu
 **default:** `{ childList: true, subtree: true }`<br>
 Options to pass to the `MutationObserver` instance. Read [this MDN guide](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit) for a list of options.
 
+### `noPolyfill`
+
+**default:** false
+If `noPolyfill` is set to `true` yall will assume that you are not providing the polyfill for `IntersectionObserver` and will load all lazy images when it detects no support for `IntersectionObserver`. This option will save you ~2.4kB for the `intersection-observer` polyfill. 
+
 ## Words of advice
 
 This script aims to provide a reasonable level of compatibility down to IE 11, but as stated previously, you will need to polyfill `IntersectionObserver` for yall.js to work in that browser. If you don't polyfill `IntersectionObserver`, non-supporting browsers won't throw an error, they'll fail silently. However, features that are natively available in at least IE 11 (such as `MutationObserver` and `requestAnimationFrame` will not be checked for, and _will_ throw errors if they are not available. For example, because `requestIdleCallback` is not available in IE 11, it _will_ be checked for. If it doesn't exist, it will simply not be used. Polyfill it if you need it.

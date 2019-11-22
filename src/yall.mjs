@@ -7,6 +7,7 @@ export default function (options) {
   const idleLoadTimeout = "idleLoadTimeout" in options ? options.idleLoadTimeout : 200;
   const observeChanges = options.observeChanges || false;
   const events = options.events || {};
+  const noPolyfill = options.noPolyfill || false;
 
   // Shorthands (saves more than a few bytes!)
   const win = window;
@@ -136,6 +137,11 @@ export default function (options) {
 
     if (observeChanges) {
       yallApplyFn(queryDOM(options.observeRootSelector || "body"), yallCreateMutationObserver);
+    } else {
+    // IntersectionObserver not supported
+      if (noPolyfill) {
+        yallApplyFn(lazyElements, yallLoad);
+      }
     }
   }
 }
