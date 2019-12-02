@@ -140,6 +140,7 @@ export default function (options) {
     } else {
     // IntersectionObserver not supported
       if (noPolyfill) {
+				yallApplyFn(lazyElements, yallBindEvents);
         yallApplyFn(lazyElements, yallLoad);
       }
     }
