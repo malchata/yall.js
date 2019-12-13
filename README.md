@@ -317,7 +317,7 @@ Also, do _not_ lazy load resources that are likely to near the top of the page&m
 
 Please read the [contribution guidelines](https://github.com/malchata/yall.js/blob/master/CONTRIBUTING.md). If you think I'm some kind of grumpy crank after reading that, please remember that this is a hobby project you can use for free. Here's a couple other options for you if yall.js doesn't do what you need it to:
 
-- [Lozas.js](https://github.com/ApoorvSaxena/lozad.js)
+- [Lozad.js](https://github.com/ApoorvSaxena/lozad.js)
 - [lazysizes](https://github.com/aFarkas/lazysizes)
 
 ## Special thanks
