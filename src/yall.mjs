@@ -21,17 +21,15 @@ export default function (options) {
   // This function handles lazy loading of elements.
   const yallLoad = element => {
     const parentNode = element.parentNode;
-    let sourceNode;
 
     if (parentNode.nodeName == "PICTURE") {
-      sourceNode = parentNode;
+      yallApplyFn(queryDOM("source", parentNode), yallFlipDataAttrs);
     }
 
     if (element.nodeName == "VIDEO") {
-      sourceNode = element;
+      yallApplyFn(queryDOM("source", element), yallFlipDataAttrs);
     }
-
-    yallApplyFn(queryDOM("source", sourceNode), yallFlipDataAttrs);
+    
     yallFlipDataAttrs(element);
 
     if (element.autoplay) {
