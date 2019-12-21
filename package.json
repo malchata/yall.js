@@ -1,6 +1,6 @@
 {
   "name": "yall-js",
-  "version": "3.1.7",
+  "version": "3.1.8",
   "description": "Yet Another Lazy Loader",
   "main": "./dist/yall.js",
   "module": "./src/yall.mjs",
@@ -38,12 +38,12 @@
   },
   "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.7.5",
-    "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.6",
-    "eslint": "^6.7.2",
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "eslint": "^6.8.0",
     "express": "^4.17.1",
-    "rollup": "^1.27.12",
+    "rollup": "^1.27.13",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-terser": "^5.1.3"
   },
