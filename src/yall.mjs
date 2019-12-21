@@ -64,7 +64,7 @@ export default function (options) {
   };
 
   // Noticed lots of loops where a function simply gets executed on every
-  // member of an array. This abstraction eliminates that repetiive code.
+  // member of an array. This abstraction eliminates that repetitive code.
   const yallApplyFn = (items, fn) => {
     for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
       fn instanceof win[io] ? fn.observe(items[itemIndex]) : fn(items[itemIndex]);
