@@ -313,6 +313,12 @@ In the case of `<video>`, avoid lazy loading a placeholder with the `data-poster
 
 Also, do _not_ lazy load resources that are likely to near the top of the page&mdash;or "above the fold", as it were. Doing so is an anti-pattern in that those resources will not begin loading until yall.js has been loaded, which may take much longer than if those resources were loaded normally.
 
+## Integration
+
+Here are some external libraries or extensions built on top `malchata/yall.js`.
+
+- [`adhocore/twig-yall`](https://github.com/adhocore/twig-yall) - A twig template engine extension that makes integration of `malchata/yall.js` a breeze.
+
 ## Contributing
 
 Please read the [contribution guidelines](https://github.com/malchata/yall.js/blob/master/CONTRIBUTING.md). If you think I'm some kind of grumpy crank after reading that, please remember that this is a hobby project you can use for free. Here's a couple other options for you if yall.js doesn't do what you need it to:
