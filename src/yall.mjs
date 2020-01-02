@@ -121,7 +121,6 @@ export default function (options) {
   // for the elements yall is listening for and halt execution (good for SEO).
   if (/baidu|(?:google|bing|yandex|duckduck)bot/i.test(navigator.userAgent)) {
     yallApplyFn(lazyElements, yallLoad);
-
     return;
   }
 
@@ -137,12 +136,12 @@ export default function (options) {
 
     if (observeChanges) {
       yallApplyFn(queryDOM(options.observeRootSelector || "body"), yallCreateMutationObserver);
-    } else {
-    // IntersectionObserver not supported
-      if (noPolyfill) {
-        yallApplyFn(lazyElements, yallBindEvents);
-        yallApplyFn(lazyElements, yallLoad);
-      }
+    }
+  } else {
+  // IntersectionObserver not supported
+    if (noPolyfill) {
+      yallApplyFn(lazyElements, yallBindEvents);
+      yallApplyFn(lazyElements, yallLoad);
     }
   }
 }
