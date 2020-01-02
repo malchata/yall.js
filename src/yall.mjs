@@ -22,17 +22,15 @@ export default function (options) {
   // This function handles lazy loading of elements.
   const yallLoad = element => {
     const parentNode = element.parentNode;
-    let sourceNode;
 
     if (parentNode.nodeName == "PICTURE") {
-      sourceNode = parentNode;
+      yallApplyFn(queryDOM("source", parentNode), yallFlipDataAttrs);
     }
 
     if (element.nodeName == "VIDEO") {
-      sourceNode = element;
+      yallApplyFn(queryDOM("source", element), yallFlipDataAttrs);
     }
-
-    yallApplyFn(queryDOM("source", sourceNode), yallFlipDataAttrs);
+    
     yallFlipDataAttrs(element);
 
     if (element.autoplay) {
@@ -67,7 +65,7 @@ export default function (options) {
   };
 
   // Noticed lots of loops where a function simply gets executed on every
-  // member of an array. This abstraction eliminates that repetiive code.
+  // member of an array. This abstraction eliminates that repetitive code.
   const yallApplyFn = (items, fn) => {
     for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
       fn instanceof win[io] ? fn.observe(items[itemIndex]) : fn(items[itemIndex]);
