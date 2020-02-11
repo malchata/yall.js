@@ -32,7 +32,7 @@ function yall (options) {
     if (element.nodeName == "VIDEO") {
       yallApplyFn(queryDOM("source", element), yallFlipDataAttrs);
     }
-    
+
     yallFlipDataAttrs(element);
 
     if (element.autoplay) {
@@ -61,6 +61,7 @@ function yall (options) {
       if (dataAttrs[dataAttrIndex] in element.dataset) {
         win["requestAnimationFrame"](() => {
           element.setAttribute(dataAttrs[dataAttrIndex], element.dataset[dataAttrs[dataAttrIndex]]);
+          element.classList.remove(lazyClass);
         });
       }
     }
@@ -70,7 +71,11 @@ function yall (options) {
   // member of an array. This abstraction eliminates that repetitive code.
   const yallApplyFn = (items, fn) => {
     for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
-      fn instanceof win[io] ? fn.observe(items[itemIndex]) : fn(items[itemIndex]);
+      if (noPolyfill) {
+        fn(items[itemIndex]);
+      } else {
+        fn instanceof win[io] ? fn.observe(items[itemIndex]) : fn(items[itemIndex]);
+      }
     }
   };
 
@@ -88,7 +93,6 @@ function yall (options) {
         yallLoad(element);
       }
 
-      element.classList.remove(lazyClass);
       intersectionListener.unobserve(element);
       lazyElements = lazyElements.filter(lazyElement => lazyElement != element);
 
@@ -138,7 +142,7 @@ function yall (options) {
       yallApplyFn(queryDOM(options.observeRootSelector || "body"), yallCreateMutationObserver);
     }
   } else {
-  // IntersectionObserver not supported
+    // IntersectionObserver not supported
     if (noPolyfill) {
       yallApplyFn(lazyElements, yallBindEvents);
       yallApplyFn(lazyElements, yallLoad);
