@@ -61,6 +61,13 @@ function yall (options) {
       if (dataAttrs[dataAttrIndex] in element.dataset) {
         win["requestAnimationFrame"](() => {
           element.setAttribute(dataAttrs[dataAttrIndex], element.dataset[dataAttrs[dataAttrIndex]]);
+          if(element.nodeName === "SOURCE"){
+            const { parentNode: videoOrPicture } = element;
+            videoOrPicture.classList.remove(lazyClass);
+            if(videoOrPicture.autoplay){
+              videoOrPicture.load();
+            }
+          }
           element.classList.remove(lazyClass);
         });
       }

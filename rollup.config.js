@@ -63,16 +63,6 @@ export default [
             }
           ]
         ]
-      }),
-      terser({
-        ecma: 5,
-        mangle: {
-          keep_fnames: true,
-          toplevel: true,
-          reserved: ["yall"],
-          module: false
-        },
-        ...commonTerserOptions
       })
     ]
   },
