@@ -71,11 +71,11 @@ function yall (options) {
   // member of an array. This abstraction eliminates that repetitive code.
   const yallApplyFn = (items, fn) => {
     for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
-      if (noPolyfill) {
-        fn(items[itemIndex]);
+      if(win[io] && fn instanceof win[io]) {
+        fn.observe(items[itemIndex]);
       } else {
-        fn instanceof win[io] ? fn.observe(items[itemIndex]) : fn(items[itemIndex]);
-      }
+        fn(items[itemIndex]);
+      } 
     }
   };
 
