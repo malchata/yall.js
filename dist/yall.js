@@ -15,8 +15,10 @@ function yall (options) {
   const win = window;
   const ric = "requestIdleCallback";
   const io = "IntersectionObserver";
+  const ioSupport = io in win && `${io}Entry` in win;
 
   // App stuff
+  const crawler = /baidu|(?:google|bing|yandex|duckduck)bot/i.test(navigator.userAgent);
   const dataAttrs = ["srcset", "src", "poster"];
   const arr = [];
   const queryDOM = (selector, root) => arr.slice.call((root || document).querySelectorAll(selector || `img.${lazyClass},video.${lazyClass},iframe.${lazyClass},.${lazyBackgroundClass}`));
@@ -34,10 +36,6 @@ function yall (options) {
     }
 
     yallFlipDataAttrs(element);
-
-    if (element.autoplay) {
-      element.load();
-    }
 
     const classList = element.classList;
 
@@ -59,17 +57,14 @@ function yall (options) {
   const yallFlipDataAttrs = element => {
     for (let dataAttrIndex in dataAttrs) {
       if (dataAttrs[dataAttrIndex] in element.dataset) {
-        win["requestAnimationFrame"](() => {
-          element.setAttribute(dataAttrs[dataAttrIndex], element.dataset[dataAttrs[dataAttrIndex]]);
-          if(element.nodeName === "SOURCE"){
-            const { parentNode: videoOrPicture } = element;
-            videoOrPicture.classList.remove(lazyClass);
-            if(videoOrPicture.autoplay){
-              videoOrPicture.load();
-            }
-          }
-          element.classList.remove(lazyClass);
-        });
+        element.setAttribute(dataAttrs[dataAttrIndex], element.dataset[dataAttrs[dataAttrIndex]]);
+
+        if (element.nodeName === "SOURCE" && element.parentNode.autoplay) {
+          element.parentNode.load();
+          element.parentNode.classList.remove(lazyClass);
+        }
+
+        element.classList.remove(lazyClass);
       }
     }
   };
@@ -78,11 +73,7 @@ function yall (options) {
   // member of an array. This abstraction eliminates that repetitive code.
   const yallApplyFn = (items, fn) => {
     for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
-      if(win[io] && fn instanceof win[io]) {
-        fn.observe(items[itemIndex]);
-      } else {
-        fn(items[itemIndex]);
-      } 
+      win[io] && fn instanceof win[io] ? fn.observe(items[itemIndex]) : fn(items[itemIndex]);
     }
   };
 
@@ -113,7 +104,12 @@ function yall (options) {
     if (lazyElements.indexOf(newElement) < 0) {
       lazyElements.push(newElement);
       yallBindEvents(newElement);
-      intersectionListener.observe(newElement);
+
+      if (ioSupport && !crawler) {
+        intersectionListener.observe(newElement);
+      } else if (noPolyfill || crawler) {
+        yallApplyFn(lazyElements, yallLoad);
+      }
     }
   };
 
@@ -128,14 +124,9 @@ function yall (options) {
 
   let lazyElements = queryDOM();
 
-  // If the current user agent is a known crawler, immediately load all media
-  // for the elements yall is listening for and halt execution (good for SEO).
-  if (/baidu|(?:google|bing|yandex|duckduck)bot/i.test(navigator.userAgent)) {
-    yallApplyFn(lazyElements, yallLoad);
-    return;
-  }
-
-  if (io in win && `${io}Entry` in win) {
+  // First we check if IntersectionObserver is supported. If not, we check to
+  // see if the `noPolyfill` option is set. If so, we load everything.
+  if (ioSupport && !crawler) {
     var intersectionListener = new win[io](entries => {
       yallApplyFn(entries, yallIntersectionObserve);
     }, {
@@ -148,12 +139,9 @@ function yall (options) {
     if (observeChanges) {
       yallApplyFn(queryDOM(options.observeRootSelector || "body"), yallCreateMutationObserver);
     }
-  } else {
-    // IntersectionObserver not supported
-    if (noPolyfill) {
-      yallApplyFn(lazyElements, yallBindEvents);
-      yallApplyFn(lazyElements, yallLoad);
-    }
+  } else if (noPolyfill || crawler) {
+    yallApplyFn(lazyElements, yallBindEvents);
+    yallApplyFn(lazyElements, yallLoad);
   }
 }
 
