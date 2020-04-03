@@ -10,7 +10,8 @@
     "lint": "npx eslint ./src/yall.mjs",
     "test": "npm run lint && npm run build && cp -fv ./dist/yall.min.js ./test/js && npm run server",
     "server": "node http.js",
-    "build": "npm run clean && npx rollup -c"
+    "build": "npm run clean && npx rollup -c",
+    "postinstall": "node -e \"console.log('\\u001b[31m\\u001b[1mThanks for using yall.js! Excluding bugfixes, development of yall.js is finished. You should also consider replacing yall.js with native lazy loading if you can. Learn more at \\u001b[34mhttps://web.dev/native-lazy-loading/\\u001b[0m')\""
   },
   "repository": {
     "type": "git",
