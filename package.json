@@ -6,7 +6,7 @@
   "module": "./src/yall.mjs",
   "jsnext:main": "./src/yall.mjs",
   "scripts": {
-    "clean": "rm -rf ./dist",
+    "clean": "npx rimraf ./dist",
     "lint": "npx eslint ./src/yall.mjs",
     "test": "npm run lint && npm run build && cp -fv ./dist/yall.min.js ./test/js && npm run server",
     "server": "node http.js",
@@ -43,6 +43,7 @@
     "@babel/preset-env": "^7.9.0",
     "eslint": "^6.8.0",
     "express": "^4.17.1",
+    "rimraf": "^3.0.2",
     "rollup": "^2.3.2",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-copy": "^3.3.0",
