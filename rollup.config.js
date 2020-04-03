@@ -1,5 +1,6 @@
 /* eslint-env node */
 import babel from "rollup-plugin-babel";
+import copy from "rollup-plugin-copy";
 import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 
@@ -81,6 +82,12 @@ export default [
     output: {
       file: pkg.main,
       format: "cjs"
-    }
+    },
+    plugins: [
+      copy({
+        "dist/yall.min.js": "test/js/yall.min.js",
+        "dist/yall.min.mjs": "test/js/yall.min.mjs"
+      })
+    ]
   }
 ];

@@ -13,7 +13,7 @@
   <img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?compression=brotli&label=brotli" alt="Brotli size.">
 </p>
 
-yall.js is a featured-packed SEO-friendly lazy loader for `<img>`, `<picture>`, `<video>` and `<iframe>` elements, as well as CSS background images. It works in all modern browsers, including IE 11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but as of version 3, this API must be polyfilled for older browsers. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load elements that have been appended to the DOM after initial load, which may be desirable for single page applications. It can also optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback), and reduce jank by using [`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
+yall.js is a featured-packed SEO-friendly lazy loader for `<img>`, `<picture>`, `<video>` and `<iframe>` elements, as well as CSS background images. It works in all modern browsers, including IE 11. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available, but as of version 3, this API must be polyfilled for older browsers. It can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load elements that have been appended to the DOM after initial load, which may be desirable for single page applications. It can also optimize use of browser idle time using [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback), and reduces jank by using [`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
 
 To use yall, grab `yall.min.js` (or `yall.min.mjs` if you're the modern sort) from the `dist` directory and slap it on your page. You can also install it with npm:
 
@@ -96,7 +96,7 @@ yall.js can lazy load `<video>` elements intended to [replace animated GIFs with
 </video>
 ```
 
-The pattern is largely the same as it is with `<picture>`, only the `lazy` class is applied to the `<video>` element. **Tip:** If you're embedding videos that _don't_ emulate animated GIFs (i.e., non autoplaying video), it's better to _not_ lazy load them. Instead, use the [`preload` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#attr-preload) to defer loading of video content. Please also note that video autoplay policies can change at any time, meaning your video may not autoplay on some platforms! Such behaviors are not bugs, but rather features designed to conserve the user's bandwidth and preferences. Filing issues related to video autoplay issues will likely be rejected, as yall.js can't (and won't) override browser policies.
+The pattern is largely the same as it is with `<picture>`, only the `lazy` class is applied to the `<video>` element. **Tip:** If you're embedding videos that _don't_ emulate animated GIFs (i.e., non autoplaying video), it's better to _not_ lazy load them. Instead, use the [`preload` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#attr-preload) to defer loading of video content. Please also note that video autoplay policies can change at any time, meaning your video may not autoplay on some platforms! Such behaviors are not bugs, but rather features designed to respect users' bandwidth and preferences. Filing issues related to video autoplay issues will likely be rejected, as yall.js can't (and won't) override browser policies.
 
 #### Lazy-loading `poster` placeholder images for non-autoplaying video
 
@@ -115,7 +115,7 @@ This pattern is slightly different than the one before it. Because we're not try
 2. To lazy load the `poster` image itself, we specify the image to load in a `data-poster` attribute.
 3. The `controls` attribute is added here to allow the user to control video playback.
 
-**Note:** For the sake of your users, don't mix the above markup patterns. If a video is going to use `autoplay` to replace an animated image, lazy loading a placeholder image via `data-poster` isn't necessary. Furthermore, if you're unsure of what to do, _let the browser handle this stuff and don't use yall.js to manage loading of videos_.
+**Note:** For the sake of your users, don't mix the above markup patterns. If a video is going to use `autoplay` to replace an animated image, lazy loading a placeholder image via `data-poster` isn't necessary. Furthermore, if you're unsure of what to do, _let browsers handle this stuff and don't use yall.js to manage loading of videos at all!_
 
 ### `<iframe>`
 
@@ -286,12 +286,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 Events for yall.js are bound at initialization time (often `DOMContentLoaded`). This means that some events _could_ fire multiple times, depending on the event. For instance, in the above `load` event example, you can see that we check for the default class of `lazy` on the element. This is because the `load` event could fire when the initial image placeholder loaded (if one is specified) _and_ when the final image is lazy loaded.
 
-The advantage of this approach is that you can do pretty much anything you want in any of the events on the elements yall.js observes. The disadvantage is that it places the responsibility squarely on you to manage events. If you think yall.js has a bug in this behavior, do your due diligence to research whether your event callback code is buggy before filing an issue.
+The advantage of this approach is that you can do pretty much anything you want in any of the events on the elements yall.js observes. The disadvantage is that it places the responsibility squarely on you to manage events. If you think yall.js has a bug in this behavior, do your due diligence to research whether your event callback code is buggy before filing issues.
 
 ### `observeChanges`
 
 **default:** `false`<br>
-Use a `MutationObserver` to monitor the DOM for changes. This is useful if you're using yall.js in a single page application and want to lazy load resources for markup injected into the page after initial page render. _**Note:** This option will throw an error if enabled in a browser that doesn't support IntersectionObserver!_
+Use a `MutationObserver` to monitor the DOM for changes. This is useful if you're using yall.js in a single page application and want to lazy load resources for markup injected into the page after initial page render.
 
 ### `observeRootSelector`
 
@@ -301,13 +301,18 @@ If `observeChanges` is set to `true`, the value of this string is fed into `docu
 ### `mutationObserverOptions`
 
 **default:** `{ childList: true, subtree: true }`<br>
-Options to pass to the `MutationObserver` instance. Read [this MDN guide](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit) for a list of options.
+Options to pass to the `MutationObserver` instance. Read [this MDN guide](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit) for a list of options. It's very possible that changing this value could result in yall.js failing to lazy load resources that are appended to the DOM later on.
+
+### `noPolyfill`
+
+**default:** false
+If `noPolyfill` is set to `true` yall.js will assume you are not polyfilling `IntersectionObserver`, and will subsequently load all resources when it detects no support for `IntersectionObserver`. This option will save you ~2.4kB for the `intersection-observer` polyfill, but be advised that invoking this option means that you could potentially load both placeholders _and_ the final image sources. Additionally, you'll be dependent on JavaScript to trigger immediate loading of all images in the document for browsers that don't support `IntersectionObserver`. For these reasons, it's only advised to enable this option if the vast majority of your users are on browsers that support `IntersectionObserver`.
 
 ## Words of advice
 
 This script aims to provide a reasonable level of compatibility down to IE 11, but as stated previously, you will need to polyfill `IntersectionObserver` for yall.js to work in that browser. If you don't polyfill `IntersectionObserver`, non-supporting browsers won't throw an error, they'll fail silently. However, features that are natively available in at least IE 11 (such as `MutationObserver` and `requestAnimationFrame` will not be checked for, and _will_ throw errors if they are not available. For example, because `requestIdleCallback` is not available in IE 11, it _will_ be checked for. If it doesn't exist, it will simply not be used. Polyfill it if you need it.
 
-Also, it is not this script's job to minimize layout shifting for you. Use appropriate `width` and `height` attributes, styles, and lightweight placeholders for your images.
+Also, it is not this script's job to minimize layout shifting for you. [Use appropriate `width` and `height` attributes](https://www.smashingmagazine.com/2020/03/setting-height-width-images-important-again/), styles, and lightweight placeholders for your images.
 
 In the case of `<video>`, avoid lazy loading a placeholder with the `data-poster` attribute for autoplaying videos and just use `poster`. On the other hand, _do_ consider lazy loading a placeholder image with `data-poster` for non-autoplaying videos. Or you can opt _not_ to use a `poster` image. Your website, your call.
 
