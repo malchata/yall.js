@@ -211,11 +211,11 @@
         <div class="css-bg-example lazy-bg"></div>
       </div>
     </div>
-    <script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
     <script src="js/yall.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         yall({
+          noPolyfill: true,
           observeChanges: true,
           events: {
             load: function (event) {
