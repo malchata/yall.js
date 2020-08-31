@@ -4,13 +4,13 @@
   <strong>ES5 (.js) version</strong>
 </p>
 <p align="center">
-  <img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.js?compression=brotli&label=brotli" alt="Brotli size.">
+  <img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.js?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.js?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.js?compression=brotli&label=brotli" alt="Brotli size.">
 </p>
 <p align="center">
   <strong>ES6 (.mjs) version</strong>
 </p>
 <p align="center">
-  <img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/master/dist/yall.min.mjs?compression=brotli&label=brotli" alt="Brotli size.">
+  <img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.mjs?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.mjs?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.mjs?compression=brotli&label=brotli" alt="Brotli size.">
 </p>
 
 **Note: Barring any bugfixes, development of yall.js is done. Additionally, consider using [native lazy loading](https://web.dev/native-lazy-loading/) instead of any JavaScript-based solution unless you need to lazy load resources other than images and iframes.**
