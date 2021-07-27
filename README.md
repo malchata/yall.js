@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
 Unlike version 2 which provided a fallback for browsers without `IntersectionObserver` support, version 3 doesn't. If you need to support browsers that don't support `IntersectionObserver`, you can conditionally polyfill this feature through [polyfill.io](https://polyfill.io/) like so:
 
 ```html
-<script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
+<script src="https://polyfill.io/v3/polyfill.js?features=IntersectionObserver"></script>
 ```
 
 From there, lazy loading elements depends on _what_ you want to lazy load. Let's take a look at what you can do with it.
