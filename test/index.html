@@ -7,6 +7,7 @@
       Lazy Loader Test
     </title>
     <script>document.documentElement.classList.remove("no-js")</script>
+    <link rel="modulepreload" href="./js/yall.js">
     <style>
       * {
         margin: 0;
@@ -35,14 +36,12 @@
         font-family: sans-serif;
       }
 
-      img,
       video,
       iframe {
         max-width: 100%;
         display: inline-block;
       }
 
-      img,
       video {
         height: auto;
       }
@@ -60,7 +59,6 @@
         list-style: none;
       }
 
-      img + h2,
       picture + h2,
       noscript + h2,
       video + h2,
@@ -97,21 +95,6 @@
         }
       }
 
-      img {
-        transition: opacity 2s ease-out;
-        position: relative;
-        z-index: 1;
-      }
-
-      img.lazy {
-        opacity: .5;
-      }
-
-      img.yall-loaded
-      img.yall-error {
-        opacity: 1;
-      }
-
       .message {
         visibility: hidden;
         opacity: 0;
@@ -143,41 +126,10 @@
     </style>
   </head>
   <body>
-    <h1>Above the fold image (<code>src</code>+<code>srcset</code>)</h1>
-    <img class="lazy" sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
-    <noscript>
-      <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
-    </noscript>
     <h1>Scroll down...</h1>
     <button id="add-markup">Add New Markup</button>
     <div id="dynamic-markup-container"></div>
     <div id="server-markup">
-      <h2>Lazy loading <code>&lt;img&gt;</code> using <code>src</code></h2>
-      <img class="lazy" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" width="768" height="576">
-      <noscript>
-        <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" width="768" height="576">
-      </noscript>
-      <h2>Lazy loading <code>&lt;img&gt;</code> using <code>srcset</code></h2>
-      <img class="lazy" sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with srcset" width="768" height="576">
-      <noscript>
-        <img srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with srcset" width="768" height="576">
-      </noscript>
-      <h2>Lazy loading <code>&lt;picture&gt;</code></h2>
-      <picture>
-        <source sizes="(min-width: 50rem) 48rem, 100vw" data-srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" srcset="img/placeholder.webp" type="image/webp">
-        <source sizes="(min-width: 50rem) 48rem, 100vw"  data-srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" srcset="img/placeholder.jpg" type="image/jpeg">
-        <img class="lazy" sizes="(min-width: 50rem) 48rem, 100vw" data-src="img/test-768w.jpg" src="img/placeholder.jpg" alt="Lazy loading &lt;img&gt; with src" width="768" height="576">
-      </picture>
-      <noscript>
-        <picture>
-          <source srcset="img/test-768w.webp 768w, img/test-1024w.webp 1024w, img/test-1280w.webp 1280w, img/test-1536w.webp 1536w" type="image/webp">
-          <source srcset="img/test-768w.jpg 768w, img/test-1024w.jpg 1024w, img/test-1280w.jpg 1280w, img/test-1536w.jpg 1536w" type="image/jpeg">
-          <img src="img/test-768w.jpg" alt="&lt;noscript&gt; fallback for &lt;img&gt; with src" width="768" height="576">
-        </picture>
-      </noscript>
-      <h2>An image that doesn't exist</h2>
-      <img class="lazy" data-src="img/BLARP.jpg" src="img/placeholder.jpg" alt="An image that doesn't exist" width="768" height="576">
-      <div class="message error">Oh no, the image didn't load :(</div>
       <h2>Lazy loading <code>&lt;video&gt;</code> (<code>autoplay</code>/GIF-like behavior)</h2>
       <video class="lazy" width="500" height="213" poster="img/video-placeholder.jpg" autoplay loop muted playsinline inline preload="none">
         <source data-src="video/test.webm" type="video/webm">
@@ -201,57 +153,37 @@
           <source src="video/test-2.mp4" type="video/mp4">
         </video>
       </noscript>
-      <h2>Lazy loading <code>&lt;iframe&gt;</code></h2>
-      <iframe class="lazy" width="512" height="384" data-src="iframe.html"></iframe>
-      <noscript>
-        <iframe width="512" height="384" src="iframe.html"></iframe>
-      </noscript>
       <h2>Lazy loading CSS background images:</h2>
       <div class="css-bg-example-container">
         <div class="css-bg-example lazy-bg"></div>
       </div>
     </div>
-    <script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
-    <script src="js/yall.min.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        yall({
-          observeChanges: true,
-          events: {
-            load: function (event) {
-              if (!event.target.classList.contains("lazy") && event.target.nodeName == "IMG") {
-                event.target.classList.add("yall-loaded");
-              }
-            },
-            play: function (event) {
-              if (event.target.nodeName == "VIDEO") {
-                event.target.nextElementSibling.classList.add("visible");
-              }
-            },
-            error: {
-              listener: function (event) {
-                if (!event.target.classList.contains("lazy") && event.target.nodeName == "IMG") {
-                  event.target.classList.add("yall-error");
-                  event.target.nextElementSibling.classList.add("visible");
-                }
-              },
-              options: {
-                once: true
-              }
+    <script type="module">
+      import { yall } from "./js/yall.js";
+
+      yall({
+        observeChanges: true,
+        events: {
+          load: function (event) {
+            if (!event.target.classList.contains("lazy")) {
+              event.target.classList.add("yall-loaded");
+            }
+          },
+          play: function (event) {
+            if (event.target.nodeName == "VIDEO") {
+              event.target.nextElementSibling.classList.add("visible");
             }
           }
-        });
+        }
       });
 
-      document.addEventListener("DOMContentLoaded", function() {
-        var markupContainer = document.getElementById("dynamic-markup-container");
-        var addMarkupButton = document.getElementById("add-markup");
-        var serverMarkup = document.getElementById("server-markup").innerHTML;
+      var markupContainer = document.getElementById("dynamic-markup-container");
+      var addMarkupButton = document.getElementById("add-markup");
+      var serverMarkup = document.getElementById("server-markup").innerHTML;
 
-        addMarkupButton.addEventListener("click", function() {
-          document.body.removeChild(addMarkupButton);
-          markupContainer.innerHTML = serverMarkup;
-        });
+      addMarkupButton.addEventListener("click", function() {
+        document.body.removeChild(addMarkupButton);
+        markupContainer.innerHTML = serverMarkup;
       });
     </script>
   </body>

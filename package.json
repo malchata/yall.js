@@ -1,16 +1,20 @@
 {
   "name": "yall-js",
-  "version": "3.2.0",
+  "version": "4.0.0",
   "description": "Yet Another Lazy Loader",
-  "main": "./dist/yall.js",
-  "module": "./src/yall.mjs",
-  "jsnext:main": "./src/yall.mjs",
+  "type": "module",
+  "source": "./src/index.js",
+  "exports": "./dist/yall.mjs",
+  "main": "./dist/yall.cjs",
+  "module": "./dist/yall.js",
+  "unpkg": "./dist/yall.umd.js",
   "scripts": {
-    "clean": "npx rimraf ./dist",
-    "lint": "npx eslint ./src/yall.mjs",
-    "test": "npm run lint && npm run build && cp -fv ./dist/yall.min.js ./test/js && npm run server",
-    "server": "node http.js",
-    "build": "npm run clean && npx rollup -c",
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && npx microbundle && npm run copy",
+    "copy": "cp -v dist/yall.js ./test/js/yall.js && cp -v dist/yall.js.map ./test/js/yall.js.map",
+    "dev": "npm run clean && npx microbundle watch",
+    "lint": "npx eslint ./src/**.js ./src/**/*.js",
+    "test": "npm run lint && npm run build && node ./http.js",
     "postinstall": "node -e \"console.log('\\u001b[31m\\u001b[1mThanks for using yall.js! Excluding bugfixes, development of yall.js is finished. You should also consider replacing yall.js with native lazy loading if you can. Learn more at \\u001b[34mhttps://web.dev/native-lazy-loading/\\u001b[0m')\""
   },
   "repository": {
@@ -39,16 +43,14 @@
   },
   "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
-    "eslint": "^6.8.0",
-    "express": "^4.17.1",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.3.2",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-copy": "^3.3.0",
-    "rollup-plugin-terser": "^5.3.0"
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "eslint": "^8.16.0",
+    "express": "^4.18.1",
+    "microbundle": "^0.15.0"
   },
-  "dependencies": {}
+  "files": [
+    "dist"
+  ]
 }
