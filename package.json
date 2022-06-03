@@ -1,6 +1,6 @@
 {
   "name": "yall-js",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Yet Another Lazy Loader",
   "type": "module",
   "source": "./src/index.js",
@@ -15,7 +15,7 @@
     "dev": "npm run clean && npx microbundle watch",
     "lint": "npx eslint ./src/**.js ./src/**/*.js",
     "test": "npm run lint && npm run build && node ./http.js",
-    "postinstall": "node -e \"console.log('\\u001b[31m\\u001b[1mThanks for using yall.js! This is version 4, which remove support for lazy loading `<img>`, `<picture>`, and `<iframe>` elements. You should use native lazy loading for those use cases. Learn more at \\u001b[34mhttps://github.com/malchata/yall.js\\u001b[0m')\""
+    "postinstall": "node -e \"console.log('\\u001b[31m\\u001b[1mThanks for using yall.js! This is version 4, which remove support for lazy loading img, picture, and iframe elements. You should use native lazy loading for those use cases. Learn more at \\u001b[34mhttps://github.com/malchata/yall.js\\u001b[0m')\""
   },
   "repository": {
     "type": "git",
