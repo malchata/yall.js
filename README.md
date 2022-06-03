@@ -1,19 +1,12 @@
 # yall.js (Yet Another Lazy Loader)
 
 <p align="center">
-  <strong>ES5 (.js) version</strong>
-</p>
-<p align="center">
-  <img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.js?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.js?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.js?compression=brotli&label=brotli" alt="Brotli size.">
-</p>
-<p align="center">
-  <strong>ES6 (.mjs) version</strong>
-</p>
-<p align="center">
-  <img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.mjs?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.mjs?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.min.mjs?compression=brotli&label=brotli" alt="Brotli size.">
+  <img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.js?label=Uncompressed" alt="Uncompressed size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.js?compression=gzip&label=gzip" alt="gzip size.">&nbsp;<img src="https://img.badgesize.io/malchata/yall.js/main/dist/yall.js?compression=brotli&label=brotli" alt="Brotli size.">
 </p>
 
 yall.js is a SEO-friendly lazy loader for `<video>` elements as well as CSS background images. It works in all modern browsers. It uses [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) where available. yall.js can also monitor the DOM for changes using [Mutation Observer](https://hacks.mozilla.org/2012/05/dom-mutationobserver-reacting-to-dom-changes-without-killing-browser-performance/) to lazy load elements that have been appended to the DOM after initial load, which may be desirable for single page applications.
+
+yall.js 4 removes lazy loading for `<img>`, `<picture>`, and `<iframe>` elements, as [native lazy loading](https://web.dev/browser-level-image-lazy-loading/) covers these use cases. However, yall.js 4 retains the ability to lazy load autoplaying `<video>` (ala animated GIFs), lazy loading `<video>` element `poster` images, as well as CSS background images.
 
 To use yall, grab `yall.min.js` (or `yall.min.mjs` if you're the modern sort) from the `dist` directory and slap it on your page. You can also install it with npm:
 
@@ -23,7 +16,7 @@ npm install yall-js
 
 ## Usage
 
-This is version 3 of yall.js, and introduces breaking changes over all prior versions. This is simplest way to initialize yall.js:
+This is version 4 of yall.js, and introduces a named export named `yall` rather than a single default export:
 
 ```javascript
 // Import y'all

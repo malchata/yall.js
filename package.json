@@ -1,6 +1,6 @@
 {
   "name": "yall-js",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Yet Another Lazy Loader",
   "type": "module",
   "source": "./src/index.js",
@@ -15,7 +15,7 @@
     "dev": "npm run clean && npx microbundle watch",
     "lint": "npx eslint ./src/**.js ./src/**/*.js",
     "test": "npm run lint && npm run build && node ./http.js",
-    "postinstall": "node -e \"console.log('\\u001b[31m\\u001b[1mThanks for using yall.js! Excluding bugfixes, development of yall.js is finished. You should also consider replacing yall.js with native lazy loading if you can. Learn more at \\u001b[34mhttps://web.dev/native-lazy-loading/\\u001b[0m')\""
+    "postinstall": "node -e \"console.log('\\u001b[31m\\u001b[1mThanks for using yall.js! This is version 4, which remove support for lazy loading `<img>`, `<picture>`, and `<iframe>` elements. You should use native lazy loading for those use cases. Learn more at \\u001b[34mhttps://github.com/malchata/yall.js\\u001b[0m')\""
   },
   "repository": {
     "type": "git",
@@ -43,9 +43,6 @@
   },
   "homepage": "https://github.com/malchata/yall.js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.17.10",
-    "@babel/core": "^7.18.2",
-    "@babel/preset-env": "^7.18.2",
     "eslint": "^8.16.0",
     "express": "^4.18.1",
     "microbundle": "^0.15.0"
