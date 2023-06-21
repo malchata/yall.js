@@ -4,7 +4,7 @@
   "description": "Yet Another Lazy Loader",
   "type": "module",
   "source": "./src/index.js",
-  "exports": "./dist/yall.mjs",
+  "exports": "./dist/yall.js",
   "main": "./dist/yall.cjs",
   "module": "./dist/yall.js",
   "unpkg": "./dist/yall.umd.js",
